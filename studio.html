@@ -1,0 +1,1608 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>CONECTA — Arquitetura & Tecnologia | 3D ASCII Engine</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Three.js 3D Engine Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            figma: {
+              bg: '#0A0B10',
+              canvas: '#060709',
+              surface: '#12141C',
+              panel: 'rgba(18, 20, 28, 0.75)',
+              border: '#232636',
+              borderHover: '#3A3F58',
+              hover: '#1B1E2B',
+              active: '#2A2E42',
+              accent: '#FF7597',
+              accentHover: '#FF527B',
+              cyan: '#00F0FF',
+              textPrimary: '#F3F4F8',
+              textSecondary: '#A0A6BD',
+              textMuted: '#5C627A',
+            },
+            sakura: {
+              50: '#FFF0F5',
+              100: '#FFE1EB',
+              200: '#FFC2D6',
+              300: '#FFA3C0',
+              400: '#FF7597',
+              500: '#FF4A75',
+              600: '#E62E5B',
+              dark: '#38141E'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Custom high-tech scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(10, 11, 16, 0.6);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #232636;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #FF7597;
+    }
+
+    /* Glassmorphic Panels */
+    .glass-panel {
+      background: rgba(14, 16, 23, 0.72);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    .glass-card {
+      background: rgba(20, 23, 34, 0.65);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .glass-card:hover {
+      border-color: rgba(255, 117, 151, 0.4);
+      background: rgba(26, 30, 44, 0.75);
+    }
+
+    /* CAD / Figma Rulers */
+    .ruler-x {
+      background-image: linear-gradient(90deg, #232636 1px, transparent 1px),
+                        linear-gradient(90deg, #3A3F58 1px, transparent 1px);
+      background-size: 10px 6px, 50px 12px;
+      background-repeat: repeat-x;
+      background-position: bottom;
+    }
+    .ruler-y {
+      background-image: linear-gradient(0deg, #232636 1px, transparent 1px),
+                        linear-gradient(0deg, #3A3F58 1px, transparent 1px);
+      background-size: 6px 10px, 12px 50px;
+      background-repeat: repeat-y;
+      background-position: right;
+    }
+
+    /* Range slider custom styling */
+    input[type=range] {
+      -webkit-appearance: none;
+      appearance: none;
+      background: #232636;
+      height: 4px;
+      border-radius: 2px;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: #FF7597;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(255, 117, 151, 0.7);
+      transition: transform 0.15s ease;
+    }
+    input[type=range]::-webkit-slider-thumb:hover {
+      transform: scale(1.3);
+    }
+
+    /* Text Scramble Glitch Character */
+    .scramble-char {
+      color: #00F0FF;
+      font-weight: 700;
+      text-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
+    }
+
+    /* Mode Blend utilities */
+    .mode-hybrid-blend {
+      mix-blend-mode: screen;
+    }
+  </style>
+</head>
+
+<body class="bg-figma-bg text-figma-textPrimary font-sans h-screen w-screen overflow-hidden flex flex-col select-none relative">
+
+  <!-- 
+    BACKGROUND GRAPHICAL ENGINE:
+    - #webgl-canvas: Raw Three.js 3D WebGL Scene
+    - #ascii-canvas: Real-time ASCII Rasterizer Buffer reading from 3D Engine
+  -->
+  <div id="engine-background-container" class="fixed inset-0 w-full h-full z-0 overflow-hidden pointer-events-auto">
+    <!-- WebGL Canvas (3D Sakura Tree Engine) -->
+    <canvas id="webgl-canvas" class="absolute inset-0 w-full h-full block transition-opacity duration-500"></canvas>
+
+    <!-- ASCII Rasterizer Canvas (Color Monospace Buffer) -->
+    <canvas id="ascii-canvas" class="absolute inset-0 w-full h-full block transition-opacity duration-500 pointer-events-none"></canvas>
+
+    <!-- Atmospheric Vignette & Depth Mask -->
+    <div id="engine-overlay-vignette" class="absolute inset-0 bg-radial from-transparent via-[#0A0B10]/40 to-[#0A0B10]/85 pointer-events-none transition-opacity duration-500"></div>
+  </div>
+
+  <!-- TOP FIGMA STUDIO APP HEADER -->
+  <header class="h-12 border-b border-figma-border bg-figma-surface/90 backdrop-blur-xl flex items-center justify-between px-3 z-40 flex-shrink-0">
+    
+    <!-- Left: Brand / Project Identifier -->
+    <div class="flex items-center gap-3">
+      <div id="btn-brand-home" class="flex items-center gap-2.5 cursor-pointer py-1 px-2 rounded-lg hover:bg-figma-hover transition-colors group">
+        <!-- Logo Emblem -->
+        <div class="w-7 h-7 rounded-md bg-gradient-to-br from-sakura-400 via-sakura-500 to-sakura-600 flex items-center justify-center text-white shadow-md shadow-sakura-500/25 group-hover:scale-105 transition-transform">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M12 2L8 8a4 4 0 0 0 8 0z" />
+            <path d="M12 8v14" />
+            <path d="M9 16l3-2 3 2" />
+          </svg>
+        </div>
+        <div class="flex flex-col">
+          <div class="flex items-center gap-1.5">
+            <span class="font-extrabold text-xs tracking-wider text-white" data-scramble="CONECTA">CONECTA</span>
+            <span class="text-[9px] bg-sakura-500/20 text-sakura-300 px-1 py-0.2 rounded font-mono font-semibold">3D ENGINE</span>
+          </div>
+          <span class="text-[9px] text-figma-textMuted leading-none font-mono">ARQUITETURA & TECNOLOGIA</span>
+        </div>
+      </div>
+
+      <div class="h-4 w-[1px] bg-figma-border hidden sm:block"></div>
+
+      <!-- Navigation Jump Links -->
+      <nav class="hidden lg:flex items-center gap-1 text-xs">
+        <button data-scroll-to="section-hero" class="nav-tab active px-2.5 py-1 rounded-md text-white font-medium hover:bg-figma-hover transition-colors">Visão Geral</button>
+        <button data-scroll-to="section-manifesto" class="nav-tab px-2.5 py-1 rounded-md text-figma-textSecondary hover:text-white hover:bg-figma-hover transition-colors" data-scramble="Manifesto">Manifesto</button>
+        <button data-scroll-to="section-portfolio" class="nav-tab px-2.5 py-1 rounded-md text-figma-textSecondary hover:text-white hover:bg-figma-hover transition-colors" data-scramble="Projetos">Projetos</button>
+        <button data-scroll-to="section-tech" class="nav-tab px-2.5 py-1 rounded-md text-figma-textSecondary hover:text-white hover:bg-figma-hover transition-colors" data-scramble="Tecnologias">Tecnologias</button>
+      </nav>
+    </div>
+
+    <!-- Center: Graphical Engine Viewport Mode Switcher -->
+    <div class="flex items-center bg-[#090A0E] p-1 rounded-lg border border-figma-border text-xs shadow-inner">
+      <button id="mode-ascii" class="mode-btn active px-3 py-1 rounded-md bg-sakura-500 text-white font-medium flex items-center gap-1.5 shadow-sm transition-all">
+        <span class="font-mono text-xs">ASCII</span>
+        <span class="hidden sm:inline">Engine</span>
+      </button>
+
+      <button id="mode-hybrid" class="mode-btn px-3 py-1 rounded-md text-figma-textSecondary hover:text-white font-medium flex items-center gap-1.5 transition-all">
+        <svg class="w-3.5 h-3.5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+        </svg>
+        <span class="hidden sm:inline">Híbrido</span> Glow
+      </button>
+
+      <button id="mode-raw3d" class="mode-btn px-3 py-1 rounded-md text-figma-textSecondary hover:text-white font-medium flex items-center gap-1.5 transition-all">
+        <svg class="w-3.5 h-3.5 text-sakura-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+          <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+          <line x1="12" y1="22.08" x2="12" y2="12"></line>
+        </svg>
+        <span>Raw 3D</span>
+      </button>
+    </div>
+
+    <!-- Right: Telemetry & Actions -->
+    <div class="flex items-center gap-2">
+      <!-- FPS & Buffer Telemetry -->
+      <div class="hidden xl:flex items-center gap-2 bg-[#090A0E] px-2.5 py-1 rounded-md border border-figma-border text-[11px] font-mono">
+        <span class="flex items-center gap-1 text-emerald-400">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span id="stat-fps">60</span> FPS
+        </span>
+        <span class="text-figma-border">|</span>
+        <span class="text-figma-textSecondary">
+          <span id="stat-grid" class="text-sakura-300">140x75</span> GLYPHS
+        </span>
+      </div>
+
+      <!-- Toggle Zen / Hide Overlays -->
+      <button id="btn-toggle-zen" class="px-2.5 py-1 rounded-md bg-figma-hover hover:bg-figma-active text-figma-textSecondary hover:text-white border border-figma-border text-xs flex items-center gap-1.5 transition-colors" title="Alternar Modo Zen (Ocultar textos para focar na Árvore 3D)">
+        <svg class="w-3.5 h-3.5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>
+        <span id="text-zen" class="hidden md:inline">Modo Árvore</span>
+      </button>
+
+      <!-- Toggle Audio -->
+      <button id="btn-audio" class="w-8 h-8 rounded-md bg-figma-hover hover:bg-figma-active text-figma-textSecondary hover:text-white border border-figma-border flex items-center justify-center transition-colors" title="Ativar Som Ambiental / Efeitos">
+        <svg id="icon-sound-off" class="w-4 h-4 text-figma-textMuted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <line x1="23" y1="9" x2="17" y2="15"></line>
+          <line x1="17" y1="9" x2="23" y2="15"></line>
+        </svg>
+        <svg id="icon-sound-on" class="w-4 h-4 text-sakura-400 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+        </svg>
+      </button>
+
+      <!-- Toggle Right Inspector Sidebar -->
+      <button id="btn-toggle-inspector" class="w-8 h-8 rounded-md bg-figma-hover hover:bg-figma-active text-figma-textSecondary hover:text-white border border-figma-border flex items-center justify-center transition-colors" title="Abrir Inspetor de Propriedades">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+          <line x1="15" y1="3" x2="15" y2="21"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- TOP RULER (Figma CAD Guide) -->
+  <div class="h-4 w-full border-b border-figma-border bg-[#090A0E] ruler-x flex items-center px-4 text-[8px] font-mono text-figma-textMuted select-none z-30 pointer-events-none">
+    <span class="mr-24">0</span>
+    <span class="mr-24">200</span>
+    <span class="mr-24">400</span>
+    <span class="mr-24">600</span>
+    <span class="mr-24">800</span>
+    <span class="mr-24">1000</span>
+    <span class="mr-24">1200</span>
+    <span class="mr-24">1400</span>
+    <span class="mr-24">1600</span>
+  </div>
+
+  <!-- MAIN WORKSPACE LAYOUT -->
+  <div class="flex-1 flex overflow-hidden relative z-20">
+
+    <!-- LEFT CAD RULER -->
+    <div class="w-4 h-full border-r border-figma-border bg-[#090A0E] ruler-y hidden md:flex flex-col py-4 text-[8px] font-mono text-figma-textMuted select-none pointer-events-none flex-shrink-0">
+      <span class="mb-20 pl-0.5">0</span>
+      <span class="mb-20 pl-0.5">200</span>
+      <span class="mb-20 pl-0.5">400</span>
+      <span class="mb-20 pl-0.5">600</span>
+      <span class="mb-20 pl-0.5">800</span>
+    </div>
+
+    <!-- SCROLLABLE FOREGROUND CONTENT (Website Layer with Glassmorphism) -->
+    <main id="content-scroller" class="flex-1 h-full overflow-y-auto overflow-x-hidden relative transition-opacity duration-300">
+      
+      <div class="max-w-6xl mx-auto px-4 sm:px-8 py-8 flex flex-col gap-20">
+
+        <!-- SECTION 1: HERO VIEW -->
+        <section id="section-hero" class="min-h-[75vh] flex flex-col justify-center items-start relative pt-6">
+          
+          <!-- Floating Badge -->
+          <div class="glass-panel px-3.5 py-1.5 rounded-full inline-flex items-center gap-2 mb-4 border border-sakura-500/30">
+            <span class="w-2 h-2 rounded-full bg-sakura-400 animate-ping"></span>
+            <span class="text-xs font-mono text-sakura-300 tracking-wider">CONVERGÊNCIA VIVA // ARQUITETURA + ALGORITMO</span>
+          </div>
+
+          <!-- Main Title with Scramble Effect -->
+          <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white max-w-4xl leading-[1.08] mb-6">
+            Espaços moldados pela 
+            <span class="bg-gradient-to-r from-sakura-300 via-sakura-400 to-sakura-500 bg-clip-text text-transparent underline decoration-sakura-500/40 decoration-wavy decoration-2" data-scramble="Natureza">Natureza</span>,
+            orquestrados pelo
+            <span class="text-cyan-400 font-mono" data-scramble="Código 3D">Código 3D</span>.
+          </h1>
+
+          <p class="text-base sm:text-lg text-figma-textSecondary max-w-2xl leading-relaxed mb-8 glass-panel p-5 rounded-2xl border border-white/10">
+            A <strong>CONECTA</strong> une a sabedoria biofílica da cerejeira japonesa (<em>Sakura</em>) à precisão da computação paramétrica. A engine 3D ao fundo representa nossa matriz fractal: cada pétala é um dado, cada galho é uma estrutura sustentável viva.
+          </p>
+
+          <!-- Action Buttons -->
+          <div class="flex flex-wrap items-center gap-4">
+            <button data-scroll-to="section-portfolio" class="px-6 py-3.5 rounded-xl bg-gradient-to-r from-sakura-500 to-sakura-600 hover:from-sakura-600 hover:to-sakura-700 text-white font-semibold text-sm shadow-xl shadow-sakura-500/30 transition-all hover:scale-105 active:scale-95 flex items-center gap-2">
+              <span data-scramble="Explorar Projetos">Explorar Projetos</span>
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+
+            <button id="btn-hero-storm" class="px-6 py-3.5 rounded-xl glass-panel hover:bg-sakura-500/20 text-white font-medium text-sm border border-sakura-400/30 transition-all hover:scale-105 active:scale-95 flex items-center gap-2">
+              <span class="text-sakura-400">✿</span>
+              <span>Disparar Tempestade de Pétalas</span>
+            </button>
+          </div>
+
+          <!-- Bottom Telemetry Badges -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-12 w-full max-w-3xl font-mono text-xs">
+            <div class="glass-panel p-3 rounded-xl border border-white/5">
+              <div class="text-figma-textMuted text-[10px]">CÂMERA 3D</div>
+              <div id="hero-cam-readout" class="text-sakura-300 font-bold mt-0.5">X: 0° | Y: 22°</div>
+            </div>
+            <div class="glass-panel p-3 rounded-xl border border-white/5">
+              <div class="text-figma-textMuted text-[10px]">PÉTALAS ATIVAS</div>
+              <div id="hero-petals-readout" class="text-white font-bold mt-0.5">450 PARTICULAS</div>
+            </div>
+            <div class="glass-panel p-3 rounded-xl border border-white/5">
+              <div class="text-figma-textMuted text-[10px]">RASTER ASCII</div>
+              <div class="text-cyan-400 font-bold mt-0.5">LUMINANCE BUFFER</div>
+            </div>
+            <div class="glass-panel p-3 rounded-xl border border-white/5">
+              <div class="text-figma-textMuted text-[10px]">ESTADO BIOFÍLICO</div>
+              <div class="text-emerald-400 font-bold mt-0.5 flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full bg-emerald-400"></span> FLORESCÊNCIA
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 2: MANIFESTO & FILOSOFIA -->
+        <section id="section-manifesto" class="pt-10">
+          <div class="glass-panel rounded-3xl p-6 sm:p-10 border border-white/10 relative overflow-hidden">
+            <!-- Decorative sakura bloom glow inside panel -->
+            <div class="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-sakura-500/10 blur-[100px] pointer-events-none"></div>
+
+            <div class="flex items-center gap-2 text-cyan-400 font-mono text-xs font-semibold mb-3">
+              <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+              <span>01 // FILOSOFIA & MANIFESTO DA MARCA</span>
+            </div>
+
+            <h2 class="text-3xl sm:text-4xl font-bold text-white mb-6" data-scramble="A Simbiose entre o Broto e o Pixel.">
+              A Simbiose entre o Broto e o Pixel.
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-figma-textSecondary leading-relaxed">
+              <div class="glass-card p-5 rounded-2xl flex flex-col gap-3">
+                <div class="w-10 h-10 rounded-xl bg-sakura-500/20 text-sakura-400 flex items-center justify-center font-bold text-lg font-mono">
+                  01
+                </div>
+                <h3 class="text-base font-semibold text-white">Raízes & Coletividade</h3>
+                <p>
+                  As quatro crianças que abraçam o tronco em nossa identidade visual sintetizam a essência da arquitetura social: diversidade, empatia humana e a convicção de que os edifícios devem acolher as novas gerações em equilíbrio com a biosfera.
+                </p>
+              </div>
+
+              <div class="glass-card p-5 rounded-2xl flex flex-col gap-3">
+                <div class="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold text-lg font-mono">
+                  02
+                </div>
+                <h3 class="text-base font-semibold text-white">Design Paramétrico Vivo</h3>
+                <p>
+                  Substituímos o traço estático pelo cálculo algorítmico da luz solar, circulação dos ventos e morfologia vegetal. Cada viga e cada brise respeita o mesmo código fractal que guia o crescimento dos galhos de sakura.
+                </p>
+              </div>
+
+              <div class="glass-card p-5 rounded-2xl flex flex-col gap-3">
+                <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-lg font-mono">
+                  03
+                </div>
+                <h3 class="text-base font-semibold text-white">ASCII como Metáfora Digital</h3>
+                <p>
+                  Transformar este modelo 3D contínuo em matriz de texto ASCII não é mero estilo: é a ponte visual entre a poesia da natureza e os blocos discretos da computação moderna que fundamentam o ecossistema CONECTA.
+                </p>
+              </div>
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-figma-border flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs font-mono text-figma-textMuted">
+              <div>UBERLÂNDIA // MINAS GERAIS // BRASIL</div>
+              <div class="text-sakura-300">ESTÚDIO DE ARQUITETURA BIOCLIMÁTICA & SISTEMAS DIGITAIS</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 3: PROJETOS ARQUITETÔNICOS -->
+        <section id="section-portfolio" class="pt-10">
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
+            <div>
+              <div class="flex items-center gap-2 text-sakura-400 font-mono text-xs font-semibold mb-2">
+                <span>02 // OBRAS EMBLEMÁTICAS</span>
+              </div>
+              <h2 class="text-3xl sm:text-4xl font-bold text-white tracking-tight" data-scramble="Portfólio de Alta Complexidade">
+                Portfólio de Alta Complexidade
+              </h2>
+            </div>
+            <p class="text-xs text-figma-textSecondary max-w-sm">
+              Projetos corporativos, educacionais e residenciais concebidos através de parametrização geométrica e madeira engenheirada sustentável.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Project Card 1 -->
+            <div class="glass-panel p-6 rounded-2xl border border-white/10 flex flex-col justify-between group hover:border-sakura-400/50 transition-all duration-300">
+              <div>
+                <div class="flex items-center justify-between text-xs font-mono text-sakura-400 mb-3">
+                  <span>BIO-COMPLEX 01</span>
+                  <span class="bg-sakura-500/20 px-2 py-0.5 rounded text-white text-[10px]">2026</span>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-2 group-hover:text-sakura-300 transition-colors" data-scramble="Pavilhão Biofílico Sakura">
+                  Pavilhão Biofílico Sakura
+                </h3>
+                <p class="text-xs text-figma-textSecondary leading-relaxed mb-6">
+                  Cúpula geodésica em madeira lamelada colada (MLC) com captação inteligente de água pluvial e ventilação cruzada por efeito chaminé.
+                </p>
+              </div>
+              <div class="space-y-2 border-t border-figma-border pt-4 text-[11px] font-mono">
+                <div class="flex justify-between text-figma-textMuted">
+                  <span>ÁREA CONSTRUÍDA</span>
+                  <span class="text-white">2.840 m²</span>
+                </div>
+                <div class="flex justify-between text-figma-textMuted">
+                  <span>EFICIÊNCIA TÉRMICA</span>
+                  <span class="text-emerald-400">+42% PASSIVA</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Project Card 2 -->
+            <div class="glass-panel p-6 rounded-2xl border border-white/10 flex flex-col justify-between group hover:border-cyan-400/50 transition-all duration-300">
+              <div>
+                <div class="flex items-center justify-between text-xs font-mono text-cyan-400 mb-3">
+                  <span>SMART RESIDENCE</span>
+                  <span class="bg-cyan-500/20 px-2 py-0.5 rounded text-white text-[10px]">2025</span>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors" data-scramble="Residência Algorítmica">
+                  Residência Algorítmica
+                </h3>
+                <p class="text-xs text-figma-textSecondary leading-relaxed mb-6">
+                  Casa inteligente de balanço zero com brises dinâmicos programados para acompanhar a inclinação azimutal do sol durante as quatro estações.
+                </p>
+              </div>
+              <div class="space-y-2 border-t border-figma-border pt-4 text-[11px] font-mono">
+                <div class="flex justify-between text-figma-textMuted">
+                  <span>AUTOMAÇÃO INTEGRADA</span>
+                  <span class="text-white">Gêmeo Digital IoT</span>
+                </div>
+                <div class="flex justify-between text-figma-textMuted">
+                  <span>ENERGIA SOLAR</span>
+                  <span class="text-cyan-400">100% AUTOSSUFICIENTE</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Project Card 3 -->
+            <div class="glass-panel p-6 rounded-2xl border border-white/10 flex flex-col justify-between group hover:border-emerald-400/50 transition-all duration-300">
+              <div>
+                <div class="flex items-center justify-between text-xs font-mono text-emerald-400 mb-3">
+                  <span>URBAN HUB</span>
+                  <span class="bg-emerald-500/20 px-2 py-0.5 rounded text-white text-[10px]">2026</span>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-2 group-hover:text-emerald-300 transition-colors" data-scramble="Centro Comunitário Conecta">
+                  Centro Comunitário Conecta
+                </h3>
+                <p class="text-xs text-figma-textSecondary leading-relaxed mb-6">
+                  Espaço cultural aberto focado na infância e na formação tecnológica, integrando praça botânica com jardins sensoriais de cerejeiras.
+                </p>
+              </div>
+              <div class="space-y-2 border-t border-figma-border pt-4 text-[11px] font-mono">
+                <div class="flex justify-between text-figma-textMuted">
+                  <span>MATERIAL PRINCIPAL</span>
+                  <span class="text-white">Terra Comprimida & MLC</span>
+                </div>
+                <div class="flex justify-between text-figma-textMuted">
+                  <span>IMPACTO CARBONO</span>
+                  <span class="text-emerald-400">NEGATIVO (-85t)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 4: TECNOLOGIAS & COMPUTATIONAL DESIGN -->
+        <section id="section-tech" class="pt-10 pb-16">
+          <div class="glass-panel rounded-3xl p-6 sm:p-10 border border-white/10">
+            <div class="flex items-center gap-2 text-cyan-400 font-mono text-xs font-semibold mb-2">
+              <span>03 // SISTEMAS CONSTRUTIVOS & SOFTWARE</span>
+            </div>
+            <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4" data-scramble="Tecnologias de Ponta para Cidades Inteligentes">
+              Tecnologias de Ponta para Cidades Inteligentes
+            </h2>
+            <p class="text-sm text-figma-textSecondary max-w-2xl mb-8">
+              Não concebemos projetos em folhas isoladas. Operamos em ecossistemas de modelagem paramétrica, inteligência preditiva e sustentabilidade circular.
+            </p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div class="glass-card p-4 rounded-xl">
+                <div class="text-sakura-400 font-mono text-xs mb-1 font-semibold">01 / BIM 5D & 6D</div>
+                <h4 class="text-sm font-bold text-white mb-1">Ciclo de Vida Total</h4>
+                <p class="text-xs text-figma-textMuted">Monitoramento de custos, prazos e emissão de carbono em tempo real desde a fundação.</p>
+              </div>
+
+              <div class="glass-card p-4 rounded-xl">
+                <div class="text-cyan-400 font-mono text-xs mb-1 font-semibold">02 / Algoritmos Generativos</div>
+                <h4 class="text-sm font-bold text-white mb-1">Otimização Estrutural</h4>
+                <p class="text-xs text-figma-textMuted">Estruturas que reduzem até 30% do uso de material mantendo resistência sísmica e ventilação.</p>
+              </div>
+
+              <div class="glass-card p-4 rounded-xl">
+                <div class="text-emerald-400 font-mono text-xs mb-1 font-semibold">03 / Simulação Bioclimática</div>
+                <h4 class="text-sm font-bold text-white mb-1">Conforto Térmico Passivo</h4>
+                <p class="text-xs text-figma-textMuted">Estudo solar e dinâmico de fluidos (CFD) para extinguir a necessidade crônica de ar-condicionado.</p>
+              </div>
+
+              <div class="glass-card p-4 rounded-xl">
+                <div class="text-white font-mono text-xs mb-1 font-semibold">04 / Digital Twins IoT</div>
+                <h4 class="text-sm font-bold text-white mb-1">Prédios Vivos</h4>
+                <p class="text-xs text-figma-textMuted">Sensores espaciais que adaptam luz, temperatura e irrigação vegetal de forma autônoma.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="border-t border-figma-border pt-8 pb-20 flex flex-col md:flex-row items-center justify-between text-xs text-figma-textMuted gap-4">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-sakura-500"></span>
+            <span class="font-bold text-white">CONECTA</span> — Arquitetura & Tecnologia © 2026. Todos os direitos reservados.
+          </div>
+          <div class="flex items-center gap-6 font-mono text-[11px]">
+            <span class="hover:text-sakura-300 cursor-pointer">Sustentabilidade Biofílica</span>
+            <span class="hover:text-sakura-300 cursor-pointer">Three.js ASCII Engine</span>
+            <span class="hover:text-sakura-300 cursor-pointer">Figma Design System</span>
+          </div>
+        </footer>
+
+      </div>
+    </main>
+
+    <!-- RIGHT FIGMA INSPECTOR SIDEBAR (Controls Engine, ASCII, Lighting, Petals) -->
+    <aside id="inspector-panel" class="w-80 border-l border-figma-border bg-figma-surface/95 backdrop-blur-2xl flex flex-col z-30 transition-all duration-300 flex-shrink-0">
+      
+      <!-- Panel Header -->
+      <div class="h-10 border-b border-figma-border px-3.5 flex items-center justify-between text-xs font-semibold text-white">
+        <div class="flex items-center gap-2">
+          <svg class="w-3.5 h-3.5 text-sakura-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 20h9"/>
+            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+          </svg>
+          <span>Inspetor da Engine 3D</span>
+        </div>
+        <span class="text-[9px] bg-figma-hover px-1.5 py-0.5 rounded text-figma-textSecondary font-mono">SPEC v4.2</span>
+      </div>
+
+      <!-- Settings Scroll Area -->
+      <div class="flex-1 overflow-y-auto p-4 flex flex-col gap-4 text-xs">
+        
+        <!-- SECTION 1: ASCII RASTERIZER -->
+        <div class="flex flex-col gap-2.5">
+          <span class="text-[10px] uppercase font-mono tracking-wider text-figma-textMuted font-bold">1. RASTERIZADOR ASCII</span>
+
+          <!-- Charset Selector -->
+          <div class="flex flex-col gap-1">
+            <label class="text-[11px] text-figma-textSecondary">Conjunto de Caracteres</label>
+            <select id="select-charset" class="w-full bg-[#090A0E] border border-figma-border rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-sakura-400 cursor-pointer font-mono">
+              <option value="sakura">Sakura Kanji & Floral (🌸 桜 木 花 咲 •)</option>
+              <option value="classic">ASCII Clássico (@ # % * + = - : .)</option>
+              <option value="cyber">Cyber Hex (0 1 x / \ [ ] { } &lt; &gt;)</option>
+              <option value="architectural">Blueprint CAD (█ ▓ ▒ ░ ┼ ─ │ ┌)</option>
+            </select>
+          </div>
+
+          <!-- Glyph Size / Resolution -->
+          <div class="bg-[#090A0E] p-2.5 rounded-lg border border-figma-border flex flex-col gap-1.5">
+            <div class="flex justify-between items-center text-[11px]">
+              <span class="text-figma-textSecondary">Tamanho do Glifo</span>
+              <span id="label-glyph-size" class="font-mono text-sakura-300">10 px</span>
+            </div>
+            <input id="slider-glyph-size" type="range" min="6" max="18" step="1" value="10" class="w-full" />
+            <div class="flex justify-between text-[9px] text-figma-textMuted font-mono">
+              <span>Ultra Alta Res (6px)</span>
+              <span>Retro Block (18px)</span>
+            </div>
+          </div>
+
+          <!-- ASCII Contrast Boost -->
+          <div class="bg-[#090A0E] p-2.5 rounded-lg border border-figma-border flex flex-col gap-1.5">
+            <div class="flex justify-between items-center text-[11px]">
+              <span class="text-figma-textSecondary">Contraste de Luminância</span>
+              <span id="label-contrast" class="font-mono text-cyan-400">1.3x</span>
+            </div>
+            <input id="slider-contrast" type="range" min="0.8" max="2.2" step="0.1" value="1.3" class="w-full" />
+          </div>
+        </div>
+
+        <!-- SECTION 2: 3D MODEL & SCENE -->
+        <div class="flex flex-col gap-2.5 pt-3 border-t border-figma-border">
+          <span class="text-[10px] uppercase font-mono tracking-wider text-figma-textMuted font-bold">2. MODELO 3D & CINEMÁTICA</span>
+
+          <!-- Rotation Speed -->
+          <div class="bg-[#090A0E] p-2.5 rounded-lg border border-figma-border flex flex-col gap-1.5">
+            <div class="flex justify-between items-center text-[11px]">
+              <span class="text-figma-textSecondary">Giro Automático 3D</span>
+              <span id="label-speed" class="font-mono text-white">1.0x</span>
+            </div>
+            <input id="slider-speed" type="range" min="0" max="3" step="0.2" value="1" class="w-full" />
+          </div>
+
+          <!-- Auto Orbit Toggle -->
+          <div class="flex items-center justify-between bg-[#090A0E] px-3 py-2 rounded-lg border border-figma-border">
+            <span class="text-figma-textSecondary text-[11px]">Órbita Contínua</span>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input id="toggle-orbit" type="checkbox" checked class="sr-only peer">
+              <div class="w-8 h-4 bg-figma-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-3 after:w-3.5 after:transition-all peer-checked:bg-sakura-500"></div>
+            </label>
+          </div>
+        </div>
+
+        <!-- SECTION 3: SAKURA PETAL PHYSICS -->
+        <div class="flex flex-col gap-2.5 pt-3 border-t border-figma-border">
+          <span class="text-[10px] uppercase font-mono tracking-wider text-figma-textMuted font-bold">3. FÍSICA DAS PÉTALAS</span>
+
+          <!-- Wind Speed -->
+          <div class="bg-[#090A0E] p-2.5 rounded-lg border border-figma-border flex flex-col gap-1.5">
+            <div class="flex justify-between items-center text-[11px]">
+              <span class="text-figma-textSecondary">Intensidade do Vento</span>
+              <span id="label-wind" class="font-mono text-sakura-300">Brisa Suave</span>
+            </div>
+            <input id="slider-wind" type="range" min="0.2" max="3" step="0.2" value="1" class="w-full" />
+          </div>
+
+          <!-- Petal Storm Trigger -->
+          <button id="btn-inspector-storm" class="w-full py-2.5 px-3 rounded-lg bg-sakura-500/20 hover:bg-sakura-500/30 text-sakura-300 border border-sakura-500/40 text-xs font-semibold flex items-center justify-center gap-2 transition-all active:scale-95">
+            <span>✿</span>
+            <span>Desprender Novas Pétalas</span>
+          </button>
+        </div>
+
+        <!-- SECTION 4: EXPORT & RAW COPY -->
+        <div class="flex flex-col gap-2 pt-3 border-t border-figma-border mt-auto">
+          <button id="btn-copy-ascii" class="w-full py-2.5 px-3 rounded-lg bg-sakura-500 hover:bg-sakura-600 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-lg shadow-sakura-500/20 transition-all hover:scale-[1.02] active:scale-98">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+            <span>Copiar Snapshot ASCII</span>
+          </button>
+        </div>
+
+      </div>
+    </aside>
+  </div>
+
+  <!-- FLOATING FIGMA BOTTOM DOCK (Controls Quick Orbit, Reset, Wind Gust) -->
+  <div class="fixed bottom-4 left-1/2 -translate-x-1/2 z-40">
+    <div class="glass-panel px-3 py-2 rounded-2xl border border-white/10 shadow-2xl flex items-center gap-1.5 sm:gap-2">
+      
+      <!-- Tool 1: Pointer Orbit -->
+      <button id="dock-tool-orbit" class="dock-btn active p-2 rounded-xl bg-sakura-500 text-white flex items-center justify-center transition-all hover:scale-105" title="Orbitar Câmera 3D [Arraste com o Mouse]">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+      </button>
+
+      <!-- Tool 2: Reset Camera Angle -->
+      <button id="dock-tool-reset" class="dock-btn p-2 rounded-xl text-figma-textSecondary hover:text-white hover:bg-figma-hover flex items-center justify-center transition-all" title="Resetar Posição da Câmera [R]">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+          <path d="M3 3v5h5"/>
+        </svg>
+      </button>
+
+      <div class="h-4 w-[1px] bg-figma-border mx-1"></div>
+
+      <!-- Action 3: Disparar Tempestade -->
+      <button id="dock-tool-gust" class="px-3 py-1.5 rounded-xl bg-sakura-500/20 hover:bg-sakura-500/30 text-sakura-300 border border-sakura-500/30 flex items-center gap-1.5 text-xs font-semibold transition-all hover:scale-105 active:scale-95" title="Ativar Rajada de Vento nas Pétalas [Espaço]">
+        <span>✿</span>
+        <span class="hidden sm:inline">Rajada Sakura</span>
+      </button>
+
+      <!-- Action 4: Re-scramble texts -->
+      <button id="dock-tool-scramble" class="px-2.5 py-1.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 flex items-center gap-1 text-xs font-mono transition-all" title="Re-embaralhar Textos Scramble">
+        <span class="text-cyan-400">&gt;_</span>
+        <span class="hidden sm:inline">Decrypt</span>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION BOX -->
+  <div id="toast" class="fixed top-14 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-xl glass-panel border border-sakura-400/40 text-xs font-mono text-white shadow-2xl flex items-center gap-2 transform -translate-y-12 opacity-0 transition-all duration-300 pointer-events-none">
+    <span class="w-2 h-2 rounded-full bg-sakura-400 animate-pulse"></span>
+    <span id="toast-message">Notificação</span>
+  </div>
+
+  <script>
+    /**
+     * TextScramble Engine
+     * Reinvents text decoding animation on hover and load
+     */
+    class TextScramble {
+      constructor(el) {
+        this.el = el;
+        this.chars = '!<>-_\\/[]{}—=+*^?#_░▒▓✿❀🌸0123456789CONECTA';
+        this.update = this.update.bind(this);
+      }
+      
+      setText(newText) {
+        const oldText = this.el.innerText || '';
+        const length = Math.max(oldText.length, newText.length);
+        const promise = new Promise((resolve) => this.resolve = resolve);
+        this.queue = [];
+        
+        for (let i = 0; i < length; i++) {
+          const from = oldText[i] || '';
+          const to = newText[i] || '';
+          const start = Math.floor(Math.random() * 15);
+          const end = start + Math.floor(Math.random() * 18);
+          this.queue.push({ from, to, start, end });
+        }
+        
+        cancelAnimationFrame(this.frameRequest);
+        this.frame = 0;
+        this.update();
+        return promise;
+      }
+      
+      update() {
+        let output = '';
+        let complete = 0;
+        
+        for (let i = 0, n = this.queue.length; i < n; i++) {
+          let { from, to, start, end, char } = this.queue[i];
+          if (this.frame >= end) {
+            complete++;
+            output += to;
+          } else if (this.frame >= start) {
+            if (!char || Math.random() < 0.28) {
+              char = this.randomChar();
+              this.queue[i].char = char;
+            }
+            output += `<span class="scramble-char">${char}</span>`;
+          } else {
+            output += from;
+          }
+        }
+        
+        this.el.innerHTML = output;
+        
+        if (complete === this.queue.length) {
+          this.resolve();
+        } else {
+          this.frameRequest = requestAnimationFrame(this.update);
+          this.frame++;
+        }
+      }
+      
+      randomChar() {
+        return this.chars[Math.floor(Math.random() * this.chars.length)];
+      }
+    }
+
+    function triggerAllScrambles() {
+      document.querySelectorAll('[data-scramble]').forEach((el) => {
+        const target = el.getAttribute('data-scramble') || el.innerText;
+        const fx = new TextScramble(el);
+        fx.setText(target);
+      });
+    }
+
+    /**
+     * Web Audio API Synthesizer for Zen bells and subtle clicks
+     */
+    class SoundEngine {
+      constructor() {
+        this.enabled = false;
+        this.ctx = null;
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) {
+            this.ctx = new AudioContext();
+          }
+        }
+      }
+
+      toggle() {
+        this.enabled = !this.enabled;
+        if (this.enabled) {
+          this.init();
+          if (this.ctx && this.ctx.state === 'suspended') {
+            this.ctx.resume();
+          }
+          this.playBell(587.33); // D5
+        }
+        return this.enabled;
+      }
+
+      playClick() {
+        if (!this.enabled || !this.ctx) return;
+        try {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(640, this.ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(120, this.ctx.currentTime + 0.04);
+          gain.gain.setValueAtTime(0.04, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.04);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + 0.05);
+        } catch(e) {}
+      }
+
+      playBell(freq = 659.25) {
+        if (!this.enabled || !this.ctx) return;
+        try {
+          const now = this.ctx.currentTime;
+          const osc1 = this.ctx.createOscillator();
+          const osc2 = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+
+          osc1.type = 'sine';
+          osc1.frequency.setValueAtTime(freq, now);
+          osc2.type = 'sine';
+          osc2.frequency.setValueAtTime(freq * 1.5, now);
+
+          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.2);
+
+          osc1.connect(gain);
+          osc2.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc1.start(now);
+          osc2.start(now);
+          osc1.stop(now + 1.2);
+          osc2.stop(now + 1.2);
+        } catch(e) {}
+      }
+    }
+
+    const sound = new SoundEngine();
+
+    /**
+     * THREE.JS 3D SAKURA TREE ENGINE & REAL-TIME ASCII RASTERIZER PIPELINE
+     */
+    class Sakura3DEngine {
+      constructor(webglCanvas, asciiCanvas) {
+        this.webglCanvas = webglCanvas;
+        this.asciiCanvas = asciiCanvas;
+        this.asciiCtx = asciiCanvas.getContext('2d');
+
+        // Engine State
+        this.viewMode = 'ascii'; // 'ascii', 'hybrid', 'raw3d'
+        this.autoRotate = true;
+        this.rotationSpeed = 0.004;
+        this.windStrength = 1.0;
+        this.glyphSize = 10;
+        this.contrast = 1.3;
+        this.charsetKey = 'sakura';
+
+        // Charset glyph maps sorted from dark to bright luminance
+        this.charsets = {
+          sakura: [' ', '·', '°', 'o', 'x', '🌸', '枝', '木', '花', '咲', '✿', '❀', '●'],
+          classic: [' ', '.', ':', '-', '=', '+', '*', '%', '@', '#', 'W', '$', '8', '&'],
+          cyber: [' ', '0', '1', 'x', '/', '\\', '[', ']', '{', '}', '<', '>', '#', '%'],
+          architectural: [' ', '·', '─', '│', '┼', '┌', '┐', '└', '┘', '▒', '░', '▓', '█']
+        };
+
+        // Camera user drag controls
+        this.targetRotY = 0;
+        this.targetRotX = 0;
+        this.currentRotY = 0;
+        this.currentRotX = 0;
+
+        this.initThree();
+        this.buildSakuraTree();
+        this.buildFallingPetals();
+        this.resize();
+      }
+
+      initThree() {
+        // Scene & WebGL Renderer
+        this.scene = new THREE.Scene();
+        this.scene.background = new THREE.Color(0x060709);
+
+        this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        this.camera.position.set(0, 16, 42);
+
+        this.renderer = new THREE.WebGLRenderer({
+          canvas: this.webglCanvas,
+          antialias: true,
+          powerPreference: "high-performance",
+          preserveDrawingBuffer: true
+        });
+        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        this.renderer.toneMappingExposure = 1.1;
+
+        // Tree Root Pivot Group
+        this.treeRoot = new THREE.Group();
+        this.scene.add(this.treeRoot);
+
+        // Lighting designed specifically for high-contrast ASCII luminance gradients
+        const ambientLight = new THREE.AmbientLight(0x2d1b28, 1.2);
+        this.scene.add(ambientLight);
+
+        // Warm Sunlight
+        this.sunLight = new THREE.DirectionalLight(0xffecd4, 2.0);
+        this.sunLight.position.set(25, 40, 20);
+        this.scene.add(this.sunLight);
+
+        // Cyan / Blue Rim Light for architectural cyber contrast
+        this.rimLight = new THREE.PointLight(0x00f0ff, 2.5, 60);
+        this.rimLight.position.set(-25, 20, -15);
+        this.scene.add(this.rimLight);
+
+        // Magenta Ground Glow
+        this.bloomLight = new THREE.PointLight(0xff4a75, 2.0, 50);
+        this.bloomLight.position.set(0, 5, 10);
+        this.scene.add(this.bloomLight);
+
+        // Low-resolution Offscreen RenderTarget for fast ASCII pixel sampling
+        this.renderTargetWidth = Math.floor(window.innerWidth / this.glyphSize);
+        this.renderTargetHeight = Math.floor(window.innerHeight / this.glyphSize);
+        this.renderTarget = new THREE.WebGLRenderTarget(this.renderTargetWidth, this.renderTargetHeight, {
+          minFilter: THREE.LinearFilter,
+          magFilter: THREE.LinearFilter,
+          format: THREE.RGBAFormat
+        });
+        this.pixelBuffer = new Uint8Array(this.renderTargetWidth * this.renderTargetHeight * 4);
+      }
+
+      buildSakuraTree() {
+        // Bark Materials with warm cedar tone
+        const barkMaterial = new THREE.MeshStandardMaterial({
+          color: 0x4a2e23,
+          roughness: 0.85,
+          metalness: 0.1
+        });
+
+        // Blossom Materials with varied shades of sakura rose
+        const blossomColors = [0xff7597, 0xffa3c0, 0xff4a75, 0xffc2d6, 0xffffff];
+        const blossomMaterials = blossomColors.map(c => new THREE.MeshStandardMaterial({
+          color: c,
+          roughness: 0.4,
+          metalness: 0.05,
+          emissive: c,
+          emissiveIntensity: 0.15
+        }));
+
+        // Shared blossom geometry for performance
+        const blossomGeo = new THREE.DodecahedronGeometry(0.7, 0);
+
+        // Recursive 3D Branch Builder
+        const createBranch = (parentGroup, length, radius, angleZ, angleY, depth) => {
+          const branchGroup = new THREE.Group();
+
+          const cylinderGeo = new THREE.CylinderGeometry(radius * 0.7, radius, length, 7);
+          cylinderGeo.translate(0, length / 2, 0);
+          const branchMesh = new THREE.Mesh(cylinderGeo, barkMaterial);
+          branchGroup.add(branchMesh);
+
+          branchGroup.rotation.z = angleZ;
+          branchGroup.rotation.y = angleY;
+          parentGroup.add(branchGroup);
+
+          const tipPosition = new THREE.Vector3(0, length, 0);
+
+          if (depth > 0) {
+            const nextGroup = new THREE.Group();
+            nextGroup.position.copy(tipPosition);
+            branchGroup.add(nextGroup);
+
+            const numForks = depth === 4 ? 4 : (Math.random() > 0.4 ? 3 : 2);
+            for (let i = 0; i < numForks; i++) {
+              const spreadZ = (0.35 + Math.random() * 0.25) * (i % 2 === 0 ? 1 : -1);
+              const spreadY = (Math.PI * 2 / numForks) * i + (Math.random() - 0.5) * 0.4;
+              const nextLength = length * (0.68 + Math.random() * 0.15);
+              const nextRadius = radius * 0.65;
+              createBranch(nextGroup, nextLength, nextRadius, spreadZ, spreadY, depth - 1);
+            }
+          } else {
+            // Canopy Blossom Clouds at branch tips
+            const clusterSize = 7 + Math.floor(Math.random() * 6);
+            for (let b = 0; b < clusterSize; b++) {
+              const mat = blossomMaterials[Math.floor(Math.random() * blossomMaterials.length)];
+              const blossom = new THREE.Mesh(blossomGeo, mat);
+              blossom.position.set(
+                (Math.random() - 0.5) * 3.5,
+                length + (Math.random() - 0.5) * 3.2,
+                (Math.random() - 0.5) * 3.5
+              );
+              blossom.scale.setScalar(0.7 + Math.random() * 0.6);
+              blossom.rotation.set(Math.random() * 3, Math.random() * 3, Math.random() * 3);
+              branchGroup.add(blossom);
+            }
+          }
+        };
+
+        // Main Trunk
+        createBranch(this.treeRoot, 10, 1.8, 0, 0, 4);
+
+        // Circular Minimalist Architectural Plinth (Base disk)
+        const plinthGeo = new THREE.CylinderGeometry(14, 15, 0.8, 32);
+        const plinthMat = new THREE.MeshStandardMaterial({
+          color: 0x14161f,
+          roughness: 0.6,
+          metalness: 0.4
+        });
+        const plinth = new THREE.Mesh(plinthGeo, plinthMat);
+        plinth.position.y = -0.4;
+        this.treeRoot.add(plinth);
+
+        // Glowing Core Accent Ring on plinth
+        const ringGeo = new THREE.RingGeometry(11.5, 12.2, 32);
+        const ringMat = new THREE.MeshBasicMaterial({
+          color: 0x00f0ff,
+          side: THREE.DoubleSide
+        });
+        const ring = new THREE.Mesh(ringGeo, ringMat);
+        ring.rotation.x = -Math.PI / 2;
+        ring.position.y = 0.02;
+        this.treeRoot.add(ring);
+      }
+
+      buildFallingPetals() {
+        // Individual 3D falling petals with physics simulation
+        this.petalCount = 380;
+        this.petalsData = [];
+
+        const petalGeo = new THREE.PlaneGeometry(0.55, 0.4);
+        const petalMat = new THREE.MeshStandardMaterial({
+          color: 0xff7597,
+          roughness: 0.3,
+          side: THREE.DoubleSide,
+          emissive: 0xff4a75,
+          emissiveIntensity: 0.2
+        });
+
+        this.petalsGroup = new THREE.Group();
+        this.scene.add(this.petalsGroup);
+
+        for (let i = 0; i < this.petalCount; i++) {
+          const mesh = new THREE.Mesh(petalGeo, petalMat);
+          const x = (Math.random() - 0.5) * 45;
+          const y = Math.random() * 35;
+          const z = (Math.random() - 0.5) * 45;
+
+          mesh.position.set(x, y, z);
+          this.petalsGroup.add(mesh);
+
+          this.petalsData.push({
+            mesh: mesh,
+            speedY: 0.05 + Math.random() * 0.07,
+            swaySpeed: 0.02 + Math.random() * 0.03,
+            swayRadius: 0.6 + Math.random() * 1.2,
+            phase: Math.random() * Math.PI * 2,
+            rotSpeedX: (Math.random() - 0.5) * 0.05,
+            rotSpeedY: (Math.random() - 0.5) * 0.05,
+            rotSpeedZ: (Math.random() - 0.5) * 0.05
+          });
+        }
+      }
+
+      burstPetals() {
+        sound.playBell(784); // G5 chime
+        this.petalsData.forEach(p => {
+          p.mesh.position.x += (Math.random() - 0.5) * 15;
+          p.mesh.position.y += Math.random() * 10;
+          p.speedY += 0.08;
+        });
+      }
+
+      resize() {
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+
+        this.camera.aspect = w / h;
+        this.camera.updateProjectionMatrix();
+
+        this.renderer.setSize(w, h);
+
+        this.asciiCanvas.width = w;
+        this.asciiCanvas.height = h;
+
+        // Recalculate Offscreen RenderTarget resolution for ASCII sampling
+        this.renderTargetWidth = Math.max(10, Math.floor(w / this.glyphSize));
+        this.renderTargetHeight = Math.max(10, Math.floor(h / this.glyphSize));
+        this.renderTarget.setSize(this.renderTargetWidth, this.renderTargetHeight);
+        this.pixelBuffer = new Uint8Array(this.renderTargetWidth * this.renderTargetHeight * 4);
+
+        const statGrid = document.getElementById('stat-grid');
+        if (statGrid) statGrid.innerText = `${this.renderTargetWidth}x${this.renderTargetHeight}`;
+      }
+
+      rasterizeAscii() {
+        const w = this.renderTargetWidth;
+        const h = this.renderTargetHeight;
+        const ctx = this.asciiCtx;
+        const glyphSize = this.glyphSize;
+        const charset = this.charsets[this.charsetKey] || this.charsets.sakura;
+        const numChars = charset.length;
+        const contrast = this.contrast;
+
+        // Render scene to low-res WebGL render target
+        this.renderer.setRenderTarget(this.renderTarget);
+        this.renderer.render(this.scene, this.camera);
+        this.renderer.readRenderTargetPixels(this.renderTarget, 0, 0, w, h, this.pixelBuffer);
+        this.renderer.setRenderTarget(null);
+
+        // Clear ASCII 2D Canvas
+        ctx.clearRect(0, 0, this.asciiCanvas.width, this.asciiCanvas.height);
+        ctx.font = `${glyphSize}px "JetBrains Mono", monospace`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        const buffer = this.pixelBuffer;
+        const halfGlyph = glyphSize / 2;
+
+        // Rasterize pixels to Monospace ASCII characters
+        for (let y = 0; y < h; y++) {
+          // WebGL buffers are inverted vertically (Y=0 at bottom)
+          const targetY = (h - 1 - y);
+          const posY = targetY * glyphSize + halfGlyph;
+
+          for (let x = 0; x < w; x++) {
+            const index = (y * w + x) * 4;
+            const r = buffer[index];
+            const g = buffer[index + 1];
+            const b = buffer[index + 2];
+
+            // Luminance formula
+            let lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+            lum = Math.pow(lum, contrast);
+
+            if (lum > 0.04) {
+              const charIndex = Math.min(numChars - 1, Math.floor(lum * numChars));
+              const char = charset[charIndex];
+
+              const posX = x * glyphSize + halfGlyph;
+              ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+              ctx.fillText(char, posX, posY);
+            }
+          }
+        }
+      }
+
+      render(time) {
+        // Auto-rotation & user drag interpolation
+        if (this.autoRotate) {
+          this.targetRotY += this.rotationSpeed;
+        }
+
+        this.currentRotY += (this.targetRotY - this.currentRotY) * 0.08;
+        this.currentRotX += (this.targetRotX - this.currentRotX) * 0.08;
+
+        this.treeRoot.rotation.y = this.currentRotY;
+        this.treeRoot.rotation.x = this.currentRotX;
+
+        // Update Cam readout in UI
+        const camDegY = Math.round(((this.currentRotY * 180 / Math.PI) % 360 + 360) % 360);
+        const camDegX = Math.round(this.currentRotX * 180 / Math.PI);
+        const readout = document.getElementById('hero-cam-readout');
+        if (readout) readout.innerText = `X: ${camDegX}° | Y: ${camDegY}°`;
+
+        // Petal physics animation
+        for (let i = 0; i < this.petalCount; i++) {
+          const p = this.petalsData[i];
+          const mesh = p.mesh;
+
+          p.phase += p.swaySpeed * this.windStrength;
+          mesh.position.y -= p.speedY * (1 + this.windStrength * 0.4);
+          mesh.position.x += Math.sin(p.phase) * (p.swayRadius * 0.05) + (this.windStrength * 0.04);
+          mesh.position.z += Math.cos(p.phase) * (p.swayRadius * 0.03);
+
+          mesh.rotation.x += p.rotSpeedX;
+          mesh.rotation.y += p.rotSpeedY;
+          mesh.rotation.z += p.rotSpeedZ;
+
+          // Recycle petals hitting the plinth/ground
+          if (mesh.position.y < 0.2) {
+            mesh.position.y = 28 + Math.random() * 8;
+            mesh.position.x = (Math.random() - 0.5) * 35;
+            mesh.position.z = (Math.random() - 0.5) * 35;
+          }
+        }
+
+        // Execution per Viewport Mode
+        if (this.viewMode === 'raw3d') {
+          // Render full resolution 3D WebGL directly
+          this.renderer.setRenderTarget(null);
+          this.renderer.render(this.scene, this.camera);
+        } else if (this.viewMode === 'ascii') {
+          // Pure ASCII Rasterizer Canvas
+          this.rasterizeAscii();
+        } else if (this.viewMode === 'hybrid') {
+          // Render 3D with glow blur + ASCII on top
+          this.renderer.setRenderTarget(null);
+          this.renderer.render(this.scene, this.camera);
+          this.rasterizeAscii();
+        }
+      }
+
+      setMode(mode) {
+        this.viewMode = mode;
+        const webgl = this.webglCanvas;
+        const ascii = this.asciiCanvas;
+
+        if (mode === 'ascii') {
+          webgl.style.opacity = '0';
+          ascii.style.opacity = '1';
+          ascii.classList.remove('mode-hybrid-blend');
+        } else if (mode === 'hybrid') {
+          webgl.style.opacity = '0.55';
+          webgl.style.filter = 'blur(4px) brightness(1.2)';
+          ascii.style.opacity = '1';
+          ascii.classList.add('mode-hybrid-blend');
+        } else if (mode === 'raw3d') {
+          webgl.style.opacity = '1';
+          webgl.style.filter = 'none';
+          ascii.style.opacity = '0';
+          ascii.classList.remove('mode-hybrid-blend');
+        }
+      }
+
+      exportAsciiSnapshot(cols = 70, rows = 35) {
+        const charset = this.charsets[this.charsetKey] || this.charsets.sakura;
+        const w = cols;
+        const h = rows;
+        const tempRT = new THREE.WebGLRenderTarget(w, h);
+        const buf = new Uint8Array(w * h * 4);
+
+        this.renderer.setRenderTarget(tempRT);
+        this.renderer.render(this.scene, this.camera);
+        this.renderer.readRenderTargetPixels(tempRT, 0, 0, w, h, buf);
+        this.renderer.setRenderTarget(null);
+        tempRT.dispose();
+
+        let out = "/* CONECTA — SAKURA 3D ASCII RASTER SNAPSHOT */\n";
+        for (let y = h - 1; y >= 0; y--) {
+          let line = '';
+          for (let x = 0; x < w; x++) {
+            const idx = (y * w + x) * 4;
+            const lum = (0.299 * buf[idx] + 0.587 * buf[idx + 1] + 0.114 * buf[idx + 2]) / 255;
+            const cIdx = Math.min(charset.length - 1, Math.floor(lum * charset.length));
+            line += charset[cIdx];
+          }
+          out += line + '\n';
+        }
+        return out;
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const webglCanvas = document.getElementById('webgl-canvas');
+      const asciiCanvas = document.getElementById('ascii-canvas');
+      const engine = new Sakura3DEngine(webglCanvas, asciiCanvas);
+
+      // Trigger initial Text Scramble effect
+      triggerAllScrambles();
+
+      // FPS Telemetry Tracking
+      let lastTime = performance.now();
+      let frames = 0;
+      let fpsClock = 0;
+      const fpsEl = document.getElementById('stat-fps');
+
+      function mainLoop(now) {
+        const delta = now - lastTime;
+        lastTime = now;
+
+        frames++;
+        fpsClock += delta;
+        if (fpsClock >= 1000) {
+          if (fpsEl) fpsEl.innerText = Math.round((frames * 1000) / fpsClock);
+          frames = 0;
+          fpsClock = 0;
+        }
+
+        engine.render(now);
+        requestAnimationFrame(mainLoop);
+      }
+      requestAnimationFrame(mainLoop);
+
+      // Resize event
+      window.addEventListener('resize', () => {
+        engine.resize();
+      });
+
+      // Toast Notification Helper
+      function showToast(msg) {
+        const toast = document.getElementById('toast');
+        const text = document.getElementById('toast-message');
+        if (toast && text) {
+          text.innerText = msg;
+          toast.classList.remove('opacity-0', '-translate-y-12');
+          setTimeout(() => {
+            toast.classList.add('opacity-0', '-translate-y-12');
+          }, 2800);
+        }
+      }
+
+      // Smooth Jump Links for Navigation
+      document.querySelectorAll('[data-scroll-to]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          sound.playClick();
+          const targetId = btn.getAttribute('data-scroll-to');
+          const targetEl = document.getElementById(targetId);
+          if (targetEl) {
+            targetEl.scrollIntoView({ behavior: 'smooth' });
+          }
+
+          document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.classList.remove('active', 'text-white');
+            tab.classList.add('text-figma-textSecondary');
+          });
+          btn.classList.add('active', 'text-white');
+          btn.classList.remove('text-figma-textSecondary');
+        });
+      });
+
+      // Mode Switchers: ASCII vs Hybrid Glow vs Raw 3D
+      const modeAscii = document.getElementById('mode-ascii');
+      const modeHybrid = document.getElementById('mode-hybrid');
+      const modeRaw3d = document.getElementById('mode-raw3d');
+      const modeBtns = [modeAscii, modeHybrid, modeRaw3d];
+
+      const activateMode = (btn, modeName) => {
+        sound.playClick();
+        modeBtns.forEach(b => {
+          b.classList.remove('active', 'bg-sakura-500', 'text-white');
+          b.classList.add('text-figma-textSecondary');
+        });
+        btn.classList.add('active', 'bg-sakura-500', 'text-white');
+        btn.classList.remove('text-figma-textSecondary');
+        engine.setMode(modeName);
+        showToast(`Modo Gráfico: ${modeName.toUpperCase()}`);
+      };
+
+      modeAscii.addEventListener('click', () => activateMode(modeAscii, 'ascii'));
+      modeHybrid.addEventListener('click', () => activateMode(modeHybrid, 'hybrid'));
+      modeRaw3d.addEventListener('click', () => activateMode(modeRaw3d, 'raw3d'));
+
+      // Toggle Zen Mode (Focus solely on the 3D Tree Engine)
+      let zenActive = false;
+      const btnZen = document.getElementById('btn-toggle-zen');
+      const textZen = document.getElementById('text-zen');
+      const contentScroller = document.getElementById('content-scroller');
+
+      btnZen.addEventListener('click', () => {
+        sound.playClick();
+        zenActive = !zenActive;
+        if (zenActive) {
+          contentScroller.classList.add('opacity-0', 'pointer-events-none');
+          textZen.innerText = "Exibir Textos";
+          showToast("Modo Árvore Zen ativado. Interaja em tela cheia!");
+        } else {
+          contentScroller.classList.remove('opacity-0', 'pointer-events-none');
+          textZen.innerText = "Modo Árvore";
+          showToast("Painel de conteúdo restaurado.");
+        }
+      });
+
+      // Toggle Inspector Sidebar
+      const inspectorPanel = document.getElementById('inspector-panel');
+      document.getElementById('btn-toggle-inspector').addEventListener('click', () => {
+        sound.playClick();
+        inspectorPanel.classList.toggle('hidden');
+        setTimeout(() => engine.resize(), 310);
+      });
+
+      // Audio Toggle
+      const btnAudio = document.getElementById('btn-audio');
+      const iconSoundOn = document.getElementById('icon-sound-on');
+      const iconSoundOff = document.getElementById('icon-sound-off');
+
+      btnAudio.addEventListener('click', () => {
+        const active = sound.toggle();
+        if (active) {
+          iconSoundOn.classList.remove('hidden');
+          iconSoundOff.classList.add('hidden');
+          showToast("Áudio e harmônicos biofílicos ativados.");
+        } else {
+          iconSoundOn.classList.add('hidden');
+          iconSoundOff.classList.remove('hidden');
+          showToast("Áudio silenciado.");
+        }
+      });
+
+      // Inspector Controls: Charset
+      const selectCharset = document.getElementById('select-charset');
+      selectCharset.addEventListener('change', (e) => {
+        sound.playClick();
+        engine.charsetKey = e.target.value;
+        showToast(`Charset alterado: ${e.target.value.toUpperCase()}`);
+      });
+
+      // Inspector Controls: Glyph Size
+      const sliderGlyph = document.getElementById('slider-glyph-size');
+      const labelGlyph = document.getElementById('label-glyph-size');
+      sliderGlyph.addEventListener('input', (e) => {
+        const val = parseInt(e.target.value);
+        engine.glyphSize = val;
+        labelGlyph.innerText = `${val} px`;
+        engine.resize();
+      });
+
+      // Inspector Controls: Contrast
+      const sliderContrast = document.getElementById('slider-contrast');
+      const labelContrast = document.getElementById('label-contrast');
+      sliderContrast.addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value);
+        engine.contrast = val;
+        labelContrast.innerText = `${val.toFixed(1)}x`;
+      });
+
+      // Inspector Controls: Rotation Speed & Orbit Toggle
+      const sliderSpeed = document.getElementById('slider-speed');
+      const labelSpeed = document.getElementById('label-speed');
+      sliderSpeed.addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value);
+        engine.rotationSpeed = val * 0.004;
+        labelSpeed.innerText = `${val.toFixed(1)}x`;
+      });
+
+      const toggleOrbit = document.getElementById('toggle-orbit');
+      toggleOrbit.addEventListener('change', (e) => {
+        sound.playClick();
+        engine.autoRotate = e.target.checked;
+      });
+
+      // Inspector Controls: Wind
+      const sliderWind = document.getElementById('slider-wind');
+      const labelWind = document.getElementById('label-wind');
+      sliderWind.addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value);
+        engine.windStrength = val;
+        labelWind.innerText = val < 0.8 ? "Brisa Leve" : (val > 2.0 ? "Ventania Forte" : "Vento Médio");
+      });
+
+      // Petal Storm Triggers
+      const triggerStormAction = () => {
+        sound.playClick();
+        engine.burstPetals();
+        showToast("Tempestade de pétalas 3D liberada!");
+      };
+      document.getElementById('btn-hero-storm').addEventListener('click', triggerStormAction);
+      document.getElementById('btn-inspector-storm').addEventListener('click', triggerStormAction);
+      document.getElementById('dock-tool-gust').addEventListener('click', triggerStormAction);
+
+      // Copy ASCII Frame to Clipboard
+      document.getElementById('btn-copy-ascii').addEventListener('click', () => {
+        sound.playClick();
+        const text = engine.exportAsciiSnapshot(75, 38);
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+          document.execCommand('copy');
+          showToast("Snapshot ASCII copiado para o Clipboard!");
+        } catch(e) {
+          showToast("Erro ao copiar para clipboard.");
+        }
+        document.body.removeChild(ta);
+      });
+
+      // Dock Reset Camera Tool
+      document.getElementById('dock-tool-reset').addEventListener('click', () => {
+        sound.playClick();
+        engine.targetRotY = 0;
+        engine.targetRotX = 0;
+        showToast("Câmera 3D resetada.");
+      });
+
+      // Dock Text Scramble Trigger
+      document.getElementById('dock-tool-scramble').addEventListener('click', () => {
+        sound.playClick();
+        triggerAllScrambles();
+        showToast("Textos re-descriptografados com sucesso.");
+      });
+
+      // Mouse & Touch 3D Orbit Drag Interaction
+      let isDragging = false;
+      let startX = 0;
+      let startY = 0;
+
+      window.addEventListener('mousedown', (e) => {
+        // Only drag if not clicking form controls
+        if (e.target.closest('input, button, select, a')) return;
+        isDragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        startX = e.clientX;
+        startY = e.clientY;
+
+        engine.targetRotY += dx * 0.007;
+        engine.targetRotX += dy * 0.005;
+        // Clamp pitch angle
+        engine.targetRotX = Math.max(-0.6, Math.min(0.6, engine.targetRotX));
+      });
+
+      window.addEventListener('mouseup', () => {
+        isDragging = false;
+      });
+
+      // Touch events for tablets/smartphones
+      window.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1 && !e.target.closest('input, button, select, a')) {
+          isDragging = true;
+          startX = e.touches[0].clientX;
+          startY = e.touches[0].clientY;
+        }
+      }, { passive: true });
+
+      window.addEventListener('touchmove', (e) => {
+        if (!isDragging || e.touches.length !== 1) return;
+        const dx = e.touches[0].clientX - startX;
+        const dy = e.touches[0].clientY - startY;
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+
+        engine.targetRotY += dx * 0.009;
+        engine.targetRotX += dy * 0.007;
+      }, { passive: true });
+
+      window.addEventListener('touchend', () => {
+        isDragging = false;
+      });
+
+      // Keyboard shortcuts: Space (Storm), R (Reset), V (Zen mode)
+      window.addEventListener('keydown', (e) => {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+        if (e.key === ' ') {
+          e.preventDefault();
+          triggerStormAction();
+        } else if (e.key === 'r' || e.key === 'R') {
+          document.getElementById('dock-tool-reset').click();
+        } else if (e.key === 'v' || e.key === 'V') {
+          btnZen.click();
+        }
+      });
+
+      // Hover Text Scramble on project cards
+      document.querySelectorAll('#section-portfolio .glass-panel').forEach(card => {
+        card.addEventListener('mouseenter', () => {
+          sound.playClick();
+          const title = card.querySelector('[data-scramble]');
+          if (title) {
+            const fx = new TextScramble(title);
+            fx.setText(title.getAttribute('data-scramble'));
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
