@@ -1,11 +1,10 @@
 {
   "weather": "night",
-  "sakuraPhase": 4,
+  "sakuraPhase": 3,
   "windStrength": 1,
   "court": {
     "status": "em_uso",
-    "activity": "Basquete 3x3",
-    "remainingMinutes": 15
+    "remainingMinutes": 22
   },
   "courtBookings": [
     {
@@ -58,5 +57,5 @@
     "cooldownSeconds": 20,
     "lastRung": 0
   },
-  "lastBroadcast": 1791611576331
+  "lastBroadcast": 1791612024571
 }

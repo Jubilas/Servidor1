@@ -637,6 +637,11 @@
     // ESTADO LOCAL DE CONTROLE
     let currentCourtStatus = "em_uso";
     let eventSource = null;
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlToken = urlParams.get('token') || urlParams.get('pass');
+    if (urlToken) {
+      sessionStorage.setItem('dev_auth_token', urlToken);
+    }
     let devPassword = sessionStorage.getItem('dev_auth_token') || '';
     let currentActivities = [];
     let currentBookings = [];

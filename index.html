@@ -4298,6 +4298,9 @@
         resetIdleTimer();
       }
 
+      window.activateScreensaver = activateScreensaver;
+      window.deactivateScreensaver = deactivateScreensaver;
+
       document.getElementById('btn-screensaver-trigger')?.addEventListener('click', () => {
         activateScreensaver();
       });
@@ -4318,6 +4321,19 @@
         window.addEventListener(evt, resetIdleTimer, { passive: true });
       });
       resetIdleTimer();
+
+      // Suporte a inicialização imediata via parâmetros de URL (para testes e totens configurados em AFK)
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has('afk') || urlParams.has('screensaver')) {
+        setTimeout(() => activateScreensaver(), 300);
+      }
+      if (urlParams.has('broadcast')) {
+        displayGlobalBroadcast(
+          urlParams.get('title') || "COMUNICADO GERAL DA ZELADORIA",
+          urlParams.get('msg') || "Aviso Oficial em tela cheia transmitido em tempo real para todos os totens.",
+          urlParams.get('duration') || "fixo"
+        );
+      }
 
       // Mode Switchers: ASCII vs Hybrid Glow vs Raw 3D
       const modeAscii = document.getElementById('mode-ascii');
