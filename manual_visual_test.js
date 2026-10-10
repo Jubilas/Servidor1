@@ -144,13 +144,19 @@ async function runVisualTests() {
     const totem = await createTarget("http://localhost:8080/", 1920, 1080);
     await sleep(2500); // Aguarda Three.js e WebGL renderizarem o primeiro frame
 
-    // Garante que a cerejeira está em Florada Plena (Fase 3 - 88% Mankai)
+    // Garante que o clima está em Sol Radiante e a cerejeira em Florada Plena (Fase 3 - 88% Mankai)
+    await fetch("http://localhost:8080/api/control", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer PracaConecta#2026!Dev" },
+      body: JSON.stringify({ action: "set_weather", weather: "sun" })
+    });
+    await sleep(400);
     await fetch("http://localhost:8080/api/control", {
       method: "POST",
       headers: { "Content-Type": "application/json", "Authorization": "Bearer PracaConecta#2026!Dev" },
       body: JSON.stringify({ action: "set_phase", phase: 3 })
     });
-    await sleep(600);
+    await sleep(800);
 
     // Verifica que modo debug foi removido do header
     const hasHeaderModeSwitcher = await totem.client.evaluate(`Boolean(document.getElementById('mode-ascii'))`);
@@ -169,6 +175,18 @@ async function runVisualTests() {
 
     const p1 = path.join(SCREENSHOT_DIR, "01_totem_public_home.png");
     await totem.client.screenshot(p1);
+
+    // Captura Card de Horários e Calendário da Quadra na Aba Principal
+    console.log("- Rolando até o Card de Horários da Quadra no Hero...");
+    await totem.client.evaluate(`
+      const card = document.getElementById('main-court-schedule-card');
+      if (card) card.scrollIntoView({ behavior: 'instant', block: 'center' });
+    `);
+    await sleep(500);
+    const p1b = path.join(SCREENSHOT_DIR, "01b_totem_public_hero_schedule.png");
+    await totem.client.screenshot(p1b);
+    await totem.client.evaluate(`window.scrollTo(0, 0);`);
+    await sleep(300);
 
     // -------------------------------------------------------------
     // TESTE 2: MODO AFK (SCREENSAVER) & STATUS DA QUADRA EM USO
@@ -295,8 +313,34 @@ async function runVisualTests() {
     // TESTE 5: MODO NOITE YOZAKURA (ALTO CONTRASTE)
     // -------------------------------------------------------------
     console.log("\n[TESTE 5] Testando Modo Noite Yozakura (Alto Contraste)...");
-    // Desativa screensaver para ver a página completa em modo noite
+    // Desativa screensaver para ver a página completa sob Sol Radiante
     await totem.client.evaluate(`if (window.deactivateScreensaver) window.deactivateScreensaver();`);
+    await sleep(400);
+
+    // Garante modo Sol Radiante para capturar tema claro artesanal
+    await fetch("http://localhost:8080/api/control", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer PracaConecta#2026!Dev" },
+      body: JSON.stringify({ action: "set_weather", weather: "sun" })
+    });
+    await sleep(600);
+
+    // Testa broadcast na tela normal de dia (craft paper)
+    console.log("- Transmitindo Aviso Global sob Sol Radiante (Tema Craft Paper Marfim)...");
+    await fetch("http://localhost:8080/api/control", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer PracaConecta#2026!Dev" },
+      body: JSON.stringify({
+        action: "send_toast",
+        title: "SOL RADIANTE NA PRAÇA // PALETA MARFIM & LACA",
+        message: "O aviso global agora respeita o design artesanal da praça, com fundo marfim craft e bordas carmim carmesim durante o dia!",
+        duration: 30
+      })
+    });
+    await sleep(600);
+    const p3b = path.join(SCREENSHOT_DIR, "03b_totem_daytime_broadcast_craft.png");
+    await totem.client.screenshot(p3b);
+    await totem.client.evaluate(`document.getElementById('btn-dismiss-broadcast')?.click()`);
     await sleep(400);
 
     await fetch("http://localhost:8080/api/control", {
@@ -310,6 +354,24 @@ async function runVisualTests() {
     console.log(`- Modo Noite ativo no body: ${isNightMode ? "SIM (CORRETO)" : "NÃO (ERRO)"}`);
     const p6 = path.join(SCREENSHOT_DIR, "06_totem_night_yozakura.png");
     await totem.client.screenshot(p6);
+
+    // Testa broadcast em modo noite (obsidian)
+    console.log("- Transmitindo Aviso Global em Modo Noite Yozakura (Midnight Obsidian)...");
+    await fetch("http://localhost:8080/api/control", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer PracaConecta#2026!Dev" },
+      body: JSON.stringify({
+        action: "send_toast",
+        title: "NOITE YOZAKURA // ILUMINAÇÃO CÊNICA NOTURNA",
+        message: "Durante a noite, o aviso global alterna dinamicamente para o tom obsidian profundo de alta legibilidade!",
+        duration: 30
+      })
+    });
+    await sleep(600);
+    const p6b = path.join(SCREENSHOT_DIR, "06b_totem_night_broadcast_obsidian.png");
+    await totem.client.screenshot(p6b);
+    await totem.client.evaluate(`document.getElementById('btn-dismiss-broadcast')?.click()`);
+    await sleep(400);
 
     // Retorna para sol
     await fetch("http://localhost:8080/api/control", {
@@ -346,17 +408,19 @@ async function runVisualTests() {
     await sleep(1500);
 
     const debugAuth = await devPage.client.evaluate(`
-      const m = document.getElementById('auth-modal');
-      ({
-        modalFound: Boolean(m),
-        classList: m?.className,
-        hidden: m?.classList.contains('hidden'),
-        token: sessionStorage.getItem('dev_auth_token'),
-        devPassword: typeof devPassword !== 'undefined' ? devPassword : null
-      })
+      (() => {
+        const m = document.getElementById('auth-modal');
+        return {
+          modalFound: Boolean(m),
+          classList: m ? m.className : null,
+          hidden: m ? m.classList.contains('hidden') : false,
+          token: sessionStorage.getItem('dev_auth_token'),
+          devPassword: typeof devPassword !== 'undefined' ? devPassword : null
+        };
+      })()
     `);
     console.log("DEBUG AUTH:", JSON.stringify(debugAuth));
-    const isAuthPassed = debugAuth.hidden && Boolean(debugAuth.token);
+    const isAuthPassed = debugAuth && debugAuth.hidden && Boolean(debugAuth.token);
     console.log(`- Autenticação bem-sucedida e painel liberado: ${isAuthPassed ? "SIM (CORRETO)" : "NÃO (ERRO)"}`);
 
     // Verifica telemetria com telas ativas conectadas

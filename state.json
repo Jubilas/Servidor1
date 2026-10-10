@@ -1,5 +1,5 @@
 {
-  "weather": "night",
+  "weather": "sun",
   "sakuraPhase": 3,
   "windStrength": 1,
   "court": {
@@ -8,12 +8,14 @@
   },
   "courtBookings": [
     {
-      "id": "book-1",
+      "id": "book-1791649291262",
       "slot": "15:00",
       "timeLabel": "15:00 às 16:00",
-      "name": "Turma do Vôlei",
-      "sport": "Vôlei",
-      "createdAt": 1791607000000
+      "name": "tyr67uyut",
+      "sport": "Basquete",
+      "bookedBy": "tyr67uyut",
+      "timeSlot": "15:00 às 16:00",
+      "createdAt": 1791649291262
     },
     {
       "id": "book-2",
@@ -55,7 +57,7 @@
   "bell": {
     "enabled": true,
     "cooldownSeconds": 20,
-    "lastRung": 0
+    "lastRung": 1791648340853
   },
-  "lastBroadcast": 1791612024571
+  "lastBroadcast": 1791651586195
 }
