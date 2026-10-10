@@ -592,7 +592,11 @@ const server = http.createServer(async (req, res) => {
         const bookingId = body.id || body.bookingId;
         const slot = body.slot;
         if (bookingId || slot) {
-          globalState.courtBookings = globalState.courtBookings.filter(b => b.id !== bookingId && b.slot !== slot);
+          globalState.courtBookings = globalState.courtBookings.filter(b => {
+            if (bookingId && b.id === bookingId) return false;
+            if (slot && (b.slot === slot || b.timeLabel === slot)) return false;
+            return true;
+          });
           saveState();
           broadcastEvent("court_booking_update", {
             bookings: globalState.courtBookings,
@@ -676,10 +680,21 @@ const server = http.createServer(async (req, res) => {
       }
 
       const rawStream = fs.createReadStream(servePath);
+      rawStream.on("error", () => {
+        if (!res.headersSent) {
+          res.writeHead(500, { "Content-Type": "text/plain" });
+          res.end("Internal Server Error");
+        }
+      });
+      res.on("close", () => {
+        rawStream.destroy();
+      });
+
       if (isCompressible && typeof acceptEncoding === "string" && acceptEncoding.includes("gzip")) {
         headers["Content-Encoding"] = "gzip";
         res.writeHead(200, headers);
         const gzip = zlib.createGzip({ level: 6 });
+        gzip.on("error", () => {});
         rawStream.pipe(gzip).pipe(res);
       } else {
         headers["Content-Length"] = finalStats.size;
@@ -697,6 +712,13 @@ const server = http.createServer(async (req, res) => {
       });
     });
   });
+});
+
+process.on("uncaughtException", (err) => {
+  console.error("[SERVER] Uncaught exception:", err.message);
+});
+process.on("unhandledRejection", (reason) => {
+  console.error("[SERVER] Unhandled rejection:", reason);
 });
 
 server.listen(PORT, HOST, () => {
