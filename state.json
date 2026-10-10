@@ -1,5 +1,5 @@
 {
-  "weather": "sun",
+  "weather": "rain",
   "sakuraPhase": 3,
   "windStrength": 1,
   "court": {
@@ -11,7 +11,7 @@
   "bell": {
     "enabled": true,
     "cooldownSeconds": 20,
-    "lastRung": 1791607375077
+    "lastRung": 1791607559459
   },
-  "lastBroadcast": 1791607403612
+  "lastBroadcast": 1791607678994
 }
