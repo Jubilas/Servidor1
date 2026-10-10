@@ -613,7 +613,13 @@
           <div class="bg-studio-card/80 p-3.5 rounded-xl border border-studio-border space-y-2.5">
             <span class="text-xs font-bold text-white block">+ Adicionar Nova Atividade:</span>
             <div class="grid grid-cols-3 gap-2">
-              <input id="new-act-icon" type="text" placeholder="Categoria (zen, feira, esporte)" value="zen" class="bg-studio-bg border border-studio-border rounded-lg px-2.5 py-1.5 text-xs text-white font-mono" />
+              <input id="new-act-icon" list="act-category-options" type="text" placeholder="Categoria (zen, organico, esporte, arte)" value="zen" class="bg-studio-bg border border-studio-border rounded-lg px-2.5 py-1.5 text-xs text-white font-mono" />
+              <datalist id="act-category-options">
+                <option value="zen">Zen & Yoga</option>
+                <option value="organico">Feira Orgânica</option>
+                <option value="esporte">Esportes & Quadra</option>
+                <option value="arte">Oficinas de Arte</option>
+              </datalist>
               <input id="new-act-day" type="text" placeholder="Dia/Horário (ex: SÁB • 08h)" value="SÁBADO • 10:00" class="col-span-2 bg-studio-bg border border-studio-border rounded-lg px-2.5 py-1.5 text-xs text-white font-mono" />
             </div>
             <input id="new-act-title" type="text" placeholder="Título (ex: Oficina de Jardinagem)" value="" class="w-full bg-studio-bg border border-studio-border rounded-lg px-2.5 py-1.5 text-xs text-white font-sans" />
@@ -1134,8 +1140,12 @@
       }
 
       document.querySelectorAll('.btn-court-status').forEach(b => {
-        if (b.getAttribute('data-status') === currentCourtStatus) {
-          b.className = "btn-court-status p-2 rounded-xl border border-rose-500 bg-rose-500/20 text-rose-300 font-mono text-xs font-bold flex items-center justify-center gap-1.5";
+        const s = b.getAttribute('data-status');
+        if (s === currentCourtStatus) {
+          const colorClass = s === 'livre' ? 'border-emerald-500 bg-emerald-500/20 text-emerald-300' :
+                             s === 'manutencao' ? 'border-amber-500 bg-amber-500/20 text-amber-300' :
+                             'border-rose-500 bg-rose-500/20 text-rose-300';
+          b.className = `btn-court-status p-2 rounded-xl border ${colorClass} font-mono text-xs font-bold flex items-center justify-center gap-1.5`;
         } else {
           b.className = "btn-court-status p-2 rounded-xl border border-studio-border bg-studio-card text-slate-400 font-mono text-xs font-bold hover:text-white flex items-center justify-center gap-1.5";
         }

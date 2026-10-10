@@ -94,9 +94,9 @@ async function runTests() {
 
   // 5. Weekly Activities Management
   const newActivities = [
-    { icon: '🧘', dayTime: 'SÁBADO • 08:00', title: 'Yoga & Meditação Matinal', desc: 'Deck dos Mestres' },
-    { icon: '🥕', dayTime: 'SÁBADO • 09:30', title: 'Feirinha Agroecológica', desc: 'Alameda das Cerejeiras' },
-    { icon: '🎨', dayTime: 'DOMINGO • 16:00', title: 'Oficina de Desenho Infantil', desc: 'Espaço Conecta Kids' }
+    { icon: 'zen', dayTime: 'SÁBADO • 08:00', title: 'Yoga & Meditação Matinal', desc: 'Deck dos Mestres' },
+    { icon: 'organico', dayTime: 'SÁBADO • 09:30', title: 'Feirinha Agroecológica', desc: 'Alameda das Cerejeiras' },
+    { icon: 'arte', dayTime: 'DOMINGO • 16:00', title: 'Oficina de Desenho Infantil', desc: 'Espaço Conecta Kids' }
   ];
   const rActivities = await request({
     host: 'localhost', port: 8080, path: '/api/control', method: 'POST',

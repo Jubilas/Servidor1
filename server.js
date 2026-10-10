@@ -596,7 +596,14 @@ const server = http.createServer(async (req, res) => {
         }
       } else if (action === "set_activities") {
         if (Array.isArray(body.activities)) {
-          globalState.weeklyActivities = body.activities;
+          globalState.weeklyActivities = body.activities.map(act => {
+            let icon = String(act.icon || 'geral').trim();
+            if (icon === '\u{1F9D8}') icon = 'zen';
+            else if (icon === '\u{1F955}') icon = 'organico';
+            else if (icon === '\u{1F3C0}' || icon === '\u{26BD}' || icon === '\u{1F3D0}' || icon === '\u{1F3BE}') icon = 'esporte';
+            else if (icon === '\u{1F3A8}') icon = 'arte';
+            return { ...act, icon };
+          });
           saveState();
           broadcastEvent("activities_change", { activities: globalState.weeklyActivities });
         }

@@ -318,7 +318,11 @@
         const nextSlot = `${String(h + 1).padStart(2, '0')}:00`;
         const fullTimeLabel = `${timeSlot} às ${nextSlot}`;
 
-        const booking = currentBookings.find(b => b.slot === timeSlot);
+        const booking = currentBookings.find(b => 
+          b.slot === timeSlot || 
+          b.timeLabel?.startsWith(timeSlot) || 
+          b.timeSlot?.startsWith(timeSlot)
+        );
 
         const slotEl = document.createElement('div');
 

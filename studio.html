@@ -598,7 +598,7 @@
           <div class="flex flex-col gap-1">
             <label class="text-[11px] text-figma-textSecondary">Conjunto de Caracteres</label>
             <select id="select-charset" class="w-full bg-[#090A0E] border border-figma-border rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-sakura-400 cursor-pointer font-mono">
-              <option value="sakura">Sakura Kanji & Floral (🌸 桜 木 花 咲 •)</option>
+              <option value="sakura">Sakura Kanji & Floral (桜 木 花 咲 ❀ •)</option>
               <option value="classic">ASCII Clássico (@ # % * + = - : .)</option>
               <option value="cyber">Cyber Hex (0 1 x / \ [ ] { } &lt; &gt;)</option>
               <option value="architectural">Blueprint CAD (█ ▓ ▒ ░ ┼ ─ │ ┌)</option>
@@ -737,7 +737,7 @@
     class TextScramble {
       constructor(el) {
         this.el = el;
-        this.chars = '!<>-_\\/[]{}—=+*^?#_░▒▓✿❀🌸0123456789CONECTA';
+        this.chars = '!<>-_\\/[]{}—=+*^?#_░▒▓◈◇桜0123456789CONECTA';
         this.update = this.update.bind(this);
       }
       
@@ -901,7 +901,7 @@
 
         // Charset glyph maps sorted from dark to bright luminance
         this.charsets = {
-          sakura: [' ', '·', '°', 'o', 'x', '🌸', '枝', '木', '花', '咲', '✿', '❀', '●'],
+          sakura: [' ', '·', '°', 'o', 'x', '◈', '枝', '木', '花', '咲', '✿', '❀', '●'],
           classic: [' ', '.', ':', '-', '=', '+', '*', '%', '@', '#', 'W', '$', '8', '&'],
           cyber: [' ', '0', '1', 'x', '/', '\\', '[', ']', '{', '}', '<', '>', '#', '%'],
           architectural: [' ', '·', '─', '│', '┼', '┌', '┐', '└', '┘', '▒', '░', '▓', '█']
