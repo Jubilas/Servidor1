@@ -11,6 +11,39 @@ const PORT = Number(process.env.PORT) || Number(process.argv[2]) || 8080;
 const HOST = process.env.HOST || "0.0.0.0";
 const PUBLIC_DIR = __dirname;
 const STATE_FILE = path.join(PUBLIC_DIR, "state.json");
+const DEV_PASSWORD_FILE = "C:\\Users\\goiab\\Desktop\\senha_painel_dev.txt";
+const DEFAULT_DEV_PASSWORD = "PracaConecta#2026!Dev";
+
+// ==========================================
+// AUTENTICAÇÃO DO PAINEL DEV (/dev)
+// ==========================================
+function getDevPassword() {
+  try {
+    if (fs.existsSync(DEV_PASSWORD_FILE)) {
+      const content = fs.readFileSync(DEV_PASSWORD_FILE, "utf-8");
+      const match = content.match(/Senha:\s*([^\r\n]+)/);
+      if (match && match[1].trim()) {
+        return match[1].trim();
+      }
+    }
+  } catch (err) {
+    console.error("[AUTH] Erro ao ler senha do arquivo na Área de Trabalho:", err.message);
+  }
+  return DEFAULT_DEV_PASSWORD;
+}
+
+function validateAuth(req, body) {
+  const expected = getDevPassword();
+  const authHeader = req.headers["authorization"] || "";
+  let token = "";
+  if (authHeader.startsWith("Bearer ")) {
+    token = authHeader.slice(7).trim();
+  }
+  if (!token && body && body.password) {
+    token = String(body.password).trim();
+  }
+  return Boolean(token && token === expected);
+}
 
 // ==========================================
 // ESTADO GLOBAL COMPARTILHADO DA PRAÇA
@@ -23,8 +56,60 @@ const DEFAULT_STATE = {
     status: "em_uso", // "livre" | "em_uso" | "manutencao"
     activity: "Basquete 3x3 Juvenil",
     remainingMinutes: 22,
-    nextSlot: "14:30 às 15:30 (Treino de Vôlei)"
+    nextSlot: "15:00 às 16:00 (Treino de Vôlei)"
   },
+  courtBookings: [
+    {
+      id: "book-1",
+      slot: "15:00",
+      timeLabel: "15:00 às 16:00",
+      name: "Turma do Vôlei",
+      sport: "Vôlei",
+      createdAt: 1791607000000
+    },
+    {
+      id: "book-2",
+      slot: "18:00",
+      timeLabel: "18:00 às 19:00",
+      name: "Amigos do Basquete",
+      sport: "Basquete",
+      createdAt: 1791607500000
+    },
+    {
+      id: "book-3",
+      slot: "19:00",
+      timeLabel: "19:00 às 20:00",
+      name: "Liga Noturna Futsal",
+      sport: "Futsal",
+      createdAt: 1791607800000
+    }
+  ],
+  weeklyActivities: [
+    {
+      id: "act-1",
+      icon: "🧘",
+      dayTime: "SÁBADO • 08:00",
+      title: "Yoga & Meditação Matinal",
+      desc: "Deck dos Mestres. Traga seu tapete de yoga.",
+      tagColor: "sakura"
+    },
+    {
+      id: "act-2",
+      icon: "🥕",
+      dayTime: "SÁBADO • 09:30",
+      title: "Feirinha Agroecológica",
+      desc: "Alameda das Cerejeiras. Frutas e hortaliças orgânicas.",
+      tagColor: "emerald"
+    },
+    {
+      id: "act-3",
+      icon: "🏀",
+      dayTime: "DOMINGO • 15:30",
+      title: "Clínica Aberta de Basquete",
+      desc: "Quadra Poliesportiva. Todas as idades.",
+      tagColor: "cyan"
+    }
+  ],
   bell: {
     enabled: true,
     cooldownSeconds: 20,
@@ -44,6 +129,8 @@ function loadState() {
         ...DEFAULT_STATE,
         ...data,
         court: { ...DEFAULT_STATE.court, ...(data.court || {}) },
+        courtBookings: Array.isArray(data.courtBookings) ? data.courtBookings : DEFAULT_STATE.courtBookings,
+        weeklyActivities: Array.isArray(data.weeklyActivities) ? data.weeklyActivities : DEFAULT_STATE.weeklyActivities,
         bell: { ...DEFAULT_STATE.bell, ...(data.bell || {}) }
       };
       console.log("[STATE] Estado global carregado com sucesso de state.json");
@@ -65,14 +152,26 @@ function saveState() {
 loadState();
 
 // ==========================================
-// HUB DE TRANSMISSÃO EM TEMPO REAL (SSE)
+// HUB DE TRANSMISSÃO EM TEMPO REAL (SSE) & TELEMETRIA
 // ==========================================
-const sseClients = new Set();
+const sseClients = new Map(); // res -> { id, name, type, ip, connectedAt }
+
+function getActiveScreensList() {
+  const now = Date.now();
+  return Array.from(sseClients.values()).map(c => ({
+    id: c.id,
+    name: c.name,
+    type: c.type,
+    ip: c.ip,
+    connectedAt: c.connectedAt,
+    onlineSeconds: Math.floor((now - c.connectedAt) / 1000)
+  }));
+}
 
 function broadcastEvent(eventType, data) {
   globalState.lastBroadcast = Date.now();
   const payload = `event: ${eventType}\ndata: ${JSON.stringify(data)}\n\n`;
-  for (const client of sseClients) {
+  for (const client of sseClients.keys()) {
     try {
       client.write(payload);
     } catch {
@@ -82,12 +181,16 @@ function broadcastEvent(eventType, data) {
 }
 
 function broadcastScreenCount() {
-  broadcastEvent("screens_count", { activeScreens: sseClients.size });
+  const screens = getActiveScreensList();
+  broadcastEvent("screens_count", {
+    activeScreens: screens.length,
+    screens: screens
+  });
 }
 
 // Heartbeat a cada 25 segundos para manter proxies/túneis ativos
 setInterval(() => {
-  for (const client of sseClients) {
+  for (const client of sseClients.keys()) {
     try {
       client.write(": keepalive\n\n");
     } catch {
@@ -150,7 +253,6 @@ function readRequestBody(req) {
     req.on("data", chunk => {
       body += chunk;
       if (body.length > 1024 * 64) {
-        // Proteção contra payload excessivo (max 64KB)
         req.destroy();
         reject(new Error("Payload Too Large"));
       }
@@ -208,7 +310,8 @@ const server = http.createServer(async (req, res) => {
   if (pathname === "/api/state") {
     const payload = JSON.stringify({
       ...globalState,
-      activeScreens: sseClients.size
+      activeScreens: sseClients.size,
+      screens: getActiveScreensList()
     });
     res.writeHead(200, {
       "Content-Type": "application/json; charset=utf-8",
@@ -228,11 +331,33 @@ const server = http.createServer(async (req, res) => {
       "X-Accel-Buffering": "no"
     });
 
-    sseClients.add(res);
+    const parsedUrl = new URL(rawUrl, `http://${req.headers.host || "localhost"}`);
+    let screenId = parsedUrl.searchParams.get("screenId");
+    let screenType = parsedUrl.searchParams.get("screenType") || "totem";
+    let screenName = parsedUrl.searchParams.get("screenName") || "";
+
+    if (!screenId) {
+      const randNum = Math.floor(1000 + Math.random() * 9000);
+      screenId = screenType === "dev" ? `Dev Admin #${randNum}` : `Totem #${randNum}`;
+    }
+    if (!screenName) {
+      screenName = screenId;
+    }
+
+    const clientIp = (req.headers["x-forwarded-for"] || req.socket.remoteAddress || "127.0.0.1").replace(/^::ffff:/, '');
+    const clientMeta = {
+      id: screenId,
+      name: screenName,
+      type: screenType,
+      ip: clientIp,
+      connectedAt: Date.now()
+    };
+
+    sseClients.set(res, clientMeta);
     broadcastScreenCount();
 
     // Envia estado inicial imediatamente no aperto de mão
-    res.write(`event: init\ndata: ${JSON.stringify({ ...globalState, activeScreens: sseClients.size })}\n\n`);
+    res.write(`event: init\ndata: ${JSON.stringify({ ...globalState, activeScreens: sseClients.size, screens: getActiveScreensList() })}\n\n`);
 
     req.on("close", () => {
       sseClients.delete(res);
@@ -241,7 +366,110 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  // 4. ACIONAR SINO PÚBLICO (POST /api/bell)
+  // 4. VERIFICAÇÃO DE SENHA DO DEV ADMIN (POST /api/auth/verify)
+  if (pathname === "/api/auth/verify" && method === "POST") {
+    try {
+      const body = await readRequestBody(req);
+      const isAuthValid = validateAuth(req, body);
+      if (!isAuthValid) {
+        res.writeHead(401, { "Content-Type": "application/json; charset=utf-8" });
+        res.end(JSON.stringify({ success: false, error: "Senha incorreta do Painel Dev." }));
+        return;
+      }
+      res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
+      res.end(JSON.stringify({ success: true, message: "Autenticação realizada com sucesso." }));
+    } catch (err) {
+      res.writeHead(400, { "Content-Type": "application/json; charset=utf-8" });
+      res.end(JSON.stringify({ error: err.message }));
+    }
+    return;
+  }
+
+  // 5. AGENDAMENTO DA QUADRA (GET /api/court/schedule & POST /api/court/book)
+  if (pathname === "/api/court/schedule" && method === "GET") {
+    const payload = JSON.stringify({
+      court: globalState.court,
+      bookings: globalState.courtBookings
+    });
+    res.writeHead(200, {
+      "Content-Type": "application/json; charset=utf-8",
+      "Content-Length": Buffer.byteLength(payload),
+      "Cache-Control": "no-cache"
+    });
+    res.end(payload);
+    return;
+  }
+
+  if (pathname === "/api/court/book" && method === "POST") {
+    try {
+      const body = await readRequestBody(req);
+      const rawSlot = body.slot || body.timeSlot;
+      const rawName = body.name || body.bookedBy;
+      const rawSport = body.sport;
+
+      if (!rawSlot || !rawName || !rawSport) {
+        res.writeHead(400, { "Content-Type": "application/json; charset=utf-8" });
+        res.end(JSON.stringify({ error: "Horário, nome do responsável e modalidade são obrigatórios." }));
+        return;
+      }
+
+      const trimmedSlot = String(rawSlot).trim();
+      const cleanSlot = trimmedSlot.split(" ")[0]; // "16:00" if "16:00 às 17:00"
+      const trimmedName = String(rawName).trim().slice(0, 50);
+      const trimmedSport = String(rawSport).trim().slice(0, 40);
+
+      // Verifica se o horário já está reservado
+      const alreadyBooked = globalState.courtBookings.some(b => 
+        b.slot === cleanSlot || b.slot === trimmedSlot || b.timeLabel === trimmedSlot
+      );
+      if (alreadyBooked) {
+        res.writeHead(409, { "Content-Type": "application/json; charset=utf-8" });
+        res.end(JSON.stringify({ success: false, error: `O horário ${trimmedSlot} já está reservado por outra pessoa.` }));
+        return;
+      }
+
+      const hourMatch = cleanSlot.match(/^(\d{1,2}):\d{2}/);
+      const hour = hourMatch ? parseInt(hourMatch[1]) : 0;
+      const nextHourStr = `${String(hour + 1).padStart(2, "0")}:00`;
+      const timeLabel = trimmedSlot.includes("às") ? trimmedSlot : `${cleanSlot} às ${nextHourStr}`;
+
+      const newBooking = {
+        id: "book-" + Date.now(),
+        slot: cleanSlot,
+        timeLabel: timeLabel,
+        name: trimmedName,
+        sport: trimmedSport,
+        bookedBy: trimmedName,
+        timeSlot: timeLabel,
+        createdAt: Date.now()
+      };
+
+      globalState.courtBookings.push(newBooking);
+      globalState.courtBookings.sort((a, b) => a.slot.localeCompare(b.slot));
+      saveState();
+
+      // Sincroniza em tempo real com todos os totens e telas abertas
+      broadcastEvent("court_booking_update", {
+        bookings: globalState.courtBookings,
+        newBooking: newBooking,
+        court: globalState.court
+      });
+
+      res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
+      res.end(JSON.stringify({
+        success: true,
+        message: `Horário ${newBooking.timeLabel} agendado com sucesso!`,
+        booking: newBooking,
+        bookings: globalState.courtBookings
+      }));
+    } catch (err) {
+      res.writeHead(500, { "Content-Type": "application/json; charset=utf-8" });
+      res.end(JSON.stringify({ error: err.message }));
+    }
+    return;
+  }
+
+  // 6. ACIONAR SINO PÚBLICO (POST /api/bell)
   if (pathname === "/api/bell" && method === "POST") {
     try {
       const now = Date.now();
@@ -286,20 +514,31 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  // 5. PAINEL DE CONTROLE / DEV ADMIN (POST /api/control)
+  // 7. PAINEL DE CONTROLE / DEV ADMIN (POST /api/control) — PROTEGIDO COM SENHA
   if (pathname === "/api/control" && method === "POST") {
     try {
       const body = await readRequestBody(req);
+
+      // Validação de senha obrigatória para todos os comandos dev
+      if (!validateAuth(req, body)) {
+        res.writeHead(401, { "Content-Type": "application/json; charset=utf-8" });
+        res.end(JSON.stringify({
+          error: "Acesso não autorizado ao painel dev. Senha incorreta ou ausente."
+        }));
+        return;
+      }
+
       const action = body.action;
 
       if (action === "set_weather") {
-        if (["sun", "rain", "wind", "night"].includes(body.value)) {
-          globalState.weather = body.value;
+        const val = body.value || body.weather;
+        if (["sun", "rain", "wind", "night"].includes(val)) {
+          globalState.weather = val;
           saveState();
           broadcastEvent("weather_change", { weather: globalState.weather });
         }
       } else if (action === "set_phase") {
-        const phase = Number(body.value);
+        const phase = Number(body.value || body.phase);
         if ([1, 2, 3, 4].includes(phase)) {
           globalState.sakuraPhase = phase;
           saveState();
@@ -308,9 +547,15 @@ const server = http.createServer(async (req, res) => {
       } else if (action === "gust_wind") {
         broadcastEvent("wind_gust", { timestamp: Date.now() });
       } else if (action === "set_court") {
+        const courtData = body.court || {
+          status: body.status,
+          remainingMinutes: body.remainingMinutes,
+          activity: body.activity,
+          nextSlot: body.nextSlot
+        };
         globalState.court = {
           ...globalState.court,
-          ...(body.court || {})
+          ...courtData
         };
         saveState();
         broadcastEvent("court_change", { court: globalState.court });
@@ -319,7 +564,6 @@ const server = http.createServer(async (req, res) => {
         saveState();
         broadcastEvent("bell_config", { bell: globalState.bell });
       } else if (action === "ring_bell_admin") {
-        // Toca sino forçado via painel admin (ignora cooldown)
         const now = Date.now();
         globalState.bell.lastRung = now;
         saveState();
@@ -328,11 +572,31 @@ const server = http.createServer(async (req, res) => {
           cooldownSeconds: globalState.bell.cooldownSeconds,
           source: "admin"
         });
-      } else if (action === "send_toast") {
+      } else if (action === "send_toast" || action === "toast") {
         if (body.message) {
+          const duration = body.duration !== undefined ? body.duration : 30;
           broadcastEvent("toast_broadcast", {
+            id: Date.now(),
             message: String(body.message),
-            title: body.title || "Aviso da Praça"
+            title: body.title || "Aviso da Praça",
+            duration: duration
+          });
+        }
+      } else if (action === "set_activities") {
+        if (Array.isArray(body.activities)) {
+          globalState.weeklyActivities = body.activities;
+          saveState();
+          broadcastEvent("activities_change", { activities: globalState.weeklyActivities });
+        }
+      } else if (action === "cancel_booking") {
+        const bookingId = body.id || body.bookingId;
+        const slot = body.slot;
+        if (bookingId || slot) {
+          globalState.courtBookings = globalState.courtBookings.filter(b => b.id !== bookingId && b.slot !== slot);
+          saveState();
+          broadcastEvent("court_booking_update", {
+            bookings: globalState.courtBookings,
+            court: globalState.court
           });
         }
       } else {
@@ -344,7 +608,7 @@ const server = http.createServer(async (req, res) => {
       res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
       res.end(JSON.stringify({
         success: true,
-        state: { ...globalState, activeScreens: sseClients.size }
+        state: { ...globalState, activeScreens: sseClients.size, screens: getActiveScreensList() }
       }));
     } catch (err) {
       res.writeHead(400, { "Content-Type": "application/json; charset=utf-8" });
@@ -353,11 +617,13 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  // 6. ROTEAMENTO DE ARQUIVOS ESTÁTICOS
+  // 8. ROTEAMENTO DE ARQUIVOS ESTÁTICOS
   let cleanPath = pathname.replace(/^\/+/, "").replace(/\\/g, "/");
 
   // Mapeia rotas especiais
-  if (cleanPath === "dev" || cleanPath === "dev/" || cleanPath === "admin" || cleanPath === "admin/") {
+  if (cleanPath === "agendar" || cleanPath === "agendar/" || cleanPath === "agendar.html") {
+    cleanPath = "agendar.html";
+  } else if (cleanPath === "dev" || cleanPath === "dev/" || cleanPath === "admin" || cleanPath === "admin/") {
     cleanPath = "dev.html";
   } else if (!cleanPath || cleanPath === "" || cleanPath === "/") {
     cleanPath = "index.html";
@@ -445,8 +711,9 @@ server.listen(PORT, HOST, () => {
   console.log("  LINKS DE ACESSO:");
   console.log(`  * Totem Público      : http://localhost:${PORT}/`);
   console.log(`  * Painel Dev Studio  : http://localhost:${PORT}/dev`);
+  console.log(`  * Agendamento Mobile : http://localhost:${PORT}/agendar`);
   for (const ip of localIps) {
-    console.log(`  * Na Rede Local/Celular : http://${ip}:${PORT}/ (Totem) | /dev (Painel)`);
+    console.log(`  * Na Rede Local/Celular : http://${ip}:${PORT}/ (Totem) | /dev (Painel) | /agendar`);
   }
   console.log("-".repeat(65));
   console.log("  Pressione Ctrl + C para encerrar o servidor.\n");

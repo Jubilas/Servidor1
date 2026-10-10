@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>PRAÇA CONECTA — Agendamento da Quadra Poliesportiva</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            sakura: {
+              50: '#FFF1F2',
+              100: '#FFE4E6',
+              400: '#FB7185',
+              500: '#F43F5E',
+              600: '#E11D48',
+              700: '#BE123C',
+              800: '#9F1239'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+    body { background-color: #0E121A; color: #F1F5F9; }
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col font-sans selection:bg-sakura-600 selection:text-white">
+
+  <!-- TOP APP BAR -->
+  <header class="sticky top-0 z-40 bg-[#141A24]/90 backdrop-blur-xl border-b border-slate-800 px-4 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <a href="/" class="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 flex items-center justify-center text-slate-300 text-sm transition-all" title="Voltar ao Totem">
+        ←
+      </a>
+      <div class="flex items-center gap-2">
+        <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-sakura-600 to-sakura-800 flex items-center justify-center text-sm shadow-md shadow-sakura-600/30">
+          🏀
+        </div>
+        <div>
+          <span class="font-extrabold text-sm tracking-wide text-white block leading-tight">PRAÇA CONECTA</span>
+          <span class="text-[10px] text-slate-400 font-mono">Agendamento Mobile</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Telemetry Pill -->
+    <div class="flex items-center gap-1.5 bg-slate-900/80 px-2.5 py-1 rounded-full border border-slate-800 font-mono text-[11px]">
+      <span id="live-indicator" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+      <span class="text-slate-400">Ao vivo</span>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="flex-1 max-w-xl w-full mx-auto p-4 sm:p-6 space-y-5">
+
+    <!-- HERO COURT STATUS CARD -->
+    <div id="card-hero-status" class="rounded-2xl p-5 border border-slate-800 bg-[#161C26] shadow-xl transition-all">
+      <div class="flex items-center justify-between mb-3">
+        <span class="text-[10px] font-mono uppercase font-bold tracking-wider text-slate-400">OCUPAÇÃO AGORA NA PRAÇA</span>
+        <span id="status-badge-dot" class="w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping"></span>
+      </div>
+
+      <div class="flex items-baseline justify-between gap-2">
+        <div id="status-title" class="text-2xl font-black text-white flex items-center gap-2">
+          <span>🔴</span>
+          <span>EM USO AGORA</span>
+        </div>
+        <span id="status-timer-quick" class="text-xs font-mono font-bold text-rose-400 bg-rose-500/10 px-2.5 py-1 rounded-lg border border-rose-500/20">
+          22m rest.
+        </span>
+      </div>
+
+      <p id="status-activity" class="text-xs text-slate-300 mt-1">
+        Partida de <strong>Basquete 3x3 Juvenil</strong> em andamento.
+      </p>
+
+      <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-[11px] font-mono text-slate-400">
+        <span>Próxima reserva:</span>
+        <span id="status-next-slot" class="text-slate-200 font-semibold">15:00 às 16:00 (Treino de Vôlei)</span>
+      </div>
+    </div>
+
+    <!-- SECTION TITLE -->
+    <div class="flex items-center justify-between pt-1">
+      <div>
+        <h2 class="text-base font-bold text-white flex items-center gap-2">
+          Grade de Horários de Hoje
+        </h2>
+        <p class="text-xs text-slate-400">Selecione um horário livre para fazer sua reserva instantânea</p>
+      </div>
+      <button id="btn-refresh" class="text-xs font-mono text-slate-400 hover:text-white px-2 py-1 rounded-lg bg-slate-800 border border-slate-700">
+        ↻
+      </button>
+    </div>
+
+    <!-- SCHEDULE HOURLY LIST -->
+    <div id="slots-container" class="space-y-2.5">
+      <!-- Injected via JavaScript -->
+      <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 text-center text-xs text-slate-400 font-mono">
+        Carregando horários em tempo real...
+      </div>
+    </div>
+
+  </main>
+
+  <!-- MODAL: AGENDAR HORÁRIO -->
+  <div id="modal-reserve" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 opacity-0 pointer-events-none transition-all duration-300">
+    <div id="modal-reserve-card" class="w-full sm:max-w-md bg-[#161C26] border border-slate-700 rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl transform translate-y-full sm:translate-y-0 sm:scale-95 transition-transform duration-300">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-sakura-500/20 text-sakura-400 flex items-center justify-center font-bold text-lg">
+            📅
+          </div>
+          <div>
+            <span class="text-[10px] font-mono text-sakura-400 uppercase font-bold tracking-wider block">RESERVA DIRETA</span>
+            <h3 class="text-base font-bold text-white">Agendar Horário na Quadra</h3>
+          </div>
+        </div>
+        <button id="btn-close-modal" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center text-sm font-mono transition-colors">
+          ✕
+        </button>
+      </div>
+
+      <!-- Selected Slot Card -->
+      <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-3.5 flex items-center justify-between mb-4">
+        <div>
+          <span class="text-[10px] font-mono text-slate-400 block uppercase">HORÁRIO SELECIONADO:</span>
+          <strong id="modal-slot-label" class="text-sm font-bold text-emerald-400">16:00 às 17:00</strong>
+        </div>
+        <span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-mono font-bold">
+          DISPONÍVEL
+        </span>
+      </div>
+
+      <!-- Booking Form -->
+      <form id="form-booking" class="space-y-4">
+        <input type="hidden" id="input-slot-time" value="">
+
+        <!-- Name Input -->
+        <div>
+          <label for="input-name" class="text-xs font-mono text-slate-300 block mb-1.5">
+            Seu Nome ou Nome da Equipe / Grupo:
+          </label>
+          <input id="input-name" type="text" required placeholder="Ex: Lucas Mendes / Turma do Bairro" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sakura-500 font-sans" />
+        </div>
+
+        <!-- Sport Selection -->
+        <div>
+          <label class="text-xs font-mono text-slate-300 block mb-1.5">
+            Modalidade Esportiva:
+          </label>
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" class="btn-sport p-2.5 rounded-xl border border-sakura-500 bg-sakura-500/20 text-sakura-300 text-xs font-bold flex items-center gap-2" data-sport="Basquete">
+              <span>🏀</span>
+              <span>Basquete</span>
+            </button>
+            <button type="button" class="btn-sport p-2.5 rounded-xl border border-slate-700 bg-slate-900 text-slate-300 text-xs font-bold flex items-center gap-2 hover:border-slate-500" data-sport="Vôlei">
+              <span>🏐</span>
+              <span>Vôlei</span>
+            </button>
+            <button type="button" class="btn-sport p-2.5 rounded-xl border border-slate-700 bg-slate-900 text-slate-300 text-xs font-bold flex items-center gap-2 hover:border-slate-500" data-sport="Futsal">
+              <span>⚽</span>
+              <span>Futsal</span>
+            </button>
+            <button type="button" class="btn-sport p-2.5 rounded-xl border border-slate-700 bg-slate-900 text-slate-300 text-xs font-bold flex items-center gap-2 hover:border-slate-500" data-sport="Beach Tennis">
+              <span>🎾</span>
+              <span>Beach Tennis</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button id="btn-submit-booking" type="submit" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-sakura-600 to-sakura-700 hover:from-sakura-500 hover:to-sakura-600 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-sakura-600/30 transition-all active:scale-98">
+          <span>✓</span>
+          <span>Confirmar e Sincronizar na Quadra</span>
+        </button>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- TOAST FEEDBACK -->
+  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-[#161C26] border border-slate-700 shadow-2xl rounded-2xl px-4 py-3 flex items-center gap-2 text-xs font-mono text-white opacity-0 pointer-events-none transition-all duration-300 translate-y-4">
+    <span id="toast-icon">✓</span>
+    <span id="toast-text">Notificação</span>
+  </div>
+
+  <script>
+    let currentBookings = [];
+    let currentCourtState = {};
+    let selectedSport = "Basquete";
+    let eventSource = null;
+
+    function showToast(text, isError = false) {
+      const toast = document.getElementById('toast');
+      const toastText = document.getElementById('toast-text');
+      const toastIcon = document.getElementById('toast-icon');
+
+      toastText.innerText = text;
+      toastIcon.innerText = isError ? '✕' : '✓';
+      toast.className = `fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-[#161C26] border ${isError ? 'border-rose-500 text-rose-300' : 'border-emerald-500 text-emerald-300'} shadow-2xl rounded-2xl px-4 py-3 flex items-center gap-2 text-xs font-mono opacity-100 translate-y-0 transition-all duration-300`;
+
+      setTimeout(() => {
+        toast.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-[#161C26] border border-slate-700 shadow-2xl rounded-2xl px-4 py-3 flex items-center gap-2 text-xs font-mono text-white opacity-0 pointer-events-none transition-all duration-300 translate-y-4';
+      }, 4000);
+    }
+
+    function updateHeroStatus(court) {
+      if (!court) return;
+      currentCourtState = court;
+
+      const card = document.getElementById('card-hero-status');
+      const title = document.getElementById('status-title');
+      const dot = document.getElementById('status-badge-dot');
+      const timer = document.getElementById('status-timer-quick');
+      const activity = document.getElementById('status-activity');
+      const nextSlot = document.getElementById('status-next-slot');
+
+      if (court.nextSlot) {
+        nextSlot.innerText = court.nextSlot;
+      }
+
+      if (court.status === "em_uso") {
+        title.innerHTML = `<span>🔴</span><span>EM USO AGORA</span>`;
+        title.className = "text-2xl font-black text-rose-400 flex items-center gap-2";
+        dot.className = "w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping";
+        timer.innerText = `${court.remainingMinutes || 22}m rest.`;
+        timer.className = "text-xs font-mono font-bold text-rose-400 bg-rose-500/10 px-2.5 py-1 rounded-lg border border-rose-500/20";
+        activity.innerHTML = `Partida de <strong>${court.activity || 'Basquete 3x3'}</strong> em andamento.`;
+        card.className = "rounded-2xl p-5 border border-rose-500/40 bg-rose-950/20 shadow-xl transition-all";
+      } else if (court.status === "livre") {
+        title.innerHTML = `<span>🟢</span><span>LIVRE PARA JOGAR</span>`;
+        title.className = "text-2xl font-black text-emerald-400 flex items-center gap-2";
+        dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500";
+        timer.innerText = "LIVRE";
+        timer.className = "text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20";
+        activity.innerText = "Nenhuma partida agendada agora. Entre e aproveite!";
+        card.className = "rounded-2xl p-5 border border-emerald-500/40 bg-emerald-950/20 shadow-xl transition-all";
+      } else {
+        title.innerHTML = `<span>🟡</span><span>MANUTENÇÃO TÉCNICA</span>`;
+        title.className = "text-2xl font-black text-amber-400 flex items-center gap-2";
+        dot.className = "w-2.5 h-2.5 rounded-full bg-amber-500";
+        timer.innerText = "MANUTENÇÃO";
+        timer.className = "text-xs font-mono font-bold text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-lg border border-amber-500/20";
+        activity.innerText = "Equipe da Prefeitura em manutenção preventiva no piso.";
+        card.className = "rounded-2xl p-5 border border-amber-500/40 bg-amber-950/20 shadow-xl transition-all";
+      }
+    }
+
+    function renderSlots() {
+      const container = document.getElementById('slots-container');
+      container.innerHTML = '';
+
+      const currentHour = new Date().getHours();
+
+      for (let h = 7; h <= 21; h++) {
+        const timeSlot = `${String(h).padStart(2, '0')}:00`;
+        const nextSlot = `${String(h + 1).padStart(2, '0')}:00`;
+        const fullTimeLabel = `${timeSlot} às ${nextSlot}`;
+
+        const booking = currentBookings.find(b => b.slot === timeSlot);
+
+        const slotEl = document.createElement('div');
+
+        if (h < currentHour) {
+          // Passado
+          slotEl.className = "p-3.5 rounded-2xl bg-slate-900/40 border border-slate-800/60 flex items-center justify-between text-xs font-mono opacity-50";
+          slotEl.innerHTML = `
+            <div class="flex items-center gap-3">
+              <span class="font-bold text-slate-400 text-sm">${timeSlot}</span>
+              <span class="text-slate-500">${fullTimeLabel}</span>
+            </div>
+            <span class="text-[10px] text-slate-500 uppercase font-semibold">Horário Encerrado</span>
+          `;
+        } else if (h === currentHour && currentCourtState.status === "em_uso") {
+          // Em uso agora
+          slotEl.className = "p-3.5 rounded-2xl bg-rose-950/30 border border-rose-500/40 flex items-center justify-between text-xs font-mono";
+          slotEl.innerHTML = `
+            <div class="flex items-center gap-3">
+              <span class="font-bold text-rose-400 text-sm">${timeSlot}</span>
+              <div>
+                <span class="text-rose-200 font-bold block">${fullTimeLabel}</span>
+                <span class="text-[10px] text-rose-400">${currentCourtState.activity || 'Em jogo agora'}</span>
+              </div>
+            </div>
+            <span class="px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 font-bold text-[10px] uppercase border border-rose-500/30">
+              ● Em Uso
+            </span>
+          `;
+        } else if (booking) {
+          // Reservado
+          slotEl.className = "p-3.5 rounded-2xl bg-cyan-950/25 border border-cyan-500/30 flex items-center justify-between text-xs font-mono";
+          slotEl.innerHTML = `
+            <div class="flex items-center gap-3">
+              <span class="font-bold text-cyan-400 text-sm">${timeSlot}</span>
+              <div>
+                <span class="text-slate-200 font-bold block">${fullTimeLabel}</span>
+                <span class="text-[11px] text-cyan-300">Reserva: ${booking.name} (${booking.sport})</span>
+              </div>
+            </div>
+            <span class="px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 font-bold text-[10px] uppercase border border-cyan-500/30">
+              Reservado
+            </span>
+          `;
+        } else {
+          // Livre para reserva
+          slotEl.className = "p-3.5 rounded-2xl bg-emerald-950/20 border border-emerald-500/40 hover:border-emerald-400 flex items-center justify-between text-xs font-mono cursor-pointer transition-all hover:scale-[1.01] active:scale-[0.99]";
+          slotEl.innerHTML = `
+            <div class="flex items-center gap-3">
+              <span class="font-bold text-emerald-400 text-sm">${timeSlot}</span>
+              <div>
+                <span class="text-slate-200 font-bold block">${fullTimeLabel}</span>
+                <span class="text-[10px] text-emerald-400">Disponível para qualquer modalidade</span>
+              </div>
+            </div>
+            <button class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] shadow-sm">
+              + Reservar
+            </button>
+          `;
+          slotEl.addEventListener('click', () => {
+            openBookingModal(timeSlot, fullTimeLabel);
+          });
+        }
+
+        container.appendChild(slotEl);
+      }
+    }
+
+    function openBookingModal(slotTime, timeLabel) {
+      document.getElementById('input-slot-time').value = slotTime;
+      document.getElementById('modal-slot-label').innerText = timeLabel;
+      const modal = document.getElementById('modal-reserve');
+      const card = document.getElementById('modal-reserve-card');
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+      card.classList.remove('translate-y-full', 'sm:scale-95');
+      card.classList.add('translate-y-0', 'sm:scale-100');
+      document.getElementById('input-name').focus();
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('modal-reserve');
+      const card = document.getElementById('modal-reserve-card');
+      modal.classList.add('opacity-0', 'pointer-events-none');
+      card.classList.remove('translate-y-0', 'sm:scale-100');
+      card.classList.add('translate-y-full', 'sm:scale-95');
+    }
+
+    async function loadSchedule() {
+      try {
+        const res = await fetch('/api/court/schedule');
+        const data = await res.json();
+        currentBookings = data.bookings || [];
+        if (data.court) updateHeroStatus(data.court);
+        renderSlots();
+      } catch (err) {
+        showToast("Falha ao atualizar horários.", true);
+      }
+    }
+
+    // Server-Sent Events para Sincronização ao Vivo
+    function setupSSE() {
+      let screenId = localStorage.getItem('praca_mobile_id');
+      if (!screenId) {
+        screenId = 'Celular #' + Math.floor(1000 + Math.random() * 9000);
+        localStorage.setItem('praca_mobile_id', screenId);
+      }
+      const sseUrl = `/api/events?screenId=${encodeURIComponent(screenId)}&screenType=mobile&screenName=${encodeURIComponent(screenId)}`;
+
+      if (eventSource) eventSource.close();
+      eventSource = new EventSource(sseUrl);
+
+      eventSource.addEventListener('init', (e) => {
+        const data = JSON.parse(e.data);
+        if (data.court) updateHeroStatus(data.court);
+        if (data.courtBookings) {
+          currentBookings = data.courtBookings;
+          renderSlots();
+        }
+      });
+
+      eventSource.addEventListener('court_change', (e) => {
+        const data = JSON.parse(e.data);
+        if (data.court) {
+          updateHeroStatus(data.court);
+          renderSlots();
+        }
+      });
+
+      eventSource.addEventListener('court_booking_update', (e) => {
+        const data = JSON.parse(e.data);
+        if (data.bookings) {
+          currentBookings = data.bookings;
+          renderSlots();
+        }
+        if (data.court) updateHeroStatus(data.court);
+      });
+
+      eventSource.onopen = () => {
+        document.getElementById('live-indicator').className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
+      };
+
+      eventSource.onerror = () => {
+        document.getElementById('live-indicator').className = "w-2 h-2 rounded-full bg-rose-500";
+      };
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadSchedule();
+      setupSSE();
+
+      // Check URL query param for pre-selected slot (ex: /agendar?slot=16:00)
+      const urlParams = new URLSearchParams(window.location.search);
+      const preSlot = urlParams.get('slot');
+      if (preSlot) {
+        const hour = parseInt(preSlot.split(':')[0]);
+        if (!isNaN(hour)) {
+          const nextHour = `${String(hour + 1).padStart(2, '0')}:00`;
+          setTimeout(() => {
+            openBookingModal(preSlot, `${preSlot} às ${nextHour}`);
+          }, 400);
+        }
+      }
+
+      document.getElementById('btn-refresh').addEventListener('click', loadSchedule);
+      document.getElementById('btn-close-modal').addEventListener('click', closeModal);
+
+      // Sport Selection Buttons
+      document.querySelectorAll('.btn-sport').forEach(b => {
+        b.addEventListener('click', () => {
+          document.querySelectorAll('.btn-sport').forEach(other => {
+            other.className = "btn-sport p-2.5 rounded-xl border border-slate-700 bg-slate-900 text-slate-300 text-xs font-bold flex items-center gap-2 hover:border-slate-500";
+          });
+          b.className = "btn-sport p-2.5 rounded-xl border border-sakura-500 bg-sakura-500/20 text-sakura-300 text-xs font-bold flex items-center gap-2";
+          selectedSport = b.getAttribute('data-sport');
+        });
+      });
+
+      // Submit Form
+      document.getElementById('form-booking').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const slot = document.getElementById('input-slot-time').value;
+        const name = document.getElementById('input-name').value.trim();
+        const btn = document.getElementById('btn-submit-booking');
+
+        if (!name) {
+          showToast("Digite o nome do responsável.", true);
+          return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = `<span>⏳</span><span>Confirmando...</span>`;
+
+        try {
+          const res = await fetch('/api/court/book', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ slot, name, sport: selectedSport })
+          });
+
+          const json = await res.json();
+          if (res.ok && json.success) {
+            closeModal();
+            showToast(`Reserva confirmada para ${name}!`);
+            document.getElementById('input-name').value = '';
+            loadSchedule();
+          } else {
+            showToast(json.error || "Erro ao efetuar reserva.", true);
+          }
+        } catch (err) {
+          showToast("Erro de conexão ao salvar reserva.", true);
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = `<span>✓</span><span>Confirmar e Sincronizar na Quadra</span>`;
+        }
+      });
+    });
+  </script>
+</body>
+</html>

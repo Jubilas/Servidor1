@@ -57,7 +57,124 @@
     }
   </script>
 
-  <style>*{box-sizing:border-box;-webkit-font-smoothing:antialiased}::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:#e1d8c4b3}::-webkit-scrollbar-thumb{background:#b8ad98;border-radius:4px}::-webkit-scrollbar-thumb:hover{background:#be123c}.glass-panel{-webkit-backdrop-filter:blur(20px);background:#eee6d7e0;border:1px solid #50413229;box-shadow:0 16px 36px #3c302414,inset 0 1px #ffffffb3}.glass-card{-webkit-backdrop-filter:blur(14px);background:#f6f0e4d1;border:1px solid #50413221;box-shadow:0 4px 14px #3c30240a}.glass-card:hover{background:#fcf8eef2;border-color:#be123c73;box-shadow:0 8px 24px #3c302417}.ruler-x{color:#786c56;background-color:#d8ceb8;background-image:linear-gradient(90deg,#b5aa94 1px,#0000 1px),linear-gradient(90deg,#786c56 1px,#0000 1px);background-position:bottom;background-repeat:repeat-x;background-size:10px 5px,50px 10px}.ruler-y{color:#786c56;background-color:#d8ceb8;background-image:linear-gradient(0deg,#b5aa94 1px,#0000 1px),linear-gradient(0deg,#786c56 1px,#0000 1px);background-position:100%;background-repeat:repeat-y;background-size:5px 10px,10px 50px}input[type=range]{appearance:none;background:#c8bea8;border-radius:2px;height:4px}input[type=range]::-webkit-slider-thumb{appearance:none;cursor:pointer;background:#be123c;border-radius:50%;width:13px;height:13px;transition:transform .15s;box-shadow:0 0 8px #be123c80}input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.3)}.scramble-char{color:#be123c;text-shadow:0 0 6px #be123c66;font-weight:700}.mode-hybrid-blend{mix-blend-mode:multiply}.ba-slider-container{-webkit-user-select:none;user-select:none;border-radius:1.25rem;position:relative;overflow:hidden}.ba-after-layer{width:100%;height:100%;position:absolute;top:0;left:0;overflow:hidden}.ba-slider-divider{cursor:ew-resize;touch-action:none;background:#be123c;width:3px;position:absolute;top:0;bottom:0;box-shadow:0 0 12px #be123c99}.ba-handle-btn{color:#fff;pointer-events:none;background:#be123c;border:2px solid #fff;border-radius:50%;justify-content:center;align-items:center;width:36px;height:36px;font-size:13px;font-weight:700;display:flex;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);box-shadow:0 4px 14px #00000047}header,.ruler-x,.ruler-y,#floating-dock,#content-scroller,#inspector-panel{transition:opacity .5s cubic-bezier(.16,1,.3,1),visibility .5s!important}#totem-screensaver{z-index:9999;-webkit-backdrop-filter:none;opacity:0;pointer-events:none;background:radial-gradient(circle,#e1d8c400 0%,#e1d8c447 90%);flex-direction:column;justify-content:space-between;align-items:center;padding:2.5rem;transition:opacity .6s cubic-bezier(.16,1,.3,1);display:flex;position:fixed;inset:0}#totem-screensaver.active{opacity:1;pointer-events:auto}body.screensaver-active header,body.screensaver-active .ruler-x,body.screensaver-active .ruler-y,body.screensaver-active #content-scroller,body.screensaver-active #inspector-panel,body.screensaver-active #floating-dock,body.screensaver-active #toast,body.screensaver-active #modal-booking,body.screensaver-active #modal-zeladoria{opacity:0!important;pointer-events:none!important;visibility:hidden!important;transition:opacity .5s cubic-bezier(.16,1,.3,1),visibility .5s!important}body.screensaver-active #engine-overlay-vignette{opacity:.15!important}body.mode-night{color:#e2e8f0!important;background-color:#151822!important}body.mode-night #engine-viewport{background-color:#12151e!important}body.mode-night #engine-overlay-vignette{background:radial-gradient(circle,#12151e33 0%,#0a0d14d9 90%)!important}body.mode-night header{color:#f8fafc!important;background-color:#151822eb!important;border-color:#2d3748!important}body.mode-night .glass-panel{color:#e2e8f0!important;background-color:#1a202cd1!important;border-color:#2d3748!important}body.mode-night .glass-card{color:#f1f5f9!important;background-color:#1e293bbf!important;border-color:#334155!important}body.mode-night h1,body.mode-night h2,body.mode-night h3{color:#f8fafc!important}body.mode-night #totem-screensaver{background:radial-gradient(circle,#15182200 0%,#15182266 90%)!important}body.mode-night #totem-screensaver .screensaver-card{background-color:#151822d1!important;border-color:#2d3748!important}body.mode-night #totem-screensaver .screensaver-pill{color:#cbd5e1!important;background-color:#1e293bd9!important;border-color:#334155!important}.court-slot{transition:all .2s cubic-bezier(.16,1,.3,1)}.court-slot:hover{transform:translateY(-2px)}</style>
+  <style>
+    * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #e1d8c4b3; }
+    ::-webkit-scrollbar-thumb { background: #b8ad98; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #be123c; }
+
+    .glass-panel {
+      -webkit-backdrop-filter: blur(20px);
+      background: #eee6d7e0;
+      border: 1px solid #50413229;
+      box-shadow: 0 16px 36px #3c302414, inset 0 1px #ffffffb3;
+    }
+    .glass-card {
+      -webkit-backdrop-filter: blur(14px);
+      background: #f6f0e4d1;
+      border: 1px solid #50413221;
+      box-shadow: 0 4px 14px #3c30240a;
+    }
+    .glass-card:hover {
+      background: #fcf8eef2;
+      border-color: #be123c73;
+      box-shadow: 0 8px 24px #3c302417;
+    }
+    .ruler-x {
+      color: #786c56;
+      background-color: #d8ceb8;
+      background-image: linear-gradient(90deg, #b5aa94 1px, #0000 1px), linear-gradient(90deg, #786c56 1px, #0000 1px);
+      background-position: bottom;
+      background-repeat: repeat-x;
+      background-size: 10px 5px, 50px 10px;
+    }
+    .ruler-y {
+      color: #786c56;
+      background-color: #d8ceb8;
+      background-image: linear-gradient(0deg, #b5aa94 1px, #0000 1px), linear-gradient(0deg, #786c56 1px, #0000 1px);
+      background-position: 100%;
+      background-repeat: repeat-y;
+      background-size: 5px 10px, 10px 50px;
+    }
+    input[type=range] { appearance: none; background: #c8bea8; border-radius: 2px; height: 4px; }
+    input[type=range]::-webkit-slider-thumb {
+      appearance: none; cursor: pointer; background: #be123c; border-radius: 50%; width: 13px; height: 13px;
+      transition: transform .15s; box-shadow: 0 0 8px #be123c80;
+    }
+    input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.3); }
+    .scramble-char { color: #be123c; text-shadow: 0 0 6px #be123c66; font-weight: 700; }
+    .mode-hybrid-blend { mix-blend-mode: multiply; }
+    .ba-slider-container { -webkit-user-select: none; user-select: none; border-radius: 1.25rem; position: relative; overflow: hidden; }
+    .ba-after-layer { width: 100%; height: 100%; position: absolute; top: 0; left: 0; overflow: hidden; }
+    .ba-slider-divider { cursor: ew-resize; touch-action: none; background: #be123c; width: 3px; position: absolute; top: 0; bottom: 0; box-shadow: 0 0 12px #be123c99; }
+    .ba-handle-btn {
+      color: #fff; pointer-events: none; background: #be123c; border: 2px solid #fff; border-radius: 50%;
+      justify-content: center; align-items: center; width: 36px; height: 36px; font-size: 13px; font-weight: 700;
+      display: flex; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); box-shadow: 0 4px 14px #00000047;
+    }
+    header, .ruler-x, .ruler-y, #floating-dock, #content-scroller, #inspector-panel {
+      transition: opacity .5s cubic-bezier(.16, 1, .3, 1), visibility .5s !important;
+    }
+    #totem-screensaver {
+      z-index: 9999; -webkit-backdrop-filter: none; opacity: 0; pointer-events: none;
+      background: radial-gradient(circle, #e1d8c400 0%, #e1d8c447 90%);
+      flex-direction: column; justify-content: space-between; align-items: center; padding: 2.5rem;
+      transition: opacity .6s cubic-bezier(.16, 1, .3, 1); display: flex; position: fixed; inset: 0;
+    }
+    #totem-screensaver.active { opacity: 1; pointer-events: auto; }
+    body.screensaver-active header, body.screensaver-active .ruler-x, body.screensaver-active .ruler-y,
+    body.screensaver-active #content-scroller, body.screensaver-active #inspector-panel, body.screensaver-active #floating-dock,
+    body.screensaver-active #toast, body.screensaver-active #modal-booking, body.screensaver-active #modal-zeladoria {
+      opacity: 0 !important; pointer-events: none !important; visibility: hidden !important;
+      transition: opacity .5s cubic-bezier(.16, 1, .3, 1), visibility .5s !important;
+    }
+    body.screensaver-active #engine-overlay-vignette { opacity: .15 !important; }
+
+    /* YOZAKURA NIGHT MODE (HIGH CONTRAST & DARK OVERRIDES) */
+    body.mode-night { color: #f8fafc !important; background-color: #0b0e14 !important; }
+    body.mode-night #engine-background-container { background-color: #0b0e14 !important; }
+    body.mode-night #engine-viewport { background-color: #0e121a !important; }
+    body.mode-night #engine-overlay-vignette { background: radial-gradient(circle, rgba(14, 18, 26, 0.2) 0%, rgba(11, 14, 20, 0.9) 90%) !important; }
+    body.mode-night header { color: #f8fafc !important; background-color: rgba(20, 26, 36, 0.95) !important; border-color: #2d3748 !important; }
+    body.mode-night .glass-panel {
+      color: #f1f5f9 !important; background-color: rgba(22, 28, 38, 0.92) !important; border-color: #2d3748 !important;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4), inset 0 1px rgba(255, 255, 255, 0.05) !important;
+    }
+    body.mode-night .glass-card {
+      color: #f1f5f9 !important; background-color: rgba(26, 34, 46, 0.88) !important; border-color: #334155 !important;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3) !important;
+    }
+    body.mode-night .glass-card:hover { background-color: rgba(30, 41, 56, 0.95) !important; border-color: #e11d48 !important; }
+    body.mode-night h1, body.mode-night h2, body.mode-night h3, body.mode-night h4 { color: #f8fafc !important; }
+    body.mode-night p { color: #cbd5e1 !important; }
+    body.mode-night .text-figma-textPrimary { color: #f8fafc !important; }
+    body.mode-night .text-figma-textSecondary { color: #cbd5e1 !important; }
+    body.mode-night .text-figma-textMuted { color: #94a3b8 !important; }
+    body.mode-night .border-figma-border { border-color: #2d3748 !important; }
+    body.mode-night .ruler-x, body.mode-night .ruler-y { background-color: #151922 !important; color: #64748b !important; border-color: #2d3748 !important; }
+    body.mode-night .bg-\[\#DCD2BE\], body.mode-night .bg-\[\#D8CEB8\], body.mode-night .bg-\[\#E1D8C4\],
+    body.mode-night .bg-\[\#EEE6D7\], body.mode-night .bg-\[\#F6F0E4\] {
+      background-color: #1a2230 !important; border-color: #2d3748 !important; color: #f1f5f9 !important;
+    }
+    body.mode-night .bg-\[\#D8CEB8\]\/70, body.mode-night .bg-\[\#D8CEB8\]\/80, body.mode-night .bg-\[\#E1D8C4\]\/60 {
+      background-color: rgba(26, 34, 48, 0.85) !important; border-color: #2d3748 !important; color: #f1f5f9 !important;
+    }
+    body.mode-night #floating-dock { background-color: rgba(20, 26, 36, 0.95) !important; border-color: #2d3748 !important; }
+    body.mode-night #totem-screensaver { background: radial-gradient(circle, rgba(14, 18, 26, 0.3) 0%, rgba(11, 14, 20, 0.9) 90%) !important; }
+    body.mode-night #totem-screensaver .screensaver-card { background-color: rgba(20, 26, 36, 0.88) !important; border-color: #2d3748 !important; }
+    body.mode-night #totem-screensaver .screensaver-pill { color: #e2e8f0 !important; background-color: rgba(26, 34, 48, 0.9) !important; border-color: #334155 !important; }
+    body.mode-night #modal-booking-card, body.mode-night #modal-zeladoria > div {
+      background-color: #141a24 !important; border-color: #334155 !important; color: #f8fafc !important;
+    }
+    body.mode-night .btn-report-issue, body.mode-night .btn-park-poi {
+      background-color: #1a2230 !important; color: #e2e8f0 !important; border-color: #2d3748 !important;
+    }
+    body.mode-night .btn-report-issue:hover { background-color: rgba(225, 29, 72, 0.2) !important; }
+
+    .court-slot { transition: all .2s cubic-bezier(.16, 1, .3, 1); }
+    .court-slot:hover { transform: translateY(-2px); }
+  </style>
 </head>
 
 <body class="bg-figma-bg text-figma-textPrimary font-sans h-screen w-screen overflow-hidden flex flex-col select-none relative">
@@ -165,13 +282,6 @@
         </svg>
       </button>
 
-      <!-- Toggle Right Inspector Sidebar -->
-      <button id="btn-toggle-inspector" class="w-8 h-8 rounded-md bg-figma-hover hover:bg-figma-active text-figma-textSecondary hover:text-figma-textPrimary border border-figma-border flex items-center justify-center transition-colors" title="Abrir Inspetor de Propriedades">
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-          <line x1="15" y1="3" x2="15" y2="21"/>
-        </svg>
-      </button>
     </div>
   </header>
 
@@ -384,7 +494,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
               
               <!-- Stage 1 -->
-              <div id="card-phase-1" class="phase-card glass-card p-4 rounded-2xl border border-figma-border cursor-pointer transition-all flex flex-col justify-between hover:border-sakura-500" data-phase="1">
+              <div id="card-phase-1" class="phase-card glass-card p-4 rounded-2xl border border-figma-border transition-all flex flex-col justify-between" data-phase="1">
                 <div>
                   <div class="flex justify-between items-center text-xs font-mono text-figma-textMuted mb-2">
                     <span class="font-bold">FASE 1 // INVERNO</span>
@@ -395,14 +505,14 @@
                     Galhos nus esculturais e repouso metabólico. A beleza fractal da madeira sem folhas.
                   </p>
                 </div>
-                <button class="btn-select-phase mt-3 py-1.5 px-2.5 rounded-lg border border-figma-border bg-[#D8CEB8] hover:bg-sakura-500 hover:text-white text-[10px] font-mono font-bold text-figma-textPrimary flex items-center justify-between transition-all" data-phase="1">
-                  <span>❄️ Ver Árvore na Fase 1</span>
-                  <span>→</span>
-                </button>
+                <div class="mt-4 pt-2.5 border-t border-figma-border/60 flex items-center justify-between text-[11px] font-mono">
+                  <span class="text-figma-textMuted text-[10px]">Abertura: 0%</span>
+                  <span id="badge-phase-status-1" class="phase-badge text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-slate-300 text-slate-700">Previsão</span>
+                </div>
               </div>
 
               <!-- Stage 2 -->
-              <div id="card-phase-2" class="phase-card glass-card p-4 rounded-2xl border border-figma-border cursor-pointer transition-all flex flex-col justify-between hover:border-sakura-500" data-phase="2">
+              <div id="card-phase-2" class="phase-card glass-card p-4 rounded-2xl border border-figma-border transition-all flex flex-col justify-between" data-phase="2">
                 <div>
                   <div class="flex justify-between items-center text-xs font-mono text-figma-textMuted mb-2">
                     <span class="font-bold">FASE 2 // BROTOS</span>
@@ -413,15 +523,15 @@
                     Primeiros botões rosados e fechados surgem nas pontas dos galhos com a brisa da primavera.
                   </p>
                 </div>
-                <button class="btn-select-phase mt-3 py-1.5 px-2.5 rounded-lg border border-figma-border bg-[#D8CEB8] hover:bg-sakura-500 hover:text-white text-[10px] font-mono font-bold text-figma-textPrimary flex items-center justify-between transition-all" data-phase="2">
-                  <span>🌱 Ver Árvore na Fase 2</span>
-                  <span>→</span>
-                </button>
+                <div class="mt-4 pt-2.5 border-t border-figma-border/60 flex items-center justify-between text-[11px] font-mono">
+                  <span class="text-figma-textMuted text-[10px]">Abertura: 25%</span>
+                  <span id="badge-phase-status-2" class="phase-badge text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-slate-300 text-slate-700">Previsão</span>
+                </div>
               </div>
 
               <!-- Stage 3 (ACTIVE) -->
-              <div id="card-phase-3" class="phase-card glass-card p-4 rounded-2xl border-2 border-sakura-500 shadow-lg shadow-sakura-500/10 bg-sakura-500/5 relative cursor-pointer transition-all flex flex-col justify-between active-phase" data-phase="3">
-                <span class="absolute -top-2.5 right-3 bg-sakura-500 text-white text-[9px] font-mono font-bold px-2 py-0.5 rounded-full">ESTAÇÃO ATUAL</span>
+              <div id="card-phase-3" class="phase-card glass-card p-4 rounded-2xl border-2 border-sakura-500 shadow-lg shadow-sakura-500/10 bg-sakura-500/5 relative transition-all flex flex-col justify-between active-phase" data-phase="3">
+                <span id="tag-current-season" class="absolute -top-2.5 right-3 bg-sakura-500 text-white text-[9px] font-mono font-bold px-2 py-0.5 rounded-full shadow-sm">● FASE ATUAL</span>
                 <div>
                   <div class="flex justify-between items-center text-xs font-mono text-sakura-600 mb-2 font-bold">
                     <span>FASE 3 // FLORAÇÃO</span>
@@ -432,14 +542,14 @@
                     A copa se transforma em nuvens carmim e rosa suave. Pétalas flutuam em dança constante.
                   </p>
                 </div>
-                <button class="btn-select-phase mt-3 py-1.5 px-2.5 rounded-lg border border-sakura-500 bg-sakura-500 text-white text-[10px] font-mono font-bold flex items-center justify-between transition-all" data-phase="3">
-                  <span>🌸 Fase 3 (Floração Ativa)</span>
-                  <span>✓</span>
-                </button>
+                <div class="mt-4 pt-2.5 border-t border-sakura-500/40 flex items-center justify-between text-[11px] font-mono">
+                  <span class="text-sakura-700 font-bold text-[10px]">Abertura: 88%</span>
+                  <span id="badge-phase-status-3" class="phase-badge text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-sakura-500 text-white">● ATIVA NA PRAÇA</span>
+                </div>
               </div>
 
               <!-- Stage 4 -->
-              <div id="card-phase-4" class="phase-card glass-card p-4 rounded-2xl border border-figma-border cursor-pointer transition-all flex flex-col justify-between hover:border-emerald-600" data-phase="4">
+              <div id="card-phase-4" class="phase-card glass-card p-4 rounded-2xl border border-figma-border transition-all flex flex-col justify-between" data-phase="4">
                 <div>
                   <div class="flex justify-between items-center text-xs font-mono text-figma-textMuted mb-2">
                     <span class="font-bold">FASE 4 // FOLHAS</span>
@@ -450,10 +560,10 @@
                     As flores dão lugar à folhagem verdejante de verão, trazendo sombra e frescor bioclimático.
                   </p>
                 </div>
-                <button class="btn-select-phase mt-3 py-1.5 px-2.5 rounded-lg border border-figma-border bg-[#D8CEB8] hover:bg-emerald-600 hover:text-white text-[10px] font-mono font-bold text-figma-textPrimary flex items-center justify-between transition-all" data-phase="4">
-                  <span>🍃 Ver Árvore na Fase 4</span>
-                  <span>→</span>
-                </button>
+                <div class="mt-4 pt-2.5 border-t border-figma-border/60 flex items-center justify-between text-[11px] font-mono">
+                  <span class="text-figma-textMuted text-[10px]">Abertura: 100%</span>
+                  <span id="badge-phase-status-4" class="phase-badge text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-slate-300 text-slate-700">Previsão</span>
+                </div>
               </div>
 
             </div>
@@ -853,11 +963,11 @@
               PRÓXIMAS ATIVIDADES GRATUITAS NA PRAÇA:
             </h3>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+            <div id="weekly-activities-container" class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
               <div class="p-4 rounded-2xl bg-[#DCD2BE] border border-figma-border flex items-start gap-3">
                 <div class="text-2xl">🧘</div>
                 <div>
-                  <div class="font-mono text-[10px] text-sakura-600 font-bold">SÁBADO • 08:00</div>
+                  <div class="font-mono text-[10px] text-sakura-600 font-bold uppercase">SÁBADO • 08:00</div>
                   <div class="font-bold text-sm text-figma-textPrimary">Yoga & Meditação Matinal</div>
                   <div class="text-figma-textSecondary mt-0.5">Deck dos Mestres. Traga seu tapete de yoga.</div>
                 </div>
@@ -866,7 +976,7 @@
               <div class="p-4 rounded-2xl bg-[#DCD2BE] border border-figma-border flex items-start gap-3">
                 <div class="text-2xl">🥕</div>
                 <div>
-                  <div class="font-mono text-[10px] text-emerald-700 font-bold">SÁBADO • 09:30</div>
+                  <div class="font-mono text-[10px] text-emerald-700 font-bold uppercase">SÁBADO • 09:30</div>
                   <div class="font-bold text-sm text-figma-textPrimary">Feirinha Agroecológica</div>
                   <div class="text-figma-textSecondary mt-0.5">Alameda das Cerejeiras. Frutas e hortaliças orgânicas.</div>
                 </div>
@@ -875,7 +985,7 @@
               <div class="p-4 rounded-2xl bg-[#DCD2BE] border border-figma-border flex items-start gap-3">
                 <div class="text-2xl">🏀</div>
                 <div>
-                  <div class="font-mono text-[10px] text-cyan-800 font-bold">DOMINGO • 15:30</div>
+                  <div class="font-mono text-[10px] text-cyan-800 font-bold uppercase">DOMINGO • 15:30</div>
                   <div class="font-bold text-sm text-figma-textPrimary">Clínica Aberta de Basquete</div>
                   <div class="text-figma-textSecondary mt-0.5">Quadra Poliesportiva. Todas as idades.</div>
                 </div>
@@ -1158,8 +1268,8 @@
       </div>
     </main>
 
-    <!-- RIGHT FIGMA INSPECTOR SIDEBAR (Controls Engine, ASCII, Lighting, Petals) -->
-    <aside id="inspector-panel" class="w-80 border-l border-figma-border bg-figma-surface/95 backdrop-blur-2xl flex flex-col z-30 transition-all duration-300 flex-shrink-0 text-figma-textPrimary">
+    <!-- RIGHT FIGMA INSPECTOR SIDEBAR (Controls Engine, ASCII, Lighting, Petals - OCULTO NO TOTEM PÚBLICO) -->
+    <aside id="inspector-panel" class="hidden w-80 border-l border-figma-border bg-figma-surface/95 backdrop-blur-2xl flex-col z-30 transition-all duration-300 flex-shrink-0 text-figma-textPrimary" style="display: none !important;">
       
       <!-- Panel Header -->
       <div class="h-10 border-b border-figma-border px-3.5 flex items-center justify-between text-xs font-semibold text-figma-textPrimary">
@@ -1336,10 +1446,55 @@
     </div>
   </div>
 
-  <!-- TOAST NOTIFICATION BOX -->
-  <div id="toast" class="fixed top-14 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-xl glass-panel border border-sakura-500/40 text-xs font-mono text-figma-textPrimary shadow-2xl flex items-center gap-2 transform -translate-y-12 opacity-0 transition-all duration-300 pointer-events-none font-semibold">
-    <span class="w-2 h-2 rounded-full bg-sakura-500 animate-pulse"></span>
+  <!-- TOAST NOTIFICATION BOX (NORMAL SCREEN - ENHANCED SIZE) -->
+  <div id="toast" class="fixed top-14 left-1/2 -translate-x-1/2 z-50 px-5 py-2.5 rounded-2xl glass-panel border border-sakura-500/50 text-xs sm:text-sm font-mono text-figma-textPrimary shadow-2xl flex items-center gap-2.5 transform -translate-y-12 opacity-0 transition-all duration-300 pointer-events-none font-bold">
+    <span class="w-2.5 h-2.5 rounded-full bg-sakura-500 animate-pulse"></span>
     <span id="toast-message">Notificação</span>
+  </div>
+
+  <!-- GLOBAL BROADCAST MODAL (GIANT, VISIBLE IN SCREENSAVER AND NORMAL SCREEN) -->
+  <div id="global-broadcast-modal" class="fixed inset-0 z-[10005] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 sm:p-8 opacity-0 pointer-events-none transition-all duration-300">
+    <div id="global-broadcast-card" class="w-full max-w-2xl bg-[#141A24] border-2 border-sakura-500 rounded-3xl p-6 sm:p-10 shadow-2xl text-center transform scale-95 transition-all duration-300 flex flex-col items-center relative">
+      
+      <!-- Close button in top right -->
+      <button id="btn-close-broadcast" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center font-mono text-sm transition-all" title="Fechar Aviso">
+        ✕
+      </button>
+
+      <!-- Big Megaphone Icon -->
+      <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-sakura-500/20 text-sakura-400 border border-sakura-500/40 flex items-center justify-center text-4xl sm:text-5xl mb-4 shadow-lg shadow-sakura-500/25 animate-bounce">
+        📢
+      </div>
+
+      <div class="text-[11px] sm:text-xs font-mono font-bold uppercase tracking-widest text-sakura-400 mb-2">
+        AVISO GLOBAL // TRANSMISSÃO AO VIVO DA PRAÇA
+      </div>
+
+      <h2 id="global-broadcast-title" class="text-2xl sm:text-4xl font-black text-white mb-4 leading-tight">
+        Aviso da Zeladoria Municipal
+      </h2>
+
+      <div id="global-broadcast-message" class="text-base sm:text-2xl font-bold text-slate-100 mb-6 leading-relaxed bg-slate-900/80 p-5 sm:p-6 rounded-2xl border border-slate-800 w-full">
+        Mensagem transmitida em tempo real
+      </div>
+
+      <!-- Duration Indicator & Dismiss -->
+      <div class="flex items-center gap-3 w-full justify-center">
+        <div id="global-broadcast-timer-badge" class="px-3.5 py-1.5 rounded-xl bg-slate-800/80 border border-slate-700 text-xs font-mono text-slate-300 flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+          <span id="global-broadcast-timer-text">Exibindo aviso...</span>
+        </div>
+        <button id="btn-dismiss-broadcast" class="px-5 py-2 rounded-xl bg-sakura-600 hover:bg-sakura-500 text-white font-mono font-bold text-xs transition-all shadow-md">
+          OK, Entendi
+        </button>
+      </div>
+
+      <!-- Progress bar -->
+      <div id="global-broadcast-progress-container" class="w-full bg-slate-800 h-1.5 rounded-full mt-5 overflow-hidden">
+        <div id="global-broadcast-progress-bar" class="bg-gradient-to-r from-sakura-500 to-cyan-500 h-full w-full transition-all duration-100 ease-linear"></div>
+      </div>
+
+    </div>
   </div>
 
   <!-- GLOBAL COMMUNITY BELL RIPPLE WAVE EFFECT -->
@@ -1358,8 +1513,8 @@
         </div>
       </div>
 
-      <div class="glass-panel px-4 py-2 rounded-2xl border border-figma-border font-mono text-xs flex items-center gap-2">
-        <span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
+      <div id="screensaver-court-badge-container" class="glass-panel px-4 py-2 rounded-2xl border border-figma-border font-mono text-xs flex items-center gap-2">
+        <span id="screensaver-court-dot" class="w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping"></span>
         <span id="screensaver-court-badge">QUADRA: EM USO (22m rest.)</span>
       </div>
     </div>
@@ -1445,6 +1600,12 @@
         </div>
       </div>
 
+      <!-- Name Input for Direct Booking -->
+      <div>
+        <label for="kiosk-booking-name" class="text-xs font-semibold text-figma-textSecondary block mb-1.5 font-mono">NOME DO RESPONSÁVEL / EQUIPE:</label>
+        <input id="kiosk-booking-name" type="text" placeholder="Ex: Lucas Mendes / Turma da Praça" class="w-full bg-[#DCD2BE] border border-figma-border rounded-xl px-3 py-2 text-xs text-figma-textPrimary font-sans focus:outline-none focus:border-sakura-500" />
+      </div>
+
       <!-- Smartphone QR Code Section (Safe for Totem) -->
       <div class="p-4 rounded-2xl bg-[#DCD2BE] border border-figma-border flex flex-col sm:flex-row items-center gap-4">
         <!-- SVG Generated QR Code -->
@@ -1471,11 +1632,15 @@
           </svg>
         </div>
 
-        <div class="text-xs">
-          <strong class="text-figma-textPrimary block mb-1">Confirmar no Celular (Sem digitar senhas no Totem):</strong>
-          <span class="text-figma-textSecondary leading-relaxed">
-            Aponte a câmera do seu smartphone para o QR Code para abrir o link de confirmação direta via WhatsApp da Prefeitura ou WebApp da Praça.
+        <div class="text-xs flex-1">
+          <strong class="text-figma-textPrimary block mb-1">Confirmar pelo Celular (/agendar):</strong>
+          <span class="text-figma-textSecondary leading-relaxed block mb-2">
+            Aponte a câmera do seu smartphone para o QR Code para abrir o link de confirmação direta via WebApp da Praça.
           </span>
+          <a id="kiosk-mobile-link" href="/agendar" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-cyan-700/15 border border-cyan-700/30 text-cyan-900 font-mono font-bold text-[10px] hover:bg-cyan-700/25 transition-all">
+            <span>Acessar Agendador Mobile (/agendar)</span>
+            <span>↗</span>
+          </a>
         </div>
       </div>
 
@@ -3411,7 +3576,14 @@
 
         setupSSE() {
           if (this.eventSource) this.eventSource.close();
-          this.eventSource = new EventSource('/api/events');
+          let screenId = localStorage.getItem('praca_totem_id');
+          if (!screenId) {
+            screenId = 'Totem #' + Math.floor(1000 + Math.random() * 9000);
+            localStorage.setItem('praca_totem_id', screenId);
+          }
+          this.screenId = screenId;
+          const sseUrl = `/api/events?screenId=${encodeURIComponent(screenId)}&screenType=totem&screenName=${encodeURIComponent(screenId)}`;
+          this.eventSource = new EventSource(sseUrl);
 
           this.eventSource.addEventListener('init', (e) => {
             try {
@@ -3423,6 +3595,13 @@
               if (state.sakuraPhase) this.engine.setSakuraPhase(state.sakuraPhase);
               if (state.court) this.updateCourt(state.court);
               if (state.bell) this.updateBellConfig(state.bell);
+              if (state.courtBookings) {
+                this.courtBookings = state.courtBookings;
+                renderCourtScheduleGrid(this.courtBookings, state.court);
+              }
+              if (state.weeklyActivities) {
+                renderWeeklyActivities(state.weeklyActivities);
+              }
             } catch(err) {
               console.error("[SYNC] Erro no init:", err);
             }
@@ -3458,6 +3637,27 @@
             } catch(err) {}
           });
 
+          this.eventSource.addEventListener('court_booking_update', (e) => {
+            try {
+              const data = JSON.parse(e.data);
+              if (data.bookings) {
+                this.courtBookings = data.bookings;
+                renderCourtScheduleGrid(this.courtBookings, data.court || this.currentCourt);
+              }
+              if (data.court) this.updateCourt(data.court);
+            } catch(err) {}
+          });
+
+          this.eventSource.addEventListener('activities_change', (e) => {
+            try {
+              const data = JSON.parse(e.data);
+              if (data.activities) {
+                renderWeeklyActivities(data.activities);
+                showToast("📅 Atividades da semana sincronizadas!");
+              }
+            } catch(err) {}
+          });
+
           this.eventSource.addEventListener('bell_config', (e) => {
             try {
               const data = JSON.parse(e.data);
@@ -3475,8 +3675,7 @@
           this.eventSource.addEventListener('toast_broadcast', (e) => {
             try {
               const data = JSON.parse(e.data);
-              showToast(`📢 ${data.title ? data.title + ': ' : ''}${data.message}`);
-              this.sound.playBell(784);
+              displayGlobalBroadcast(data.title, data.message, data.duration);
             } catch(err) {}
           });
 
@@ -3502,6 +3701,7 @@
         }
 
         updateCourt(court) {
+          this.currentCourt = court;
           const courtStatusTitle = document.getElementById('court-status-title');
           const courtStatusDesc = document.getElementById('court-status-desc');
           const courtStatusCard = document.getElementById('court-status-card');
@@ -3509,6 +3709,8 @@
           const courtCountdown = document.getElementById('court-countdown');
           const quickCourtTimer = document.getElementById('quick-court-timer');
           const ssCourtBadge = document.getElementById('screensaver-court-badge');
+          const ssCourtDot = document.getElementById('screensaver-court-dot');
+          const ssCourtContainer = document.getElementById('screensaver-court-badge-container');
           const courtNext = document.getElementById('court-next-info');
 
           if (court.nextSlot && courtNext) {
@@ -3533,7 +3735,11 @@
               badgeCourtQuick.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-rose-600"></span> EM USO';
             }
             if (quickCourtTimer) quickCourtTimer.innerText = `${court.remainingMinutes || 22} min restantes`;
-            if (ssCourtBadge) ssCourtBadge.innerText = `QUADRA: EM USO (${court.remainingMinutes || 22}m rest.)`;
+
+            // Status da Quadra na tela AFK: Vermelho (🔴 EM USO)
+            if (ssCourtDot) ssCourtDot.className = "w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping";
+            if (ssCourtContainer) ssCourtContainer.className = "glass-panel px-4 py-2 rounded-2xl border border-rose-500/40 bg-rose-500/15 text-rose-300 font-mono text-xs flex items-center gap-2";
+            if (ssCourtBadge) ssCourtBadge.innerText = `QUADRA: 🔴 EM USO (${court.remainingMinutes || 22}m rest.)`;
           } else if (court.status === "livre") {
             this.courtIsBusy = false;
             if (courtStatusTitle) {
@@ -3552,7 +3758,11 @@
             }
             if (courtCountdown) courtCountdown.innerText = "LIBERADA";
             if (quickCourtTimer) quickCourtTimer.innerText = "Livre para jogar";
-            if (ssCourtBadge) ssCourtBadge.innerText = "QUADRA: LIVRE PARA JOGAR";
+
+            // Status da Quadra na tela AFK: Verde (🟢 LIVRE)
+            if (ssCourtDot) ssCourtDot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500";
+            if (ssCourtContainer) ssCourtContainer.className = "glass-panel px-4 py-2 rounded-2xl border border-emerald-500/40 bg-emerald-500/15 text-emerald-300 font-mono text-xs flex items-center gap-2";
+            if (ssCourtBadge) ssCourtBadge.innerText = "QUADRA: 🟢 LIVRE PARA JOGAR";
           } else {
             this.courtIsBusy = false;
             if (courtStatusTitle) {
@@ -3562,10 +3772,24 @@
             if (courtStatusDesc) {
               courtStatusDesc.innerText = "Pintura e manutenção de tabelas pela prefeitura.";
             }
+            if (courtStatusCard) {
+              courtStatusCard.className = "glass-card p-6 rounded-2xl border-2 border-amber-500 bg-amber-500/10 flex flex-col justify-between";
+            }
             if (badgeCourtQuick) {
               badgeCourtQuick.className = "px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-500/15 text-amber-800 flex items-center gap-1";
               badgeCourtQuick.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span> MANUTENÇÃO';
             }
+            if (courtCountdown) courtCountdown.innerText = "MANUTENÇÃO";
+            if (quickCourtTimer) quickCourtTimer.innerText = "Em manutenção";
+
+            // Status da Quadra na tela AFK: Amarelo (🟡 MANUTENÇÃO)
+            if (ssCourtDot) ssCourtDot.className = "w-2.5 h-2.5 rounded-full bg-amber-500";
+            if (ssCourtContainer) ssCourtContainer.className = "glass-panel px-4 py-2 rounded-2xl border border-amber-500/40 bg-amber-500/15 text-amber-300 font-mono text-xs flex items-center gap-2";
+            if (ssCourtBadge) ssCourtBadge.innerText = "QUADRA: 🟡 MANUTENÇÃO TÉCNICA";
+          }
+
+          if (this.courtBookings) {
+            renderCourtScheduleGrid(this.courtBookings, court);
           }
         }
 
@@ -3680,65 +3904,186 @@
       const totemSync = new TotemSyncClient(engine, sound);
       totemSync.start();
 
-      // SAKURA PHENOLOGICAL BIOLOGICAL PHASE SWITCHERS (Section 2 & Inspector)
-      document.querySelectorAll('.phase-card, .btn-select-phase, .btn-inspector-phase').forEach(el => {
-        el.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const p = parseInt(el.getAttribute('data-phase'));
-          if (p) {
-            sound.playClick();
-            engine.setSakuraPhase(p);
-            showToast(`Simulação da Árvore alterada para: Fase ${p}`);
+      // ==========================================
+      // GLOBAL BROADCAST NOTICE (POPUP EM TELA CHEIA E AFK)
+      // ==========================================
+      let broadcastTimer = null;
+      let broadcastProgressInterval = null;
+
+      function displayGlobalBroadcast(title, message, duration) {
+        const modal = document.getElementById('global-broadcast-modal');
+        const card = document.getElementById('global-broadcast-card');
+        const titleEl = document.getElementById('global-broadcast-title');
+        const msgEl = document.getElementById('global-broadcast-message');
+        const timerText = document.getElementById('global-broadcast-timer-text');
+        const progressContainer = document.getElementById('global-broadcast-progress-container');
+        const progressBar = document.getElementById('global-broadcast-progress-bar');
+
+        if (!modal) return;
+
+        if (titleEl) titleEl.innerText = title || "Aviso da Zeladoria Municipal";
+        if (msgEl) msgEl.innerText = message || "";
+
+        if (broadcastTimer) clearTimeout(broadcastTimer);
+        if (broadcastProgressInterval) clearInterval(broadcastProgressInterval);
+
+        sound.unlock();
+        sound.playBell(784);
+
+        modal.classList.remove('opacity-0', 'pointer-events-none');
+        if (card) {
+          card.classList.remove('scale-95');
+          card.classList.add('scale-100');
+        }
+
+        const isFixo = (duration === 'fixo' || duration === 0 || !duration);
+
+        if (isFixo) {
+          if (timerText) timerText.innerText = "Aviso Fixo // Zeladoria";
+          if (progressContainer) progressContainer.style.display = 'none';
+        } else {
+          const totalSecs = parseInt(duration) || 10;
+          if (progressContainer) {
+            progressContainer.style.display = 'block';
+            if (progressBar) progressBar.style.width = '100%';
           }
-        });
+          if (timerText) timerText.innerText = `Fechando em ${totalSecs}s`;
+
+          const startTime = Date.now();
+          const totalMs = totalSecs * 1000;
+
+          broadcastProgressInterval = setInterval(() => {
+            const elapsed = Date.now() - startTime;
+            const pct = Math.max(0, 100 - (elapsed / totalMs) * 100);
+            if (progressBar) progressBar.style.width = `${pct}%`;
+
+            const curRemaining = Math.max(0, Math.ceil((totalMs - elapsed) / 1000));
+            if (timerText) timerText.innerText = `Fechando em ${curRemaining}s`;
+
+            if (elapsed >= totalMs) {
+              clearInterval(broadcastProgressInterval);
+              closeGlobalBroadcast();
+            }
+          }, 100);
+        }
+      }
+
+      function closeGlobalBroadcast() {
+        const modal = document.getElementById('global-broadcast-modal');
+        const card = document.getElementById('global-broadcast-card');
+        if (broadcastTimer) clearTimeout(broadcastTimer);
+        if (broadcastProgressInterval) clearInterval(broadcastProgressInterval);
+        broadcastTimer = null;
+        broadcastProgressInterval = null;
+
+        if (modal) {
+          modal.classList.add('opacity-0', 'pointer-events-none');
+        }
+        if (card) {
+          card.classList.remove('scale-100');
+          card.classList.add('scale-95');
+        }
+      }
+
+      document.getElementById('btn-close-broadcast')?.addEventListener('click', () => {
+        sound.playClick();
+        closeGlobalBroadcast();
+      });
+      document.getElementById('btn-dismiss-broadcast')?.addEventListener('click', () => {
+        sound.playClick();
+        closeGlobalBroadcast();
       });
 
-      // COURT HOURLY SCHEDULE GRID (Populate 07:00 to 22:00)
+      // ==========================================
+      // ATIVIDADES SEMANAIS DINÂMICAS (SINCRONIZADAS VIA SSE)
+      // ==========================================
+      function renderWeeklyActivities(activities) {
+        const container = document.getElementById('weekly-activities-container');
+        if (!container || !Array.isArray(activities)) return;
+
+        container.innerHTML = '';
+        activities.forEach(act => {
+          const card = document.createElement('div');
+          card.className = 'p-4 rounded-2xl bg-[#DCD2BE] border border-figma-border flex items-start gap-3 transition-all hover:border-sakura-500/40';
+          card.innerHTML = `
+            <div class="text-2xl">${act.icon || '📌'}</div>
+            <div>
+              <div class="font-mono text-[10px] text-sakura-600 font-bold uppercase">${act.day || ''} • ${act.time || ''}</div>
+              <div class="font-bold text-sm text-figma-textPrimary">${act.title || ''}</div>
+              <div class="text-figma-textSecondary mt-0.5">${act.desc || ''}</div>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+      }
+
+      // ==========================================
+      // GRADE DE HORÁRIOS DA QUADRA (SINCRONIZADA E PERSISTENTE)
+      // ==========================================
       const courtGrid = document.getElementById('court-schedule-grid');
-      const bookedSlots = ['15:00', '18:00', '19:00'];
+      let currentCourtBookings = [];
       let selectedSlotTime = "16:00 às 17:00";
 
-      if (courtGrid) {
+      function renderCourtScheduleGrid(bookings, court) {
+        if (Array.isArray(bookings)) {
+          currentCourtBookings = bookings;
+        }
+        if (!courtGrid) return;
         courtGrid.innerHTML = '';
+
+        const now = new Date();
+        const currentHour = now.getHours();
+
         for (let h = 7; h <= 21; h++) {
           const timeSlot = `${String(h).padStart(2, '0')}:00`;
           const nextSlot = `${String(h + 1).padStart(2, '0')}:00`;
-          const slotBtn = document.createElement('div');
-          slotBtn.className = 'court-slot p-2.5 rounded-xl border flex flex-col justify-between text-xs font-mono select-none cursor-pointer';
+          const fullSlotLabel = `${timeSlot} às ${nextSlot}`;
 
-          if (h < 14) {
-            slotBtn.className += ' bg-gray-200/50 border-figma-border text-figma-textMuted opacity-60';
+          const booking = currentCourtBookings.find(b => 
+            b.timeSlot === fullSlotLabel || 
+            b.timeSlot.startsWith(timeSlot) ||
+            b.timeSlot.includes(timeSlot)
+          );
+
+          const slotBtn = document.createElement('div');
+          slotBtn.className = 'court-slot p-2.5 rounded-xl border flex flex-col justify-between text-xs font-mono select-none transition-all';
+
+          if (h < currentHour) {
+            slotBtn.className += ' bg-gray-200/50 border-figma-border text-figma-textMuted opacity-60 cursor-not-allowed';
             slotBtn.innerHTML = `
               <span class="font-bold">${timeSlot}</span>
               <span class="text-[9px] uppercase mt-1">Concluído</span>
             `;
-          } else if (h === 14) {
-            slotBtn.className += ' bg-rose-500 text-white border-rose-700 shadow-md animate-pulse';
+          } else if (h === currentHour && court && court.status === 'em_uso') {
+            slotBtn.className += ' bg-rose-500 text-white border-rose-700 shadow-md animate-pulse cursor-pointer';
             slotBtn.innerHTML = `
               <span class="font-bold">${timeSlot}</span>
               <span class="text-[9px] uppercase font-bold mt-1">● Em Uso</span>
             `;
-          } else if (bookedSlots.includes(timeSlot)) {
-            slotBtn.className += ' bg-cyan-700/15 border-cyan-700/40 text-cyan-900';
+          } else if (booking) {
+            slotBtn.className += ' bg-cyan-700/15 border-cyan-700/40 text-cyan-900 cursor-not-allowed';
             slotBtn.innerHTML = `
               <span class="font-bold">${timeSlot}</span>
-              <span class="text-[9px] uppercase mt-1">Reservado</span>
+              <span class="text-[9px] uppercase mt-1 font-semibold truncate" title="${booking.sport} - ${booking.bookedBy}">${booking.sport} (${booking.bookedBy})</span>
             `;
           } else {
-            slotBtn.className += ' bg-emerald-500/15 border-emerald-500/40 text-emerald-800 hover:bg-emerald-500/25';
+            slotBtn.className += ' bg-emerald-500/15 border-emerald-500/40 text-emerald-800 hover:bg-emerald-500/25 cursor-pointer hover:border-emerald-500';
             slotBtn.innerHTML = `
               <span class="font-bold">${timeSlot}</span>
               <span class="text-[9px] uppercase font-bold mt-1 text-emerald-700">Livre</span>
             `;
             slotBtn.addEventListener('click', () => {
               sound.playClick();
-              selectedSlotTime = `${timeSlot} às ${nextSlot}`;
+              selectedSlotTime = fullSlotLabel;
               openBookingModal(selectedSlotTime);
             });
           }
           courtGrid.appendChild(slotBtn);
         }
       }
+
+      // Initial court schedule rendering
+      renderCourtScheduleGrid([], { status: "em_uso", remainingMinutes: 22 });
 
       // Court Booking Modal Handlers
       const modalBooking = document.getElementById('modal-booking');
@@ -3747,16 +4092,24 @@
 
       function openBookingModal(slotTime) {
         if (modalBookingTime) modalBookingTime.innerText = `${slotTime} (Hoje)`;
-        modalBooking.classList.remove('opacity-0', 'pointer-events-none');
-        modalBookingCard.classList.remove('scale-95');
-        modalBookingCard.classList.add('scale-100');
+        if (modalBooking) {
+          modalBooking.classList.remove('opacity-0', 'pointer-events-none');
+        }
+        if (modalBookingCard) {
+          modalBookingCard.classList.remove('scale-95');
+          modalBookingCard.classList.add('scale-100');
+        }
         sound.playClick();
       }
 
       function closeBookingModal() {
-        modalBooking.classList.add('opacity-0', 'pointer-events-none');
-        modalBookingCard.classList.remove('scale-100');
-        modalBookingCard.classList.add('scale-95');
+        if (modalBooking) {
+          modalBooking.classList.add('opacity-0', 'pointer-events-none');
+        }
+        if (modalBookingCard) {
+          modalBookingCard.classList.remove('scale-100');
+          modalBookingCard.classList.add('scale-95');
+        }
       }
 
       document.getElementById('btn-close-booking')?.addEventListener('click', closeBookingModal);
@@ -3780,10 +4133,33 @@
         });
       });
 
-      document.getElementById('btn-confirm-kiosk-booking')?.addEventListener('click', () => {
-        sound.playSuccess();
-        closeBookingModal();
-        showToast(`Reserva confirmada! ${selectedSport} agendado para ${selectedSlotTime}.`);
+      // Validar Reserva Direta no Totem via POST /api/court/book
+      document.getElementById('btn-confirm-kiosk-booking')?.addEventListener('click', async () => {
+        const nameInput = document.getElementById('kiosk-booking-name');
+        const bookedBy = (nameInput && nameInput.value.trim()) ? nameInput.value.trim() : "Totem Presencial";
+
+        try {
+          const res = await fetch('/api/court/book', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              timeSlot: selectedSlotTime,
+              sport: selectedSport,
+              bookedBy: bookedBy
+            })
+          });
+          const data = await res.json();
+          if (res.ok && data.success) {
+            sound.playSuccess();
+            closeBookingModal();
+            if (nameInput) nameInput.value = '';
+            showToast(`✓ Reserva confirmada: ${selectedSport} (${selectedSlotTime}) para ${bookedBy}!`);
+          } else {
+            showToast(data.error || "Não foi possível confirmar a reserva.");
+          }
+        } catch(err) {
+          showToast("Erro ao conectar com o servidor para agendar.");
+        }
       });
 
       // Countdown loop for court occupation (Synchronized)
@@ -3876,11 +4252,10 @@
       }
 
       function activateScreensaver() {
-        if (totemScreensaver) {
-          totemScreensaver.classList.add('active');
-          document.body.classList.add('screensaver-active');
-          sound.playFurin();
-        }
+        if (!totemScreensaver || totemScreensaver.classList.contains('active')) return;
+        totemScreensaver.classList.add('active');
+        document.body.classList.add('screensaver-active');
+        sound.playFurin();
       }
 
       function deactivateScreensaver() {
@@ -3917,7 +4292,7 @@
       const modeAscii = document.getElementById('mode-ascii');
       const modeHybrid = document.getElementById('mode-hybrid');
       const modeRaw3d = document.getElementById('mode-raw3d');
-      const modeBtns = [modeAscii, modeHybrid, modeRaw3d];
+      const modeBtns = [modeAscii, modeHybrid, modeRaw3d].filter(Boolean);
 
       const activateMode = (btn, modeName) => {
         sound.playClick();
@@ -3925,38 +4300,40 @@
           b.classList.remove('active', 'bg-sakura-500', 'text-white');
           b.classList.add('text-figma-textSecondary');
         });
-        btn.classList.add('active', 'bg-sakura-500', 'text-white');
-        btn.classList.remove('text-figma-textSecondary');
+        if (btn) {
+          btn.classList.add('active', 'bg-sakura-500', 'text-white');
+          btn.classList.remove('text-figma-textSecondary');
+        }
         engine.setMode(modeName);
         showToast(`Modo Gráfico: ${modeName.toUpperCase()}`);
       };
 
-      modeAscii.addEventListener('click', () => activateMode(modeAscii, 'ascii'));
-      modeHybrid.addEventListener('click', () => activateMode(modeHybrid, 'hybrid'));
-      modeRaw3d.addEventListener('click', () => activateMode(modeRaw3d, 'raw3d'));
+      modeAscii?.addEventListener('click', () => activateMode(modeAscii, 'ascii'));
+      modeHybrid?.addEventListener('click', () => activateMode(modeHybrid, 'hybrid'));
+      modeRaw3d?.addEventListener('click', () => activateMode(modeRaw3d, 'raw3d'));
 
       // Toggle Zen Mode (Focus solely on the 3D Tree Engine)
       let zenActive = false;
       const btnZen = document.getElementById('btn-toggle-zen');
       const contentScroller = document.getElementById('content-scroller');
 
-      btnZen.addEventListener('click', () => {
+      btnZen?.addEventListener('click', () => {
         sound.playClick();
         zenActive = !zenActive;
         if (zenActive) {
-          contentScroller.classList.add('opacity-0', 'pointer-events-none');
+          contentScroller?.classList.add('opacity-0', 'pointer-events-none');
           showToast("Modo Árvore Zen ativado. Interaja em tela cheia!");
         } else {
-          contentScroller.classList.remove('opacity-0', 'pointer-events-none');
+          contentScroller?.classList.remove('opacity-0', 'pointer-events-none');
           showToast("Painel de conteúdo restaurado.");
         }
       });
 
       // Toggle Inspector Sidebar
       const inspectorPanel = document.getElementById('inspector-panel');
-      document.getElementById('btn-toggle-inspector').addEventListener('click', () => {
+      document.getElementById('btn-toggle-inspector')?.addEventListener('click', () => {
         sound.playClick();
-        inspectorPanel.classList.toggle('hidden');
+        inspectorPanel?.classList.toggle('hidden');
         setTimeout(() => engine.resize(), 310);
       });
 
@@ -3965,22 +4342,22 @@
       const iconSoundOn = document.getElementById('icon-sound-on');
       const iconSoundOff = document.getElementById('icon-sound-off');
 
-      btnAudio.addEventListener('click', () => {
+      btnAudio?.addEventListener('click', () => {
         const active = sound.toggle();
         if (active) {
-          iconSoundOn.classList.remove('hidden');
-          iconSoundOff.classList.add('hidden');
+          iconSoundOn?.classList.remove('hidden');
+          iconSoundOff?.classList.add('hidden');
           showToast("Áudio e harmônicos biofílicos ativados.");
         } else {
-          iconSoundOn.classList.add('hidden');
-          iconSoundOff.classList.remove('hidden');
+          iconSoundOn?.classList.add('hidden');
+          iconSoundOff?.classList.remove('hidden');
           showToast("Áudio silenciado.");
         }
       });
 
       // Inspector Controls: Charset
       const selectCharset = document.getElementById('select-charset');
-      selectCharset.addEventListener('change', (e) => {
+      selectCharset?.addEventListener('change', (e) => {
         sound.playClick();
         engine.charsetKey = e.target.value;
         showToast(`Charset alterado: ${e.target.value.toUpperCase()}`);
@@ -4000,33 +4377,33 @@
       // Inspector Controls: Glyph Size
       const sliderGlyph = document.getElementById('slider-glyph-size');
       const labelGlyph = document.getElementById('label-glyph-size');
-      sliderGlyph.addEventListener('input', (e) => {
+      sliderGlyph?.addEventListener('input', (e) => {
         const val = parseInt(e.target.value);
         engine.glyphSize = val;
-        labelGlyph.innerText = `${val} px`;
+        if (labelGlyph) labelGlyph.innerText = `${val} px`;
         engine.resize();
       });
 
       // Inspector Controls: Contrast
       const sliderContrast = document.getElementById('slider-contrast');
       const labelContrast = document.getElementById('label-contrast');
-      sliderContrast.addEventListener('input', (e) => {
+      sliderContrast?.addEventListener('input', (e) => {
         const val = parseFloat(e.target.value);
         engine.contrast = val;
-        labelContrast.innerText = `${val.toFixed(1)}x`;
+        if (labelContrast) labelContrast.innerText = `${val.toFixed(1)}x`;
       });
 
       // Inspector Controls: Rotation Speed & Orbit Toggle
       const sliderSpeed = document.getElementById('slider-speed');
       const labelSpeed = document.getElementById('label-speed');
-      sliderSpeed.addEventListener('input', (e) => {
+      sliderSpeed?.addEventListener('input', (e) => {
         const val = parseFloat(e.target.value);
         engine.rotationSpeed = val * 0.004;
-        labelSpeed.innerText = `${val.toFixed(1)}x`;
+        if (labelSpeed) labelSpeed.innerText = `${val.toFixed(1)}x`;
       });
 
       const toggleOrbit = document.getElementById('toggle-orbit');
-      toggleOrbit.addEventListener('change', (e) => {
+      toggleOrbit?.addEventListener('change', (e) => {
         sound.playClick();
         engine.autoRotate = e.target.checked;
       });
@@ -4034,11 +4411,11 @@
       // Inspector Controls: Wind
       const sliderWind = document.getElementById('slider-wind');
       const labelWind = document.getElementById('label-wind');
-      sliderWind.addEventListener('input', (e) => {
+      sliderWind?.addEventListener('input', (e) => {
         const val = parseFloat(e.target.value);
         engine.windStrength = val;
         engine.targetWindStrength = val;
-        labelWind.innerText = val < 0.8 ? "Brisa Leve" : (val > 2.0 ? "Ventania Forte" : "Vento Médio");
+        if (labelWind) labelWind.innerText = val < 0.8 ? "Brisa Leve" : (val > 2.0 ? "Ventania Forte" : "Vento Médio");
       });
 
       // Petal Storm Triggers

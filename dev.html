@@ -79,8 +79,51 @@
 
 <body class="bg-studio-bg text-slate-100 font-sans min-h-screen flex flex-col selection:bg-sakura-600 selection:text-white">
 
+  <!-- ========================================== -->
+  <!-- MODAL DE AUTENTICAÇÃO / SENHA DEV (GATE)    -->
+  <!-- ========================================== -->
+  <div id="auth-modal" class="fixed inset-0 z-50 bg-[#0B0E14]/95 backdrop-blur-2xl flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-studio-surface border border-studio-border rounded-3xl p-6 sm:p-8 shadow-2xl relative text-center">
+      <div class="w-16 h-16 rounded-2xl bg-sakura-500/20 text-sakura-400 border border-sakura-500/30 flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg shadow-sakura-600/20">
+        🔒
+      </div>
+      
+      <h2 class="text-xl sm:text-2xl font-black text-white mb-1.5">Painel Dev Restrito</h2>
+      <p class="text-xs text-slate-400 leading-relaxed mb-6">
+        Este painel controla os totens públicos e o sistema central da praça. Digite a senha administrativa salva em sua <strong>Área de Trabalho</strong> (<code class="text-sakura-300">senha_painel_dev.txt</code>).
+      </p>
+
+      <form id="form-auth" class="space-y-4">
+        <div>
+          <label for="input-dev-pass" class="text-xs font-mono text-slate-300 block text-left mb-1.5">
+            Senha do Painel Dev:
+          </label>
+          <div class="relative">
+            <input id="input-dev-pass" type="password" required placeholder="Digite sua senha..." class="w-full bg-studio-card border border-studio-border rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-sakura-500 font-mono tracking-wider" />
+            <button type="button" id="btn-toggle-pass-visibility" class="absolute right-3 top-3 text-slate-400 hover:text-white text-xs font-mono">
+              👁️
+            </button>
+          </div>
+        </div>
+
+        <div id="auth-error-msg" class="text-xs text-rose-400 font-mono hidden bg-rose-500/10 border border-rose-500/20 rounded-xl p-2.5">
+          Senha incorreta. Verifique o arquivo na Área de Trabalho.
+        </div>
+
+        <button type="submit" id="btn-submit-auth" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-sakura-600 to-sakura-700 hover:from-sakura-500 hover:to-sakura-600 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-sakura-600/30 transition-all active:scale-98">
+          <span>🔓</span>
+          <span>Desbloquear Painel de Controle</span>
+        </button>
+      </form>
+
+      <div class="mt-5 text-[11px] font-mono text-slate-500">
+        Praça Conecta • Sistema Operacional do Totem
+      </div>
+    </div>
+  </div>
+
   <!-- TOP HEADER -->
-  <header class="h-16 border-b border-studio-border bg-studio-surface/90 backdrop-blur-xl px-4 sm:px-6 flex items-center justify-between sticky top-0 z-50">
+  <header class="h-16 border-b border-studio-border bg-studio-surface/90 backdrop-blur-xl px-4 sm:px-6 flex items-center justify-between sticky top-0 z-40">
     <div class="flex items-center gap-3">
       <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-sakura-600 to-sakura-800 flex items-center justify-center font-bold text-lg shadow-lg shadow-sakura-600/30">
         🌸
@@ -108,6 +151,18 @@
         <span>Abrir Totem</span>
         <span class="text-sakura-400">↗</span>
       </a>
+
+      <!-- Button to open Mobile Booking -->
+      <a href="/agendar" target="_blank" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-studio-border font-mono text-xs flex items-center gap-1.5 transition-all hover:border-slate-500 shadow-sm hidden sm:flex" title="Abrir Agendador Mobile">
+        <span>Agendar</span>
+        <span class="text-cyan-400">📱</span>
+      </a>
+
+      <!-- Lock/Logout Button -->
+      <button id="btn-lock-panel" class="px-2.5 py-1.5 rounded-xl bg-rose-950/40 hover:bg-rose-900/60 text-rose-300 border border-rose-800/60 font-mono text-xs flex items-center gap-1 transition-all" title="Bloquear Painel">
+        <span>🔒</span>
+        <span class="hidden md:inline">Bloquear</span>
+      </button>
     </div>
   </header>
 
@@ -183,7 +238,7 @@
             <button class="btn-weather p-3 rounded-xl border border-studio-border bg-studio-card hover:bg-studio-border text-left transition-all group flex flex-col justify-between" data-weather="night">
               <span class="text-2xl mb-2">🌙</span>
               <span class="text-xs font-bold text-white group-hover:text-indigo-300">Noite Yozakura</span>
-              <span class="text-[10px] text-slate-400">Iluminação lunar azulada</span>
+              <span class="text-[10px] text-slate-400">Alto contraste escuro</span>
             </button>
           </div>
         </div>
@@ -209,35 +264,35 @@
             </span>
           </div>
           <p class="text-xs text-slate-400 mb-4">
-            Altera o estágio biológico da árvore 3D, quantidade de pétalas flutuantes e botões.
+            Altera o estágio biológico da árvore 3D, quantidade de pétalas flutuantes e botões. Controlado exclusivamente pelo Dev.
           </p>
 
           <div class="grid grid-cols-2 gap-2.5">
             <!-- Phase 1 -->
             <button class="btn-phase p-3 rounded-xl border border-studio-border bg-studio-card hover:bg-studio-border text-left transition-all group flex flex-col justify-between" data-phase="1">
               <span class="text-xs font-mono font-bold text-slate-400 mb-1">FASE 1</span>
-              <span class="text-xs font-bold text-white group-hover:text-sakura-300">Dormência</span>
+              <span class="text-xs font-bold text-white group-hover:text-sakura-300">Dormência (0%)</span>
               <span class="text-[10px] text-slate-400">Inverno / Galhos nus</span>
             </button>
 
             <!-- Phase 2 -->
             <button class="btn-phase p-3 rounded-xl border border-studio-border bg-studio-card hover:bg-studio-border text-left transition-all group flex flex-col justify-between" data-phase="2">
               <span class="text-xs font-mono font-bold text-slate-400 mb-1">FASE 2</span>
-              <span class="text-xs font-bold text-white group-hover:text-sakura-300">Botões Florais</span>
+              <span class="text-xs font-bold text-white group-hover:text-sakura-300">Botões (25%)</span>
               <span class="text-[10px] text-slate-400">Tsubomi / Brotos</span>
             </button>
 
             <!-- Phase 3 -->
             <button class="btn-phase p-3 rounded-xl border border-studio-border bg-studio-card hover:bg-studio-border text-left transition-all group flex flex-col justify-between" data-phase="3">
               <span class="text-xs font-mono font-bold text-sakura-400 mb-1">FASE 3 ★</span>
-              <span class="text-xs font-bold text-white group-hover:text-sakura-300">Plena Floração</span>
-              <span class="text-[10px] text-slate-400">Mankai / 88% Aberta</span>
+              <span class="text-xs font-bold text-white group-hover:text-sakura-300">Plena Florada (88%)</span>
+              <span class="text-[10px] text-slate-400">Mankai / Floração</span>
             </button>
 
             <!-- Phase 4 -->
             <button class="btn-phase p-3 rounded-xl border border-studio-border bg-studio-card hover:bg-studio-border text-left transition-all group flex flex-col justify-between" data-phase="4">
               <span class="text-xs font-mono font-bold text-slate-400 mb-1">FASE 4</span>
-              <span class="text-xs font-bold text-white group-hover:text-emerald-300">Folhas Verdes</span>
+              <span class="text-xs font-bold text-white group-hover:text-emerald-300">Folhas Verdes (100%)</span>
               <span class="text-[10px] text-slate-400">Hazakura / Verão</span>
             </button>
           </div>
@@ -252,8 +307,8 @@
         </div>
 
         <div class="mt-4 pt-3 border-t border-studio-border/70 flex items-center justify-between text-[11px] font-mono text-slate-400">
-          <span>Turbilhão:</span>
-          <span class="text-sakura-400">Instantâneo</span>
+          <span>Controle Exclusivo:</span>
+          <span class="text-sakura-400">Painel Dev ✓</span>
         </div>
       </div>
 
@@ -336,7 +391,7 @@
           </div>
 
           <p class="text-xs text-slate-400 mb-4">
-            Atualize o painel de ocupação em tempo real exibido aos frequentadores do totem.
+            Atualize o painel de ocupação em tempo real exibido aos frequentadores do totem e agendamento mobile.
           </p>
 
           <form id="form-court" class="space-y-4">
@@ -370,7 +425,7 @@
               </div>
               <div>
                 <label for="court-next" class="text-xs font-mono text-slate-300 block mb-1">Próximo Horário / Vaga:</label>
-                <input id="court-next" type="text" value="14:30 às 15:30 (Treino de Vôlei)" class="w-full bg-studio-card border border-studio-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-sakura-500 font-sans" />
+                <input id="court-next" type="text" value="15:00 às 16:00 (Treino de Vôlei)" class="w-full bg-studio-card border border-studio-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-sakura-500 font-sans" />
               </div>
             </div>
 
@@ -379,6 +434,17 @@
               <span>Salvar e Transmitir Status da Quadra</span>
             </button>
           </form>
+
+          <!-- Court Bookings Management Subsection -->
+          <div class="mt-5 pt-4 border-t border-studio-border/70">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-mono font-bold text-slate-300">Horários Reservados na Grade:</span>
+              <span id="bookings-count" class="text-[10px] font-mono bg-cyan-500/20 text-cyan-300 px-2 py-0.5 rounded-full">3 agendamentos</span>
+            </div>
+            <div id="dev-bookings-list" class="space-y-1.5 max-h-36 overflow-y-auto pr-1 text-xs font-mono">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
         </div>
       </div>
 
@@ -393,23 +459,34 @@
               <h2 class="font-bold text-sm text-white uppercase tracking-wider">Aviso Global no Totem</h2>
             </div>
             <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-bold uppercase">
-              NOTIFICAÇÃO PUSH
+              DESTAQUE AFK / NORMAL
             </span>
           </div>
 
           <p class="text-xs text-slate-400 mb-4">
-            Envia uma mensagem em destaque para todas as pessoas que estiverem olhando para o totem ou com a aba aberta.
+            Envia um comunicado em destaque central gigante legível à distância, visível tanto na tela normal quanto na tela de descanso (screensaver).
           </p>
 
           <form id="form-toast" class="space-y-3.5">
             <div>
-              <label for="toast-title" class="text-xs font-mono text-slate-300 block mb-1">Título do Aviso:</label>
+              <label for="toast-title" class="text-xs font-mono text-slate-300 block mb-1">Título do Comunicado:</label>
               <input id="toast-title" type="text" value="Aviso da Zeladoria Municipal" class="w-full bg-studio-card border border-studio-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500 font-sans" />
             </div>
 
             <div>
-              <label for="toast-msg" class="text-xs font-mono text-slate-300 block mb-1">Mensagem do Comunicado:</label>
-              <textarea id="toast-msg" rows="3" class="w-full bg-studio-card border border-studio-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500 font-sans resize-none" placeholder="Digite a mensagem que aparecerá em todas as telas..."></textarea>
+              <label for="toast-msg" class="text-xs font-mono text-slate-300 block mb-1">Mensagem em Destaque:</label>
+              <textarea id="toast-msg" rows="2" class="w-full bg-studio-card border border-studio-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500 font-sans resize-none" placeholder="Digite a mensagem que aparecerá em destaque nas telas..."></textarea>
+            </div>
+
+            <!-- Duration Selector -->
+            <div>
+              <label for="toast-duration" class="text-xs font-mono text-slate-300 block mb-1">Duração da Exibição na Tela:</label>
+              <select id="toast-duration" class="w-full bg-studio-card border border-studio-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono">
+                <option value="10">10 segundos (Rápido)</option>
+                <option value="30" selected>30 segundos (Padrão)</option>
+                <option value="60">60 segundos (Longo / 1 minuto)</option>
+                <option value="fixo">Fixo / Permanente (Até usuário dispensar)</option>
+              </select>
             </div>
 
             <!-- Quick Template Pills -->
@@ -435,8 +512,94 @@
 
     </div>
 
+    <!-- ROW 3: ATIVIDADES DA SEMANA & TELEMETRIA DE TELAS ATIVAS -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+      <!-- ========================================== -->
+      <!-- CARD 6: PRÓXIMAS ATIVIDADES DA SEMANA      -->
+      <!-- ========================================== -->
+      <div class="bg-studio-surface border border-studio-border rounded-2xl p-5 shadow-lg flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-base">📅</span>
+              <h2 class="font-bold text-sm text-white uppercase tracking-wider">Atividades da Semana (Calendário)</h2>
+            </div>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold uppercase">
+              SINCRONIZADO AO VIVO
+            </span>
+          </div>
+
+          <p class="text-xs text-slate-400 mb-4">
+            Gerencie os eventos e atividades comunitárias exibidas no mural de vida coletiva do totem público.
+          </p>
+
+          <!-- Current Activities List -->
+          <div id="dev-activities-list" class="space-y-2 mb-4 max-h-48 overflow-y-auto pr-1">
+            <!-- Rendered via JS -->
+          </div>
+
+          <!-- Add New Activity Form -->
+          <div class="bg-studio-card/80 p-3.5 rounded-xl border border-studio-border space-y-2.5">
+            <span class="text-xs font-bold text-white block">+ Adicionar Nova Atividade:</span>
+            <div class="grid grid-cols-3 gap-2">
+              <input id="new-act-icon" type="text" placeholder="Ícone (ex: 🧘)" value="🧘" class="bg-studio-bg border border-studio-border rounded-lg px-2.5 py-1.5 text-xs text-white font-mono" />
+              <input id="new-act-day" type="text" placeholder="Dia/Horário (ex: SÁB • 08h)" value="SÁBADO • 10:00" class="col-span-2 bg-studio-bg border border-studio-border rounded-lg px-2.5 py-1.5 text-xs text-white font-mono" />
+            </div>
+            <input id="new-act-title" type="text" placeholder="Título (ex: Oficina de Jardinagem)" value="" class="w-full bg-studio-bg border border-studio-border rounded-lg px-2.5 py-1.5 text-xs text-white font-sans" />
+            <input id="new-act-desc" type="text" placeholder="Descrição/Local (ex: Alameda Central)" value="" class="w-full bg-studio-bg border border-studio-border rounded-lg px-2.5 py-1.5 text-xs text-white font-sans" />
+            
+            <button type="button" id="btn-add-activity" class="w-full py-1.5 px-3 rounded-lg bg-emerald-700 hover:bg-emerald-600 text-white font-mono text-xs font-bold transition-all">
+              + Inserir na Lista
+            </button>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-studio-border/70 flex items-center justify-between">
+          <span class="text-[11px] font-mono text-slate-400">Total programado:</span>
+          <button id="btn-save-activities" class="py-2 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-600 text-white font-mono text-xs font-bold shadow-md">
+            💾 Transmitir Atividades ao Totem
+          </button>
+        </div>
+      </div>
+
+      <!-- ========================================== -->
+      <!-- CARD 7: TELEMETRIA DE TELAS CONECTADAS    -->
+      <!-- ========================================== -->
+      <div class="bg-studio-surface border border-studio-border rounded-2xl p-5 shadow-lg flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-base">🖥️</span>
+              <h2 class="font-bold text-sm text-white uppercase tracking-wider">Telas & Dispositivos Ativos</h2>
+            </div>
+            <span id="badge-screens-active" class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold uppercase">
+              1 CONECTADA
+            </span>
+          </div>
+
+          <p class="text-xs text-slate-400 mb-4">
+            Rastreamento em tempo real de cada totem e smartphone conectado via SSE.
+          </p>
+
+          <div id="dev-screens-list" class="space-y-2 max-h-56 overflow-y-auto pr-1">
+            <!-- Rendered via JS -->
+            <div class="p-3 rounded-xl bg-studio-card border border-studio-border text-xs font-mono text-slate-400">
+              Aguardando telemetria de telas...
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-studio-border/70 flex items-center justify-between text-[11px] font-mono text-slate-400">
+          <span>Identificação:</span>
+          <span class="text-emerald-400">IDs Amigáveis Ativos ✓</span>
+        </div>
+      </div>
+
+    </div>
+
     <!-- ========================================== -->
-    <!-- CARD 6: CONSOLE DE EVENTOS EM TEMPO REAL   -->
+    <!-- CARD 8: CONSOLE DE EVENTOS EM TEMPO REAL   -->
     <!-- ========================================== -->
     <div class="bg-studio-surface border border-studio-border rounded-2xl p-5 shadow-lg">
       <div class="flex items-center justify-between mb-3">
@@ -452,7 +615,7 @@
         </div>
       </div>
 
-      <div id="event-logs" class="h-44 overflow-y-auto bg-studio-bg rounded-xl p-3 border border-studio-border font-mono text-[11px] space-y-1.5 text-slate-300">
+      <div id="event-logs" class="h-36 overflow-y-auto bg-studio-bg rounded-xl p-3 border border-studio-border font-mono text-[11px] space-y-1.5 text-slate-300">
         <div class="text-slate-500">// Aguardando eventos de streaming em tempo real...</div>
       </div>
     </div>
@@ -474,6 +637,10 @@
     // ESTADO LOCAL DE CONTROLE
     let currentCourtStatus = "em_uso";
     let eventSource = null;
+    let devPassword = sessionStorage.getItem('dev_auth_token') || '';
+    let currentActivities = [];
+    let currentBookings = [];
+    let activeScreens = [];
 
     // Helper de Toast
     function showStudioToast(title, desc, isError = false) {
@@ -519,19 +686,68 @@
       logEvent("SISTEMA", "Logs limpos pelo operador.", "text-slate-400");
     });
 
+    // ==========================================
+    // AUTENTICAÇÃO COM O SERVIDOR
+    // ==========================================
+    async function verifyPassword(pass) {
+      try {
+        const res = await fetch('/api/auth/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: pass })
+        });
+        const data = await res.json();
+        return res.ok && data.success;
+      } catch (err) {
+        return false;
+      }
+    }
+
+    function checkAuthOnLoad() {
+      const modal = document.getElementById('auth-modal');
+      if (devPassword) {
+        verifyPassword(devPassword).then(ok => {
+          if (ok) {
+            modal.classList.add('hidden');
+          } else {
+            sessionStorage.removeItem('dev_auth_token');
+            devPassword = '';
+            modal.classList.remove('hidden');
+          }
+        });
+      } else {
+        modal.classList.remove('hidden');
+      }
+    }
+
     // Enviar Ação para a API POST /api/control
     async function sendControlAction(actionData) {
+      if (!devPassword) {
+        document.getElementById('auth-modal').classList.remove('hidden');
+        showStudioToast("Bloqueado", "Autentique com a senha do painel dev.", true);
+        return;
+      }
+
       try {
         const res = await fetch('/api/control', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(actionData)
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${devPassword}`
+          },
+          body: JSON.stringify({ ...actionData, password: devPassword })
         });
+
         const json = await res.json();
         if (res.ok && json.success) {
           showStudioToast("Transmitido!", `Ação '${actionData.action}' aplicada globalmente.`);
           document.getElementById('last-sync-time').innerText = new Date().toLocaleTimeString();
           return json;
+        } else if (res.status === 401) {
+          sessionStorage.removeItem('dev_auth_token');
+          devPassword = '';
+          document.getElementById('auth-modal').classList.remove('hidden');
+          showStudioToast("Sessão Expirada", "Senha inválida ou alterada.", true);
         } else {
           showStudioToast("Erro", json.error || "Falha ao enviar ação.", true);
         }
@@ -540,14 +756,138 @@
       }
     }
 
-    // Conectar ao fluxo Server-Sent Events (SSE)
+    // ==========================================
+    // RENDERIZADORES DE UI
+    // ==========================================
+    function renderScreensList(screens) {
+      activeScreens = screens || [];
+      const container = document.getElementById('dev-screens-list');
+      const countBadge = document.getElementById('badge-screens-active');
+      const headerCount = document.getElementById('active-screens-count');
+
+      if (countBadge) countBadge.innerText = `${activeScreens.length} CONECTADA${activeScreens.length > 1 ? 'S' : ''}`;
+      if (headerCount) headerCount.innerText = activeScreens.length;
+
+      if (!container) return;
+      container.innerHTML = '';
+
+      if (activeScreens.length === 0) {
+        container.innerHTML = '<div class="p-3 rounded-xl bg-studio-card border border-studio-border text-xs font-mono text-slate-400">Nenhuma tela conectada no momento.</div>';
+        return;
+      }
+
+      activeScreens.forEach(s => {
+        const div = document.createElement('div');
+        const icon = s.type === 'mobile' ? '📱' : (s.type === 'dev' ? '🛠️' : '🖥️');
+        const typeBadge = s.type === 'mobile' ? 'Mobile' : (s.type === 'dev' ? 'Admin' : 'Totem Público');
+        div.className = "p-3 rounded-xl bg-studio-card border border-studio-border flex items-center justify-between text-xs font-mono";
+        div.innerHTML = `
+          <div class="flex items-center gap-2.5">
+            <span class="text-base">${icon}</span>
+            <div>
+              <span class="font-bold text-white block">${s.name || s.id}</span>
+              <span class="text-[10px] text-slate-400">${typeBadge} • IP: ${s.ip}</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="text-[10px] text-emerald-400 font-bold">ONLINE</span>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function renderBookingsList(bookings) {
+      currentBookings = bookings || [];
+      const listEl = document.getElementById('dev-bookings-list');
+      const badge = document.getElementById('bookings-count');
+      if (badge) badge.innerText = `${currentBookings.length} reserva${currentBookings.length !== 1 ? 's' : ''}`;
+      if (!listEl) return;
+
+      listEl.innerHTML = '';
+      if (currentBookings.length === 0) {
+        listEl.innerHTML = '<div class="text-slate-500 p-2 text-[11px]">Nenhum horário reservado para hoje.</div>';
+        return;
+      }
+
+      currentBookings.forEach(b => {
+        const item = document.createElement('div');
+        item.className = "flex items-center justify-between p-2 rounded-lg bg-studio-bg border border-studio-border text-[11px]";
+        item.innerHTML = `
+          <div>
+            <span class="text-cyan-400 font-bold">${b.slot}</span>
+            <span class="text-slate-300 ml-1.5">${b.name} (${b.sport})</span>
+          </div>
+          <button class="btn-cancel-slot text-rose-400 hover:text-rose-300 px-2 py-0.5 rounded bg-rose-500/10 hover:bg-rose-500/20 text-[10px]" data-id="${b.id}" data-slot="${b.slot}">
+            Cancelar
+          </button>
+        `;
+        listEl.appendChild(item);
+      });
+
+      listEl.querySelectorAll('.btn-cancel-slot').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-id');
+          const slot = btn.getAttribute('data-slot');
+          if (confirm(`Cancelar reserva das ${slot}?`)) {
+            sendControlAction({ action: 'cancel_booking', id: id, slot: slot });
+          }
+        });
+      });
+    }
+
+    function renderActivitiesList(acts) {
+      currentActivities = acts || [];
+      const container = document.getElementById('dev-activities-list');
+      if (!container) return;
+      container.innerHTML = '';
+
+      if (currentActivities.length === 0) {
+        container.innerHTML = '<div class="text-slate-500 p-2 text-xs font-mono">Nenhuma atividade cadastrada.</div>';
+        return;
+      }
+
+      currentActivities.forEach((act, idx) => {
+        const div = document.createElement('div');
+        div.className = "flex items-start justify-between p-2.5 rounded-xl bg-studio-card border border-studio-border text-xs";
+        div.innerHTML = `
+          <div class="flex items-start gap-2.5">
+            <span class="text-xl">${act.icon || '📌'}</span>
+            <div>
+              <span class="text-[10px] font-mono text-sakura-400 font-bold block">${act.dayTime}</span>
+              <span class="font-bold text-white text-xs block">${act.title}</span>
+              <span class="text-[11px] text-slate-400 block">${act.desc}</span>
+            </div>
+          </div>
+          <button class="btn-del-act text-rose-400 hover:text-rose-300 p-1 rounded hover:bg-rose-500/20 text-xs" data-idx="${idx}" title="Excluir atividade">
+            ✕
+          </button>
+        `;
+        container.appendChild(div);
+      });
+
+      container.querySelectorAll('.btn-del-act').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const i = parseInt(btn.getAttribute('data-idx'));
+          currentActivities.splice(i, 1);
+          renderActivitiesList(currentActivities);
+          showStudioToast("Removido", "Clique em 'Transmitir Atividades' para aplicar.");
+        });
+      });
+    }
+
+    // ==========================================
+    // STREAMING SSE
+    // ==========================================
     function setupSSE() {
       if (eventSource) eventSource.close();
-      eventSource = new EventSource('/api/events');
+      const devScreenId = `Dev Studio #${Math.floor(100 + Math.random() * 900)}`;
+      eventSource = new EventSource(`/api/events?screenId=${encodeURIComponent(devScreenId)}&screenType=dev&screenName=${encodeURIComponent(devScreenId)}`);
 
       eventSource.addEventListener('init', (e) => {
         const state = JSON.parse(e.data);
-        logEvent("INIT", `Estado global recebido do servidor. Telas conectadas: ${state.activeScreens}`, "text-cyan-400");
+        logEvent("INIT", `Estado global recebido. Telas conectadas: ${state.activeScreens}`, "text-cyan-400");
         updateUIWithState(state);
       });
 
@@ -573,6 +913,19 @@
         updateCourtUI(data.court);
       });
 
+      eventSource.addEventListener('court_booking_update', (e) => {
+        const data = JSON.parse(e.data);
+        logEvent("BOOKING", `Grade de reservas atualizada no backend.`, "text-emerald-400");
+        if (data.bookings) renderBookingsList(data.bookings);
+        if (data.court) updateCourtUI(data.court);
+      });
+
+      eventSource.addEventListener('activities_change', (e) => {
+        const data = JSON.parse(e.data);
+        logEvent("ACTIVITIES", `Atividades da semana atualizadas.`, "text-emerald-400");
+        if (data.activities) renderActivitiesList(data.activities);
+      });
+
       eventSource.addEventListener('bell_config', (e) => {
         const data = JSON.parse(e.data);
         logEvent("BELL_CFG", `Sino ${data.bell.enabled ? 'ATIVADO' : 'DESATIVADO'}`, "text-amber-400");
@@ -587,12 +940,12 @@
 
       eventSource.addEventListener('toast_broadcast', (e) => {
         const data = JSON.parse(e.data);
-        logEvent("BROADCAST", `"${data.title}": ${data.message}`, "text-cyan-400");
+        logEvent("BROADCAST", `"${data.title}" (${data.duration || 30}s): ${data.message}`, "text-cyan-400");
       });
 
       eventSource.addEventListener('screens_count', (e) => {
         const data = JSON.parse(e.data);
-        document.getElementById('active-screens-count').innerText = data.activeScreens;
+        renderScreensList(data.screens || []);
       });
 
       eventSource.onopen = () => {
@@ -607,12 +960,12 @@
 
     // Atualização de UI conforme o estado do servidor
     function updateUIWithState(state) {
-      if (state.activeScreens !== undefined) {
-        document.getElementById('active-screens-count').innerText = state.activeScreens;
-      }
+      if (state.screens) renderScreensList(state.screens);
       if (state.weather) updateWeatherUI(state.weather);
       if (state.sakuraPhase) updatePhaseUI(state.sakuraPhase);
       if (state.court) updateCourtUI(state.court);
+      if (state.courtBookings) renderBookingsList(state.courtBookings);
+      if (state.weeklyActivities) renderActivitiesList(state.weeklyActivities);
       if (state.bell) updateBellConfigUI(state.bell);
     }
 
@@ -700,7 +1053,41 @@
 
     // LISTENERS DE INTERAÇÃO
     document.addEventListener('DOMContentLoaded', () => {
+      checkAuthOnLoad();
       setupSSE();
+
+      // Form Auth Submit
+      document.getElementById('form-auth').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const pass = document.getElementById('input-dev-pass').value.trim();
+        const errEl = document.getElementById('auth-error-msg');
+        errEl.classList.add('hidden');
+
+        const ok = await verifyPassword(pass);
+        if (ok) {
+          devPassword = pass;
+          sessionStorage.setItem('dev_auth_token', pass);
+          document.getElementById('auth-modal').classList.add('hidden');
+          showStudioToast("Autenticado!", "Painel de controle liberado com sucesso.");
+        } else {
+          errEl.classList.remove('hidden');
+        }
+      });
+
+      // Toggle pass visibility
+      document.getElementById('btn-toggle-pass-visibility').addEventListener('click', () => {
+        const input = document.getElementById('input-dev-pass');
+        input.type = input.type === 'password' ? 'text' : 'password';
+      });
+
+      // Lock panel button
+      document.getElementById('btn-lock-panel').addEventListener('click', () => {
+        sessionStorage.removeItem('dev_auth_token');
+        devPassword = '';
+        document.getElementById('input-dev-pass').value = '';
+        document.getElementById('auth-modal').classList.remove('hidden');
+        showStudioToast("Painel Bloqueado", "Autentique novamente para acessar.");
+      });
 
       // Weather buttons
       document.querySelectorAll('.btn-weather').forEach(b => {
@@ -764,11 +1151,14 @@
         e.preventDefault();
         const title = document.getElementById('toast-title').value.trim();
         const msg = document.getElementById('toast-msg').value.trim();
+        const durVal = document.getElementById('toast-duration').value;
+        const duration = durVal === 'fixo' ? 'fixo' : (parseInt(durVal) || 30);
+
         if (!msg) {
           showStudioToast("Campo Vazio", "Digite uma mensagem antes de transmitir.", true);
           return;
         }
-        sendControlAction({ action: 'send_toast', title: title, message: msg });
+        sendControlAction({ action: 'send_toast', title: title, message: msg, duration: duration });
         document.getElementById('toast-msg').value = '';
       });
 
@@ -777,6 +1167,37 @@
         btn.addEventListener('click', () => {
           document.getElementById('toast-msg').value = btn.getAttribute('data-msg');
         });
+      });
+
+      // Add Activity to list
+      document.getElementById('btn-add-activity').addEventListener('click', () => {
+        const icon = document.getElementById('new-act-icon').value.trim() || '📌';
+        const day = document.getElementById('new-act-day').value.trim();
+        const title = document.getElementById('new-act-title').value.trim();
+        const desc = document.getElementById('new-act-desc').value.trim();
+
+        if (!title || !day) {
+          showStudioToast("Preencha os Campos", "Título e dia/horário são obrigatórios.", true);
+          return;
+        }
+
+        currentActivities.push({
+          id: 'act-' + Date.now(),
+          icon: icon,
+          dayTime: day,
+          title: title,
+          desc: desc || 'Atividade na praça'
+        });
+
+        renderActivitiesList(currentActivities);
+        document.getElementById('new-act-title').value = '';
+        document.getElementById('new-act-desc').value = '';
+        showStudioToast("Adicionado à lista", "Clique em 'Transmitir Atividades' para salvar globalmente.");
+      });
+
+      // Save and Broadcast Activities
+      document.getElementById('btn-save-activities').addEventListener('click', () => {
+        sendControlAction({ action: 'set_activities', activities: currentActivities });
       });
     });
   </script>

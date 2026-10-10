@@ -1,17 +1,62 @@
 {
-  "weather": "rain",
-  "sakuraPhase": 3,
+  "weather": "night",
+  "sakuraPhase": 4,
   "windStrength": 1,
   "court": {
     "status": "em_uso",
-    "activity": "Basquete 3x3 Juvenil",
-    "remainingMinutes": 22,
-    "nextSlot": "14:30 às 15:30 (Treino de Vôlei)"
+    "activity": "Basquete 3x3",
+    "remainingMinutes": 15
   },
+  "courtBookings": [
+    {
+      "id": "book-1",
+      "slot": "15:00",
+      "timeLabel": "15:00 às 16:00",
+      "name": "Turma do Vôlei",
+      "sport": "Vôlei",
+      "createdAt": 1791607000000
+    },
+    {
+      "id": "book-2",
+      "slot": "18:00",
+      "timeLabel": "18:00 às 19:00",
+      "name": "Amigos do Basquete",
+      "sport": "Basquete",
+      "createdAt": 1791607500000
+    },
+    {
+      "id": "book-3",
+      "slot": "19:00",
+      "timeLabel": "19:00 às 20:00",
+      "name": "Liga Noturna Futsal",
+      "sport": "Futsal",
+      "createdAt": 1791607800000
+    }
+  ],
+  "weeklyActivities": [
+    {
+      "icon": "🧘",
+      "dayTime": "SÁBADO • 08:00",
+      "title": "Yoga & Meditação Matinal",
+      "desc": "Deck dos Mestres"
+    },
+    {
+      "icon": "🥕",
+      "dayTime": "SÁBADO • 09:30",
+      "title": "Feirinha Agroecológica",
+      "desc": "Alameda das Cerejeiras"
+    },
+    {
+      "icon": "🎨",
+      "dayTime": "DOMINGO • 16:00",
+      "title": "Oficina de Desenho Infantil",
+      "desc": "Espaço Conecta Kids"
+    }
+  ],
   "bell": {
     "enabled": true,
     "cooldownSeconds": 20,
-    "lastRung": 1791607559459
+    "lastRung": 0
   },
-  "lastBroadcast": 1791607678994
+  "lastBroadcast": 1791610697766
 }
