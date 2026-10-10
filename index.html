@@ -103,15 +103,13 @@
 
       <div class="h-5 w-[1px] bg-figma-border hidden lg:block"></div>
 
-      <!-- Weather Quick Switcher in Header -->
-      <div class="hidden xl:flex items-center gap-1 bg-[#D8CEB8]/70 p-1 rounded-lg border border-figma-border text-[11px] font-mono">
-        <span id="header-weather-badge" class="px-2 py-0.5 font-bold text-figma-textPrimary flex items-center gap-1">
+      <!-- Real-time Synchronized Weather in Header -->
+      <div class="hidden xl:flex items-center gap-2 bg-[#D8CEB8]/70 px-3 py-1.5 rounded-lg border border-figma-border text-[11px] font-mono">
+        <span id="header-weather-badge" class="font-bold text-figma-textPrimary flex items-center gap-1.5">
           <span id="header-weather-icon">☀️</span> <span id="header-weather-temp">24°C</span>
         </span>
-        <button id="btn-weather-sun" class="weather-btn active px-2 py-0.5 rounded bg-sakura-500 text-white font-semibold shadow-xs transition-all" title="Tempo Ensolarado">☀️ Sol</button>
-        <button id="btn-weather-rain" class="weather-btn px-2 py-0.5 rounded text-figma-textSecondary hover:bg-figma-hover font-semibold transition-all" title="Simular Chuva em ASCII">🌧️ Chuva ASCII</button>
-        <button id="btn-weather-wind" class="weather-btn px-2 py-0.5 rounded text-figma-textSecondary hover:bg-figma-hover font-semibold transition-all" title="Simular Ventania">💨 Vento</button>
-        <button id="btn-weather-night" class="weather-btn px-2 py-0.5 rounded text-figma-textSecondary hover:bg-figma-hover font-semibold transition-all" title="Modo Noite Iluminada">🌙 Noite</button>
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
+        <span id="header-weather-condition-short" class="text-[10px] text-figma-textSecondary">Ensolarado</span>
       </div>
     </div>
 
@@ -248,13 +246,18 @@
               </div>
             </div>
 
-            <!-- Fast Weather Simulation Controls -->
-            <div class="flex items-center gap-1.5 bg-[#D8CEB8]/70 p-1.5 rounded-xl border border-figma-border text-xs font-mono">
-              <span class="text-[10px] text-figma-textMuted uppercase px-1 hidden sm:inline">Simular Clima:</span>
-              <button class="btn-weather-select active px-3 py-1.5 rounded-lg bg-sakura-500 text-white font-bold transition-all shadow-xs" data-weather="sun">☀️ Sol</button>
-              <button class="btn-weather-select px-3 py-1.5 rounded-lg text-figma-textSecondary hover:bg-figma-hover font-bold transition-all" data-weather="rain">🌧️ Chuva ASCII</button>
-              <button class="btn-weather-select px-3 py-1.5 rounded-lg text-figma-textSecondary hover:bg-figma-hover font-bold transition-all" data-weather="wind">💨 Ventania</button>
-              <button class="btn-weather-select px-3 py-1.5 rounded-lg text-figma-textSecondary hover:bg-figma-hover font-bold transition-all" data-weather="night">🌙 Noite</button>
+            <!-- Global Community Bell Trigger (Synchronized Furin with 20s Cooldown) -->
+            <div class="flex items-center gap-3">
+              <button id="btn-community-bell" class="relative group px-4 py-2.5 sm:px-5 sm:py-3 rounded-2xl bg-gradient-to-r from-sakura-500 via-sakura-600 to-sakura-700 hover:from-sakura-600 hover:to-sakura-800 text-white font-bold text-xs sm:text-sm flex items-center gap-3 shadow-lg shadow-sakura-500/25 transition-all active:scale-95 border border-white/25">
+                <span id="bell-icon" class="text-xl sm:text-2xl transition-transform group-hover:rotate-12 group-hover:scale-110 select-none">🔔</span>
+                <div class="flex flex-col text-left">
+                  <div class="flex items-center gap-1.5">
+                    <span id="bell-btn-text" class="leading-tight font-extrabold tracking-wide">Tocar Sino da Praça</span>
+                    <span id="bell-badge-tag" class="text-[9px] bg-white/20 text-white px-1.5 py-0.2 rounded font-mono font-bold uppercase">GLOBAL</span>
+                  </div>
+                  <span id="bell-btn-sub" class="text-[10px] text-sakura-100 font-mono">Sincronizado em todas as telas • 20s delay</span>
+                </div>
+              </button>
             </div>
           </div>
 
@@ -491,12 +494,10 @@
                 </p>
               </div>
 
-              <!-- Quick Status Toggle Simulator (so visitors can test free vs occupied!) -->
-              <div class="flex items-center gap-2 text-xs font-mono">
-                <span class="text-figma-textMuted">Simular Status:</span>
-                <button id="btn-court-toggle-status" class="px-3 py-1.5 rounded-lg border border-figma-border bg-[#D8CEB8] hover:bg-figma-hover text-figma-textPrimary font-semibold transition-all">
-                  Alternar (Ocupado / Livre)
-                </button>
+              <!-- Real-time Synchronized Court Badge -->
+              <div class="flex items-center gap-2 text-xs font-mono bg-[#D8CEB8]/80 px-3 py-1.5 rounded-xl border border-figma-border">
+                <span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
+                <span class="text-figma-textSecondary">Sincronizado via Conecta Cloud</span>
               </div>
             </div>
 
@@ -1341,6 +1342,11 @@
     <span id="toast-message">Notificação</span>
   </div>
 
+  <!-- GLOBAL COMMUNITY BELL RIPPLE WAVE EFFECT -->
+  <div id="bell-ripple-overlay" class="fixed inset-0 pointer-events-none z-50 flex items-center justify-center opacity-0 transition-opacity duration-700">
+    <div class="w-32 h-32 sm:w-64 sm:h-64 rounded-full border-4 border-sakura-500/60 animate-ping"></div>
+  </div>
+
   <!-- KIOSK IDLE SCREENSAVER OVERLAY -->
   <div id="totem-screensaver">
     <div class="flex items-center justify-between w-full max-w-5xl">
@@ -1612,7 +1618,7 @@
      */
     class SoundEngine {
       constructor() {
-        this.enabled = false;
+        this.enabled = true;
         this.ctx = null;
       }
 
@@ -1625,13 +1631,18 @@
         }
       }
 
+      unlock() {
+        this.enabled = true;
+        this.init();
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
       toggle() {
         this.enabled = !this.enabled;
         if (this.enabled) {
-          this.init();
-          if (this.ctx && this.ctx.state === 'suspended') {
-            this.ctx.resume();
-          }
+          this.unlock();
           this.playBell(587.33); // D5
         }
         return this.enabled;
@@ -3372,19 +3383,302 @@
       setInterval(updateClock, 1000);
       updateClock();
 
-      // Interactive Weather Switchers (Header & Hero)
-      document.querySelectorAll('.weather-btn, .btn-weather-select').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const w = btn.getAttribute('data-weather') || btn.id.replace('btn-weather-', '');
-          engine.setWeather(w);
-        });
+      // Unlock Web Audio API on first user interaction
+      ['click', 'touchstart', 'keydown'].forEach(evt => {
+        window.addEventListener(evt, () => sound.unlock(), { once: true, passive: true });
       });
 
-      // Hanami Chime Trigger
-      document.getElementById('btn-sakura-chime')?.addEventListener('click', () => {
-        sound.playFurin();
-        showToast("Harmônicos de Furin tocados no Bosque da Sakura!");
-      });
+      // ==========================================
+      // TOTEM SYNC CLIENT (SSE TEMPO REAL)
+      // ==========================================
+      class TotemSyncClient {
+        constructor(engine, sound) {
+          this.engine = engine;
+          this.sound = sound;
+          this.eventSource = null;
+          this.bellCooldownSeconds = 20;
+          this.bellRemaining = 0;
+          this.bellInterval = null;
+          this.bellEnabled = true;
+          this.courtIsBusy = true;
+          this.courtSeconds = 22 * 60;
+        }
+
+        start() {
+          this.setupSSE();
+          this.bindBell();
+        }
+
+        setupSSE() {
+          if (this.eventSource) this.eventSource.close();
+          this.eventSource = new EventSource('/api/events');
+
+          this.eventSource.addEventListener('init', (e) => {
+            try {
+              const state = JSON.parse(e.data);
+              if (state.weather) {
+                this.engine.setWeather(state.weather);
+                this.updateWeatherHeader(state.weather);
+              }
+              if (state.sakuraPhase) this.engine.setSakuraPhase(state.sakuraPhase);
+              if (state.court) this.updateCourt(state.court);
+              if (state.bell) this.updateBellConfig(state.bell);
+            } catch(err) {
+              console.error("[SYNC] Erro no init:", err);
+            }
+          });
+
+          this.eventSource.addEventListener('weather_change', (e) => {
+            try {
+              const data = JSON.parse(e.data);
+              if (data.weather) {
+                this.engine.setWeather(data.weather);
+                this.updateWeatherHeader(data.weather);
+              }
+            } catch(err) {}
+          });
+
+          this.eventSource.addEventListener('phase_change', (e) => {
+            try {
+              const data = JSON.parse(e.data);
+              if (data.sakuraPhase) this.engine.setSakuraPhase(data.sakuraPhase);
+            } catch(err) {}
+          });
+
+          this.eventSource.addEventListener('wind_gust', () => {
+            this.engine.burstPetals();
+            this.sound.playFurin();
+            showToast("💨 Rajada de vento viva na praça!");
+          });
+
+          this.eventSource.addEventListener('court_change', (e) => {
+            try {
+              const data = JSON.parse(e.data);
+              if (data.court) this.updateCourt(data.court);
+            } catch(err) {}
+          });
+
+          this.eventSource.addEventListener('bell_config', (e) => {
+            try {
+              const data = JSON.parse(e.data);
+              if (data.bell) this.updateBellConfig(data.bell);
+            } catch(err) {}
+          });
+
+          this.eventSource.addEventListener('bell_ring', (e) => {
+            try {
+              const data = JSON.parse(e.data);
+              this.ringBell(data);
+            } catch(err) {}
+          });
+
+          this.eventSource.addEventListener('toast_broadcast', (e) => {
+            try {
+              const data = JSON.parse(e.data);
+              showToast(`📢 ${data.title ? data.title + ': ' : ''}${data.message}`);
+              this.sound.playBell(784);
+            } catch(err) {}
+          });
+
+          this.eventSource.onerror = () => {
+            console.warn("[SYNC] Conexão SSE perdida. Tentando reconectar...");
+          };
+        }
+
+        updateWeatherHeader(weather) {
+          const map = {
+            sun: { icon: "☀️", temp: "24°C", text: "Ensolarado" },
+            rain: { icon: "🌧️", temp: "20°C", text: "Chuva ASCII" },
+            wind: { icon: "💨", temp: "22°C", text: "Ventania" },
+            night: { icon: "🌙", temp: "18°C", text: "Noite Yozakura" }
+          };
+          const cur = map[weather] || map.sun;
+          const iconEl = document.getElementById('header-weather-icon');
+          const tempEl = document.getElementById('header-weather-temp');
+          const condEl = document.getElementById('header-weather-condition-short');
+          if (iconEl) iconEl.innerText = cur.icon;
+          if (tempEl) tempEl.innerText = cur.temp;
+          if (condEl) condEl.innerText = cur.text;
+        }
+
+        updateCourt(court) {
+          const courtStatusTitle = document.getElementById('court-status-title');
+          const courtStatusDesc = document.getElementById('court-status-desc');
+          const courtStatusCard = document.getElementById('court-status-card');
+          const badgeCourtQuick = document.getElementById('badge-court-quick');
+          const courtCountdown = document.getElementById('court-countdown');
+          const quickCourtTimer = document.getElementById('quick-court-timer');
+          const ssCourtBadge = document.getElementById('screensaver-court-badge');
+          const courtNext = document.getElementById('court-next-info');
+
+          if (court.nextSlot && courtNext) {
+            courtNext.innerText = `Próxima vaga: ${court.nextSlot}`;
+          }
+
+          if (court.status === "em_uso") {
+            this.courtIsBusy = true;
+            this.courtSeconds = (court.remainingMinutes || 22) * 60;
+            if (courtStatusTitle) {
+              courtStatusTitle.innerText = "🔴 EM USO AGORA";
+              courtStatusTitle.className = "text-2xl sm:text-3xl font-extrabold text-rose-900 mb-1";
+            }
+            if (courtStatusDesc) {
+              courtStatusDesc.innerHTML = `Partida amistosa de <strong>${court.activity || 'Basquete 3x3'}</strong>.`;
+            }
+            if (courtStatusCard) {
+              courtStatusCard.className = "glass-card p-6 rounded-2xl border-2 border-rose-500 bg-rose-500/10 flex flex-col justify-between";
+            }
+            if (badgeCourtQuick) {
+              badgeCourtQuick.className = "px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-rose-500/15 text-rose-700 flex items-center gap-1 animate-pulse";
+              badgeCourtQuick.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-rose-600"></span> EM USO';
+            }
+            if (quickCourtTimer) quickCourtTimer.innerText = `${court.remainingMinutes || 22} min restantes`;
+            if (ssCourtBadge) ssCourtBadge.innerText = `QUADRA: EM USO (${court.remainingMinutes || 22}m rest.)`;
+          } else if (court.status === "livre") {
+            this.courtIsBusy = false;
+            if (courtStatusTitle) {
+              courtStatusTitle.innerText = "🟢 LIVRE PARA JOGAR";
+              courtStatusTitle.className = "text-2xl sm:text-3xl font-extrabold text-emerald-900 mb-1";
+            }
+            if (courtStatusDesc) {
+              courtStatusDesc.innerText = "Nenhuma partida agendada para o momento. Entre e aproveite!";
+            }
+            if (courtStatusCard) {
+              courtStatusCard.className = "glass-card p-6 rounded-2xl border-2 border-emerald-500 bg-emerald-500/10 flex flex-col justify-between";
+            }
+            if (badgeCourtQuick) {
+              badgeCourtQuick.className = "px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/15 text-emerald-700 flex items-center gap-1";
+              badgeCourtQuick.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> LIVRE AGORA';
+            }
+            if (courtCountdown) courtCountdown.innerText = "LIBERADA";
+            if (quickCourtTimer) quickCourtTimer.innerText = "Livre para jogar";
+            if (ssCourtBadge) ssCourtBadge.innerText = "QUADRA: LIVRE PARA JOGAR";
+          } else {
+            this.courtIsBusy = false;
+            if (courtStatusTitle) {
+              courtStatusTitle.innerText = "🟡 MANUTENÇÃO TÉCNICA";
+              courtStatusTitle.className = "text-2xl sm:text-3xl font-extrabold text-amber-900 mb-1";
+            }
+            if (courtStatusDesc) {
+              courtStatusDesc.innerText = "Pintura e manutenção de tabelas pela prefeitura.";
+            }
+            if (badgeCourtQuick) {
+              badgeCourtQuick.className = "px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-500/15 text-amber-800 flex items-center gap-1";
+              badgeCourtQuick.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span> MANUTENÇÃO';
+            }
+          }
+        }
+
+        updateBellConfig(bell) {
+          this.bellEnabled = bell.enabled;
+          this.bellCooldownSeconds = bell.cooldownSeconds || 20;
+          const btn = document.getElementById('btn-community-bell');
+          const sub = document.getElementById('bell-btn-sub');
+          const tag = document.getElementById('bell-badge-tag');
+
+          if (!this.bellEnabled) {
+            if (btn) btn.classList.add('opacity-50', 'cursor-not-allowed');
+            if (sub) sub.innerText = "Desativado temporariamente pela zeladoria";
+            if (tag) {
+              tag.innerText = "PAUSA";
+              tag.className = "text-[9px] bg-amber-500/30 text-amber-200 px-1.5 py-0.2 rounded font-mono font-bold uppercase";
+            }
+          } else if (this.bellRemaining <= 0) {
+            if (btn) btn.classList.remove('opacity-50', 'cursor-not-allowed');
+            if (sub) sub.innerText = "Sincronizado em todas as telas • 20s delay";
+            if (tag) {
+              tag.innerText = "GLOBAL";
+              tag.className = "text-[9px] bg-white/20 text-white px-1.5 py-0.2 rounded font-mono font-bold uppercase";
+            }
+          }
+
+          if (bell.lastRung) {
+            const elapsed = (Date.now() - bell.lastRung) / 1000;
+            if (elapsed < this.bellCooldownSeconds) {
+              this.startCooldown(Math.ceil(this.bellCooldownSeconds - elapsed));
+            }
+          }
+        }
+
+        ringBell(data) {
+          this.sound.unlock();
+          this.sound.playFurin();
+
+          const ripple = document.getElementById('bell-ripple-overlay');
+          if (ripple) {
+            ripple.classList.remove('opacity-0');
+            setTimeout(() => ripple.classList.add('opacity-0'), 1400);
+          }
+
+          showToast("🔔 O Sino da Praça foi tocado! Harmônicos de Furin na praça.");
+          const cd = data.cooldownSeconds || 20;
+          this.startCooldown(cd);
+        }
+
+        startCooldown(seconds) {
+          if (this.bellInterval) clearInterval(this.bellInterval);
+          this.bellRemaining = seconds;
+          const btn = document.getElementById('btn-community-bell');
+          const text = document.getElementById('bell-btn-text');
+          const sub = document.getElementById('bell-btn-sub');
+          const icon = document.getElementById('bell-icon');
+
+          const update = () => {
+            if (this.bellRemaining > 0) {
+              if (btn) btn.classList.add('opacity-60', 'cursor-wait');
+              if (text) text.innerText = `Aguarde (${this.bellRemaining}s)`;
+              if (sub) sub.innerText = `Próximo toque liberado em ${this.bellRemaining}s`;
+              if (icon) icon.innerText = "⏳";
+              this.bellRemaining--;
+            } else {
+              clearInterval(this.bellInterval);
+              this.bellInterval = null;
+              if (btn) btn.classList.remove('opacity-60', 'cursor-wait');
+              if (text) text.innerText = "Tocar Sino da Praça";
+              if (sub) sub.innerText = "Sincronizado em todas as telas • 20s delay";
+              if (icon) icon.innerText = "🔔";
+            }
+          };
+
+          update();
+          this.bellInterval = setInterval(update, 1000);
+        }
+
+        bindBell() {
+          const triggerRing = async () => {
+            this.sound.unlock();
+
+            if (!this.bellEnabled) {
+              showToast("Sino desativado no momento pela moderação.");
+              return;
+            }
+
+            if (this.bellRemaining > 0) {
+              showToast(`Aguarde ${this.bellRemaining}s para tocar o sino novamente.`);
+              return;
+            }
+
+            try {
+              const res = await fetch('/api/bell', { method: 'POST' });
+              const json = await res.json();
+              if (res.status === 429) {
+                showToast(`Aguarde o cooldown (${json.remainingSeconds}s)...`);
+                this.startCooldown(json.remainingSeconds || 20);
+              } else if (res.status === 403) {
+                showToast(json.error || "Sino temporariamente desativado.");
+              }
+            } catch(err) {
+              showToast("Erro ao conectar com o sino.");
+            }
+          };
+
+          document.getElementById('btn-community-bell')?.addEventListener('click', triggerRing);
+          document.getElementById('btn-sakura-chime')?.addEventListener('click', triggerRing);
+        }
+      }
+
+      const totemSync = new TotemSyncClient(engine, sound);
+      totemSync.start();
 
       // SAKURA PHENOLOGICAL BIOLOGICAL PHASE SWITCHERS (Section 2 & Inspector)
       document.querySelectorAll('.phase-card, .btn-select-phase, .btn-inspector-phase').forEach(el => {
@@ -3492,58 +3786,24 @@
         showToast(`Reserva confirmada! ${selectedSport} agendado para ${selectedSlotTime}.`);
       });
 
-      // Court Status Toggle Simulator (Em Uso vs Livre)
-      let courtIsBusy = true;
-      let courtSeconds = 22 * 60 - 15;
-      const courtStatusTitle = document.getElementById('court-status-title');
-      const courtStatusDesc = document.getElementById('court-status-desc');
-      const courtStatusCard = document.getElementById('court-status-card');
-      const badgeCourtQuick = document.getElementById('badge-court-quick');
-      const courtCountdown = document.getElementById('court-countdown');
-      const quickCourtTimer = document.getElementById('quick-court-timer');
-      const courtProgressBar = document.getElementById('court-progress-bar');
-      const ssCourtBadge = document.getElementById('screensaver-court-badge');
-
-      document.getElementById('btn-court-toggle-status')?.addEventListener('click', () => {
-        sound.playClick();
-        courtIsBusy = !courtIsBusy;
-        if (courtIsBusy) {
-          courtStatusTitle.innerText = "🔴 EM USO AGORA";
-          courtStatusTitle.className = "text-2xl sm:text-3xl font-extrabold text-rose-900 mb-1";
-          courtStatusDesc.innerText = "Partida amistosa de Basquete 3x3 Juvenil.";
-          courtStatusCard.className = "glass-card p-6 rounded-2xl border-2 border-rose-500 bg-rose-500/10 flex flex-col justify-between";
-          badgeCourtQuick.className = "px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-rose-500/15 text-rose-700 flex items-center gap-1 animate-pulse";
-          badgeCourtQuick.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-rose-600"></span> EM USO';
-          if (ssCourtBadge) ssCourtBadge.innerText = "QUADRA: EM USO (22m rest.)";
-          showToast("Status da Quadra simulado: EM USO");
-        } else {
-          courtStatusTitle.innerText = "🟢 LIVRE PARA JOGAR";
-          courtStatusTitle.className = "text-2xl sm:text-3xl font-extrabold text-emerald-900 mb-1";
-          courtStatusDesc.innerText = "Nenhuma partida agendada para o momento. Entre e aproveite!";
-          courtStatusCard.className = "glass-card p-6 rounded-2xl border-2 border-emerald-500 bg-emerald-500/10 flex flex-col justify-between";
-          badgeCourtQuick.className = "px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/15 text-emerald-700 flex items-center gap-1";
-          badgeCourtQuick.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> LIVRE AGORA';
-          if (courtCountdown) courtCountdown.innerText = "LIBERADA";
-          if (quickCourtTimer) quickCourtTimer.innerText = "Livre para jogar";
-          if (ssCourtBadge) ssCourtBadge.innerText = "QUADRA: LIVRE PARA JOGAR";
-          showToast("Status da Quadra simulado: LIVRE PARA USO");
-        }
-      });
-
-      // Countdown loop for court
+      // Countdown loop for court occupation (Synchronized)
       setInterval(() => {
-        if (courtIsBusy && courtSeconds > 0) {
-          courtSeconds--;
-          const m = String(Math.floor(courtSeconds / 60)).padStart(2, '0');
-          const s = String(courtSeconds % 60).padStart(2, '0');
+        if (totemSync && totemSync.courtIsBusy && totemSync.courtSeconds > 0) {
+          totemSync.courtSeconds--;
+          const m = String(Math.floor(totemSync.courtSeconds / 60)).padStart(2, '0');
+          const s = String(totemSync.courtSeconds % 60).padStart(2, '0');
           const timeStr = `${m}:${s}`;
+          const courtCountdown = document.getElementById('court-countdown');
+          const quickCourtTimer = document.getElementById('quick-court-timer');
+          const courtProgressBar = document.getElementById('court-progress-bar');
           if (courtCountdown) courtCountdown.innerText = timeStr;
           if (quickCourtTimer) quickCourtTimer.innerText = `${m} min restantes`;
           if (courtProgressBar) {
-            const pct = Math.max(5, (courtSeconds / (25 * 60)) * 100);
+            const pct = Math.max(5, (totemSync.courtSeconds / (25 * 60)) * 100);
             courtProgressBar.style.width = `${pct}%`;
           }
         }
+      }, 1000);
       }, 1000);
 
       // BEFORE / AFTER SLIDER INTERACTION

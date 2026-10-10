@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>PRAÇA CONECTA — Painel de Controle Global (/dev)</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            studio: {
+              bg: '#0B0E14',
+              surface: '#151922',
+              card: '#1A202C',
+              panel: 'rgba(26, 32, 44, 0.85)',
+              border: '#2D3748',
+              borderHover: '#4A5568',
+              accent: '#BE123C',
+              accentHover: '#E11D48',
+              cyan: '#0891B2',
+              cyanGlow: '#06B6D4'
+            },
+            sakura: {
+              400: '#FB7185',
+              500: '#F43F5E',
+              600: '#E11D48',
+              700: '#BE123C',
+              800: '#9F1239'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #0b0e14; }
+    ::-webkit-scrollbar-thumb { background: #2d3748; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #be123c; }
+
+    .glow-border-sakura {
+      box-shadow: 0 0 20px -5px rgba(225, 29, 72, 0.4);
+    }
+    .glow-border-cyan {
+      box-shadow: 0 0 20px -5px rgba(6, 182, 212, 0.4);
+    }
+    .glow-border-emerald {
+      box-shadow: 0 0 20px -5px rgba(16, 185, 129, 0.4);
+    }
+
+    /* Switch toggle */
+    .switch-input:checked ~ .switch-dot {
+      transform: translateX(100%);
+      background-color: #10B981;
+    }
+    .switch-input:checked ~ .switch-bg {
+      background-color: rgba(16, 185, 129, 0.25);
+      border-color: #10B981;
+    }
+  </style>
+</head>
+
+<body class="bg-studio-bg text-slate-100 font-sans min-h-screen flex flex-col selection:bg-sakura-600 selection:text-white">
+
+  <!-- TOP HEADER -->
+  <header class="h-16 border-b border-studio-border bg-studio-surface/90 backdrop-blur-xl px-4 sm:px-6 flex items-center justify-between sticky top-0 z-50">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-sakura-600 to-sakura-800 flex items-center justify-center font-bold text-lg shadow-lg shadow-sakura-600/30">
+        🌸
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="font-extrabold text-sm sm:text-base tracking-wider text-white">PRAÇA CONECTA</span>
+          <span class="text-[10px] bg-sakura-500/20 text-sakura-400 border border-sakura-500/30 px-2 py-0.5 rounded-full font-mono font-bold">DEV STUDIO</span>
+        </div>
+        <p class="text-[10px] text-slate-400 font-mono hidden sm:block">Centro de Controle Global em Tempo Real (SSE Hub)</p>
+      </div>
+    </div>
+
+    <!-- Status Telemetry & Actions -->
+    <div class="flex items-center gap-3">
+      <!-- Live Screens Count Badge -->
+      <div class="flex items-center gap-2 bg-studio-card px-3 py-1.5 rounded-xl border border-studio-border font-mono text-xs shadow-inner">
+        <span id="sse-indicator" class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span class="text-slate-400 hidden md:inline">Telas Ativas:</span>
+        <span id="active-screens-count" class="font-bold text-emerald-400">1</span>
+      </div>
+
+      <!-- Button to open Public Totem -->
+      <a href="/" target="_blank" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-studio-border font-mono text-xs flex items-center gap-1.5 transition-all hover:border-slate-500 shadow-sm" title="Abrir Totem em nova aba">
+        <span>Abrir Totem</span>
+        <span class="text-sakura-400">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- MAIN STUDIO CONTENT -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
+
+    <!-- HERO NOTIFICATION BAR -->
+    <div class="bg-gradient-to-r from-sakura-900/40 via-studio-surface to-studio-surface p-4 sm:p-5 rounded-2xl border border-sakura-700/40 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-xl">
+      <div class="flex items-center gap-3.5">
+        <div class="w-11 h-11 rounded-xl bg-sakura-500/20 border border-sakura-500/40 flex items-center justify-center text-xl flex-shrink-0">
+          ⚡
+        </div>
+        <div>
+          <h1 class="text-sm sm:text-base font-bold text-white flex items-center gap-2">
+            Transmissão Instantânea Global
+            <span class="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-2 py-0.5 rounded font-mono font-bold">ONLINE</span>
+          </h1>
+          <p class="text-xs text-slate-300 mt-0.5">
+            Qualquer alteração feita neste estúdio será refletida <strong>imediatamente em todos os totens e telas abertas</strong> no mundo.
+          </p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 text-xs font-mono text-slate-400 self-end md:self-center">
+        <span>Última sincronização:</span>
+        <span id="last-sync-time" class="text-slate-200 font-bold">Agora</span>
+      </div>
+    </div>
+
+    <!-- CONTROL GRID (3 COLUMNS) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+      <!-- ========================================== -->
+      <!-- CARD 1: CLIMA GLOBAL DA PRAÇA              -->
+      <!-- ========================================== -->
+      <div class="bg-studio-surface border border-studio-border rounded-2xl p-5 flex flex-col justify-between shadow-lg">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-base">☀️</span>
+              <h2 class="font-bold text-sm text-white uppercase tracking-wider">Clima da Praça</h2>
+            </div>
+            <span id="badge-current-weather" class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold uppercase">
+              Sol (24°C)
+            </span>
+          </div>
+          <p class="text-xs text-slate-400 mb-4">
+            Altera a iluminação Three.js, o céu, o tom de tinta do ASCII e o som ambiente em todas as telas.
+          </p>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <!-- Sun -->
+            <button class="btn-weather p-3 rounded-xl border border-studio-border bg-studio-card hover:bg-studio-border text-left transition-all group flex flex-col justify-between" data-weather="sun">
+              <span class="text-2xl mb-2">☀️</span>
+              <span class="text-xs font-bold text-white group-hover:text-amber-300">Sol Radiante</span>
+              <span class="text-[10px] text-slate-400">Dia ensolarado (24°C)</span>
+            </button>
+
+            <!-- Rain -->
+            <button class="btn-weather p-3 rounded-xl border border-studio-border bg-studio-card hover:bg-studio-border text-left transition-all group flex flex-col justify-between" data-weather="rain">
+              <span class="text-2xl mb-2">🌧️</span>
+              <span class="text-xs font-bold text-white group-hover:text-cyan-300">Chuva ASCII</span>
+              <span class="text-[10px] text-slate-400">Gotas de chuva em texto</span>
+            </button>
+
+            <!-- Wind -->
+            <button class="btn-weather p-3 rounded-xl border border-studio-border bg-studio-card hover:bg-studio-border text-left transition-all group flex flex-col justify-between" data-weather="wind">
+              <span class="text-2xl mb-2">💨</span>
+              <span class="text-xs font-bold text-white group-hover:text-emerald-300">Ventania</span>
+              <span class="text-[10px] text-slate-400">Brisa forte & pétalas</span>
+            </button>
+
+            <!-- Night -->
+            <button class="btn-weather p-3 rounded-xl border border-studio-border bg-studio-card hover:bg-studio-border text-left transition-all group flex flex-col justify-between" data-weather="night">
+              <span class="text-2xl mb-2">🌙</span>
+              <span class="text-xs font-bold text-white group-hover:text-indigo-300">Noite Yozakura</span>
+              <span class="text-[10px] text-slate-400">Iluminação lunar azulada</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-studio-border/70 flex items-center justify-between text-[11px] font-mono text-slate-400">
+          <span>Persistência:</span>
+          <span class="text-emerald-400">state.json ✓</span>
+        </div>
+      </div>
+
+      <!-- ========================================== -->
+      <!-- CARD 2: RADAR FENOLÓGICO DA CEREJEIRA     -->
+      <!-- ========================================== -->
+      <div class="bg-studio-surface border border-studio-border rounded-2xl p-5 flex flex-col justify-between shadow-lg">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-base">🌸</span>
+              <h2 class="font-bold text-sm text-white uppercase tracking-wider">Fase da Cerejeira</h2>
+            </div>
+            <span id="badge-current-phase" class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-sakura-500/20 text-sakura-300 border border-sakura-500/30 font-bold uppercase">
+              Fase 3: Mankai
+            </span>
+          </div>
+          <p class="text-xs text-slate-400 mb-4">
+            Altera o estágio biológico da árvore 3D, quantidade de pétalas flutuantes e botões.
+          </p>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <!-- Phase 1 -->
+            <button class="btn-phase p-3 rounded-xl border border-studio-border bg-studio-card hover:bg-studio-border text-left transition-all group flex flex-col justify-between" data-phase="1">
+              <span class="text-xs font-mono font-bold text-slate-400 mb-1">FASE 1</span>
+              <span class="text-xs font-bold text-white group-hover:text-sakura-300">Dormência</span>
+              <span class="text-[10px] text-slate-400">Inverno / Galhos nus</span>
+            </button>
+
+            <!-- Phase 2 -->
+            <button class="btn-phase p-3 rounded-xl border border-studio-border bg-studio-card hover:bg-studio-border text-left transition-all group flex flex-col justify-between" data-phase="2">
+              <span class="text-xs font-mono font-bold text-slate-400 mb-1">FASE 2</span>
+              <span class="text-xs font-bold text-white group-hover:text-sakura-300">Botões Florais</span>
+              <span class="text-[10px] text-slate-400">Tsubomi / Brotos</span>
+            </button>
+
+            <!-- Phase 3 -->
+            <button class="btn-phase p-3 rounded-xl border border-studio-border bg-studio-card hover:bg-studio-border text-left transition-all group flex flex-col justify-between" data-phase="3">
+              <span class="text-xs font-mono font-bold text-sakura-400 mb-1">FASE 3 ★</span>
+              <span class="text-xs font-bold text-white group-hover:text-sakura-300">Plena Floração</span>
+              <span class="text-[10px] text-slate-400">Mankai / 88% Aberta</span>
+            </button>
+
+            <!-- Phase 4 -->
+            <button class="btn-phase p-3 rounded-xl border border-studio-border bg-studio-card hover:bg-studio-border text-left transition-all group flex flex-col justify-between" data-phase="4">
+              <span class="text-xs font-mono font-bold text-slate-400 mb-1">FASE 4</span>
+              <span class="text-xs font-bold text-white group-hover:text-emerald-300">Folhas Verdes</span>
+              <span class="text-[10px] text-slate-400">Hazakura / Verão</span>
+            </button>
+          </div>
+
+          <!-- Gust of Wind Button -->
+          <div class="mt-4">
+            <button id="btn-gust-wind" class="w-full py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-mono text-xs font-bold border border-studio-border flex items-center justify-center gap-2 transition-all active:scale-95 hover:border-sakura-500">
+              <span>🌪️</span>
+              <span>Disparar Rajada de Vento & Pétalas</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-studio-border/70 flex items-center justify-between text-[11px] font-mono text-slate-400">
+          <span>Turbilhão:</span>
+          <span class="text-sakura-400">Instantâneo</span>
+        </div>
+      </div>
+
+      <!-- ========================================== -->
+      <!-- CARD 3: SINO COMUNITÁRIO FURIN & SEGURANÇA -->
+      <!-- ========================================== -->
+      <div class="bg-studio-surface border border-studio-border rounded-2xl p-5 flex flex-col justify-between shadow-lg">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-base">🔔</span>
+              <h2 class="font-bold text-sm text-white uppercase tracking-wider">Sino da Praça</h2>
+            </div>
+            <span id="badge-bell-status" class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold uppercase">
+              ATIVO NA PRAÇA
+            </span>
+          </div>
+          <p class="text-xs text-slate-400 mb-4">
+            O sino toca harmônicos Furin em todos os dispositivos abertos simultaneamente.
+          </p>
+
+          <!-- Master Kill Switch -->
+          <div class="bg-studio-card p-4 rounded-xl border border-studio-border mb-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="text-xs font-bold text-white block">Chave Geral do Sino</span>
+                <span class="text-[11px] text-slate-400">Permitir que o público toque</span>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input id="toggle-bell-enabled" type="checkbox" checked class="sr-only switch-input">
+                <div class="w-11 h-6 bg-slate-700 border border-slate-600 rounded-full switch-bg transition-colors"></div>
+                <div class="switch-dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform"></div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Cooldown & Abuse Protection Info -->
+          <div class="bg-studio-card/60 p-3 rounded-xl border border-studio-border/70 text-xs font-mono space-y-1 mb-4 text-slate-300">
+            <div class="flex justify-between">
+              <span class="text-slate-400">Cooldown por clique:</span>
+              <span class="text-amber-400 font-bold">20 segundos</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-400">Último toque:</span>
+              <span id="bell-last-time" class="text-slate-200">Pronto para tocar</span>
+            </div>
+          </div>
+
+          <!-- Admin Force Bell Ring Button -->
+          <button id="btn-ring-bell-admin" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-sakura-600 to-sakura-700 hover:from-sakura-500 hover:to-sakura-600 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-sakura-600/30 transition-all active:scale-95">
+            <span>🔔</span>
+            <span>Tocar Sino Forçado (Admin Global)</span>
+          </button>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-studio-border/70 flex items-center justify-between text-[11px] font-mono text-slate-400">
+          <span>Anti-Spam:</span>
+          <span class="text-emerald-400">Proteção Ativa ✓</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ROW 2: COURT MANAGEMENT & BROADCAST TOAST -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+      <!-- ========================================== -->
+      <!-- CARD 4: GESTÃO DA QUADRA POLIESPORTIVA     -->
+      <!-- ========================================== -->
+      <div class="bg-studio-surface border border-studio-border rounded-2xl p-5 shadow-lg flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-base">🏀</span>
+              <h2 class="font-bold text-sm text-white uppercase tracking-wider">Status da Quadra Poliesportiva</h2>
+            </div>
+            <span id="badge-court-status" class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30 font-bold uppercase">
+              EM USO
+            </span>
+          </div>
+
+          <p class="text-xs text-slate-400 mb-4">
+            Atualize o painel de ocupação em tempo real exibido aos frequentadores do totem.
+          </p>
+
+          <form id="form-court" class="space-y-4">
+            <!-- Status Buttons Selector -->
+            <div>
+              <label class="text-xs font-mono text-slate-300 block mb-1.5">Estado da Quadra:</label>
+              <div class="grid grid-cols-3 gap-2">
+                <button type="button" class="btn-court-status p-2 rounded-xl border border-rose-500 bg-rose-500/20 text-rose-300 font-mono text-xs font-bold" data-status="em_uso">
+                  🔴 Em Uso
+                </button>
+                <button type="button" class="btn-court-status p-2 rounded-xl border border-studio-border bg-studio-card text-slate-400 font-mono text-xs font-bold hover:text-white" data-status="livre">
+                  🟢 Livre
+                </button>
+                <button type="button" class="btn-court-status p-2 rounded-xl border border-studio-border bg-studio-card text-slate-400 font-mono text-xs font-bold hover:text-white" data-status="manutencao">
+                  🟡 Manutenção
+                </button>
+              </div>
+            </div>
+
+            <!-- Activity Name -->
+            <div>
+              <label for="court-activity" class="text-xs font-mono text-slate-300 block mb-1">Nome da Atividade / Partida:</label>
+              <input id="court-activity" type="text" value="Basquete 3x3 Juvenil" class="w-full bg-studio-card border border-studio-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-sakura-500 font-sans" />
+            </div>
+
+            <!-- Remaining Minutes & Next Slot -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label for="court-minutes" class="text-xs font-mono text-slate-300 block mb-1">Minutos Restantes:</label>
+                <input id="court-minutes" type="number" min="0" max="180" value="22" class="w-full bg-studio-card border border-studio-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-sakura-500 font-mono" />
+              </div>
+              <div>
+                <label for="court-next" class="text-xs font-mono text-slate-300 block mb-1">Próximo Horário / Vaga:</label>
+                <input id="court-next" type="text" value="14:30 às 15:30 (Treino de Vôlei)" class="w-full bg-studio-card border border-studio-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-sakura-500 font-sans" />
+              </div>
+            </div>
+
+            <button type="submit" class="w-full py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-mono text-xs font-bold border border-studio-border flex items-center justify-center gap-2 transition-all hover:border-slate-500">
+              <span>💾</span>
+              <span>Salvar e Transmitir Status da Quadra</span>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- ========================================== -->
+      <!-- CARD 5: TRANSMISSÃO DE AVISOS GLOBAIS      -->
+      <!-- ========================================== -->
+      <div class="bg-studio-surface border border-studio-border rounded-2xl p-5 shadow-lg flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-base">📢</span>
+              <h2 class="font-bold text-sm text-white uppercase tracking-wider">Aviso Global no Totem</h2>
+            </div>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-bold uppercase">
+              NOTIFICAÇÃO PUSH
+            </span>
+          </div>
+
+          <p class="text-xs text-slate-400 mb-4">
+            Envia uma mensagem em destaque para todas as pessoas que estiverem olhando para o totem ou com a aba aberta.
+          </p>
+
+          <form id="form-toast" class="space-y-3.5">
+            <div>
+              <label for="toast-title" class="text-xs font-mono text-slate-300 block mb-1">Título do Aviso:</label>
+              <input id="toast-title" type="text" value="Aviso da Zeladoria Municipal" class="w-full bg-studio-card border border-studio-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500 font-sans" />
+            </div>
+
+            <div>
+              <label for="toast-msg" class="text-xs font-mono text-slate-300 block mb-1">Mensagem do Comunicado:</label>
+              <textarea id="toast-msg" rows="3" class="w-full bg-studio-card border border-studio-border rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500 font-sans resize-none" placeholder="Digite a mensagem que aparecerá em todas as telas..."></textarea>
+            </div>
+
+            <!-- Quick Template Pills -->
+            <div class="flex flex-wrap gap-1.5">
+              <button type="button" class="btn-quick-toast text-[10px] font-mono px-2.5 py-1 rounded-lg bg-studio-card border border-studio-border text-slate-300 hover:border-slate-500" data-msg="🌧️ Atenção: Previsão de chuva passageira nos próximos 15 minutos na praça.">
+                🌧️ Alerta Chuva
+              </button>
+              <button type="button" class="btn-quick-toast text-[10px] font-mono px-2.5 py-1 rounded-lg bg-studio-card border border-studio-border text-slate-300 hover:border-slate-500" data-msg="🏀 Partida amistosa iniciando agora na quadra poliesportiva. Venha prestigiar!">
+                🏀 Partida na Quadra
+              </button>
+              <button type="button" class="btn-quick-toast text-[10px] font-mono px-2.5 py-1 rounded-lg bg-studio-card border border-studio-border text-slate-300 hover:border-slate-500" data-msg="🌸 Ápice da floração das cerejeiras neste final de semana. Horário nobre para fotos: 16h30!">
+                🌸 Floração Sakura
+              </button>
+            </div>
+
+            <button type="submit" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-cyan-600 to-cyan-700 hover:from-cyan-500 hover:to-cyan-600 text-white font-mono text-xs font-bold flex items-center justify-center gap-2 shadow-lg shadow-cyan-600/30 transition-all active:scale-95">
+              <span>📢</span>
+              <span>Transmitir Aviso para Todas as Telas</span>
+            </button>
+          </form>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- CARD 6: CONSOLE DE EVENTOS EM TEMPO REAL   -->
+    <!-- ========================================== -->
+    <div class="bg-studio-surface border border-studio-border rounded-2xl p-5 shadow-lg">
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center gap-2">
+          <span class="text-base">💻</span>
+          <h2 class="font-bold text-sm text-white uppercase tracking-wider font-mono">Console de Telemetria SSE</h2>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="btn-clear-logs" class="text-[11px] font-mono text-slate-400 hover:text-white px-2 py-0.5 rounded bg-studio-card border border-studio-border">
+            Limpar
+          </button>
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        </div>
+      </div>
+
+      <div id="event-logs" class="h-44 overflow-y-auto bg-studio-bg rounded-xl p-3 border border-studio-border font-mono text-[11px] space-y-1.5 text-slate-300">
+        <div class="text-slate-500">// Aguardando eventos de streaming em tempo real...</div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- NOTIFICATION TOAST -->
+  <div id="studio-toast" class="fixed bottom-6 right-6 z-50 bg-studio-card border border-studio-border shadow-2xl rounded-2xl p-4 flex items-center gap-3 transition-all duration-300 opacity-0 pointer-events-none translate-y-4">
+    <div id="studio-toast-icon" class="w-8 h-8 rounded-xl bg-sakura-600/20 text-sakura-400 flex items-center justify-center font-bold text-sm">
+      ✓
+    </div>
+    <div>
+      <div id="studio-toast-title" class="text-xs font-bold text-white">Comando Enviado</div>
+      <div id="studio-toast-desc" class="text-[11px] text-slate-300">Estado atualizado no servidor.</div>
+    </div>
+  </div>
+
+  <script>
+    // ESTADO LOCAL DE CONTROLE
+    let currentCourtStatus = "em_uso";
+    let eventSource = null;
+
+    // Helper de Toast
+    function showStudioToast(title, desc, isError = false) {
+      const toast = document.getElementById('studio-toast');
+      const toastTitle = document.getElementById('studio-toast-title');
+      const toastDesc = document.getElementById('studio-toast-desc');
+      const toastIcon = document.getElementById('studio-toast-icon');
+
+      toastTitle.innerText = title;
+      toastDesc.innerText = desc;
+
+      if (isError) {
+        toastIcon.className = "w-8 h-8 rounded-xl bg-rose-600/20 text-rose-400 flex items-center justify-center font-bold text-sm";
+        toastIcon.innerText = "✕";
+      } else {
+        toastIcon.className = "w-8 h-8 rounded-xl bg-emerald-600/20 text-emerald-400 flex items-center justify-center font-bold text-sm";
+        toastIcon.innerText = "✓";
+      }
+
+      toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+      }, 3500);
+    }
+
+    // Helper de Log no Console Visual
+    function logEvent(tag, details, colorClass = "text-slate-300") {
+      const logContainer = document.getElementById('event-logs');
+      const timeStr = new Date().toLocaleTimeString();
+      const div = document.createElement('div');
+      div.className = "flex items-start gap-2 leading-relaxed";
+      div.innerHTML = `
+        <span class="text-slate-500 select-none">[${timeStr}]</span>
+        <span class="px-1.5 py-0.2 rounded bg-studio-card border border-studio-border text-[10px] font-bold ${colorClass}">${tag}</span>
+        <span class="text-slate-300 flex-1">${details}</span>
+      `;
+      logContainer.appendChild(div);
+      logContainer.scrollTop = logContainer.scrollHeight;
+    }
+
+    document.getElementById('btn-clear-logs').addEventListener('click', () => {
+      document.getElementById('event-logs').innerHTML = '';
+      logEvent("SISTEMA", "Logs limpos pelo operador.", "text-slate-400");
+    });
+
+    // Enviar Ação para a API POST /api/control
+    async function sendControlAction(actionData) {
+      try {
+        const res = await fetch('/api/control', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(actionData)
+        });
+        const json = await res.json();
+        if (res.ok && json.success) {
+          showStudioToast("Transmitido!", `Ação '${actionData.action}' aplicada globalmente.`);
+          document.getElementById('last-sync-time').innerText = new Date().toLocaleTimeString();
+          return json;
+        } else {
+          showStudioToast("Erro", json.error || "Falha ao enviar ação.", true);
+        }
+      } catch (err) {
+        showStudioToast("Falha de Conexão", err.message, true);
+      }
+    }
+
+    // Conectar ao fluxo Server-Sent Events (SSE)
+    function setupSSE() {
+      if (eventSource) eventSource.close();
+      eventSource = new EventSource('/api/events');
+
+      eventSource.addEventListener('init', (e) => {
+        const state = JSON.parse(e.data);
+        logEvent("INIT", `Estado global recebido do servidor. Telas conectadas: ${state.activeScreens}`, "text-cyan-400");
+        updateUIWithState(state);
+      });
+
+      eventSource.addEventListener('weather_change', (e) => {
+        const data = JSON.parse(e.data);
+        logEvent("WEATHER", `Clima atualizado para: ${data.weather.toUpperCase()}`, "text-amber-400");
+        updateWeatherUI(data.weather);
+      });
+
+      eventSource.addEventListener('phase_change', (e) => {
+        const data = JSON.parse(e.data);
+        logEvent("PHASE", `Cerejeira alterada para: Fase ${data.sakuraPhase}`, "text-sakura-400");
+        updatePhaseUI(data.sakuraPhase);
+      });
+
+      eventSource.addEventListener('wind_gust', (e) => {
+        logEvent("GUST", `Rajada de vento disparada na praça!`, "text-emerald-400");
+      });
+
+      eventSource.addEventListener('court_change', (e) => {
+        const data = JSON.parse(e.data);
+        logEvent("COURT", `Quadra atualizada: ${data.court.status.toUpperCase()} (${data.court.activity})`, "text-cyan-400");
+        updateCourtUI(data.court);
+      });
+
+      eventSource.addEventListener('bell_config', (e) => {
+        const data = JSON.parse(e.data);
+        logEvent("BELL_CFG", `Sino ${data.bell.enabled ? 'ATIVADO' : 'DESATIVADO'}`, "text-amber-400");
+        updateBellConfigUI(data.bell);
+      });
+
+      eventSource.addEventListener('bell_ring', (e) => {
+        const data = JSON.parse(e.data);
+        logEvent("BELL_RING", `🔔 SINO TOCADO NA PRAÇA! (Origem: ${data.source})`, "text-rose-400");
+        document.getElementById('bell-last-time').innerText = `Tocado às ${new Date(data.lastRung).toLocaleTimeString()}`;
+      });
+
+      eventSource.addEventListener('toast_broadcast', (e) => {
+        const data = JSON.parse(e.data);
+        logEvent("BROADCAST", `"${data.title}": ${data.message}`, "text-cyan-400");
+      });
+
+      eventSource.addEventListener('screens_count', (e) => {
+        const data = JSON.parse(e.data);
+        document.getElementById('active-screens-count').innerText = data.activeScreens;
+      });
+
+      eventSource.onopen = () => {
+        document.getElementById('sse-indicator').className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse";
+        logEvent("CONEXÃO", "Canal SSE conectado com sucesso.", "text-emerald-400");
+      };
+
+      eventSource.onerror = () => {
+        document.getElementById('sse-indicator').className = "w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse";
+      };
+    }
+
+    // Atualização de UI conforme o estado do servidor
+    function updateUIWithState(state) {
+      if (state.activeScreens !== undefined) {
+        document.getElementById('active-screens-count').innerText = state.activeScreens;
+      }
+      if (state.weather) updateWeatherUI(state.weather);
+      if (state.sakuraPhase) updatePhaseUI(state.sakuraPhase);
+      if (state.court) updateCourtUI(state.court);
+      if (state.bell) updateBellConfigUI(state.bell);
+    }
+
+    function updateWeatherUI(weather) {
+      const weatherLabels = {
+        sun: "Sol (24°C)",
+        rain: "Chuva ASCII (20°C)",
+        wind: "Ventania (22°C)",
+        night: "Noite Yozakura (18°C)"
+      };
+      document.getElementById('badge-current-weather').innerText = weatherLabels[weather] || weather;
+
+      document.querySelectorAll('.btn-weather').forEach(b => {
+        if (b.getAttribute('data-weather') === weather) {
+          b.classList.add('border-sakura-500', 'bg-sakura-500/15', 'glow-border-sakura');
+        } else {
+          b.classList.remove('border-sakura-500', 'bg-sakura-500/15', 'glow-border-sakura');
+        }
+      });
+    }
+
+    function updatePhaseUI(phase) {
+      const phaseLabels = {
+        1: "Fase 1: Dormência",
+        2: "Fase 2: Botões",
+        3: "Fase 3: Mankai",
+        4: "Fase 4: Folhas Verdes"
+      };
+      document.getElementById('badge-current-phase').innerText = phaseLabels[phase] || `Fase ${phase}`;
+
+      document.querySelectorAll('.btn-phase').forEach(b => {
+        if (parseInt(b.getAttribute('data-phase')) === phase) {
+          b.classList.add('border-sakura-500', 'bg-sakura-500/15', 'glow-border-sakura');
+        } else {
+          b.classList.remove('border-sakura-500', 'bg-sakura-500/15', 'glow-border-sakura');
+        }
+      });
+    }
+
+    function updateCourtUI(court) {
+      currentCourtStatus = court.status || "em_uso";
+      const statusBadge = document.getElementById('badge-court-status');
+
+      if (currentCourtStatus === "em_uso") {
+        statusBadge.className = "text-[10px] font-mono px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30 font-bold uppercase";
+        statusBadge.innerText = "EM USO";
+      } else if (currentCourtStatus === "livre") {
+        statusBadge.className = "text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold uppercase";
+        statusBadge.innerText = "LIVRE";
+      } else {
+        statusBadge.className = "text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold uppercase";
+        statusBadge.innerText = "MANUTENÇÃO";
+      }
+
+      document.querySelectorAll('.btn-court-status').forEach(b => {
+        if (b.getAttribute('data-status') === currentCourtStatus) {
+          b.className = "btn-court-status p-2 rounded-xl border border-rose-500 bg-rose-500/20 text-rose-300 font-mono text-xs font-bold";
+        } else {
+          b.className = "btn-court-status p-2 rounded-xl border border-studio-border bg-studio-card text-slate-400 font-mono text-xs font-bold hover:text-white";
+        }
+      });
+
+      if (court.activity) document.getElementById('court-activity').value = court.activity;
+      if (court.remainingMinutes !== undefined) document.getElementById('court-minutes').value = court.remainingMinutes;
+      if (court.nextSlot) document.getElementById('court-next').value = court.nextSlot;
+    }
+
+    function updateBellConfigUI(bell) {
+      const toggle = document.getElementById('toggle-bell-enabled');
+      const badge = document.getElementById('badge-bell-status');
+
+      toggle.checked = bell.enabled;
+      if (bell.enabled) {
+        badge.className = "text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold uppercase";
+        badge.innerText = "ATIVO NA PRAÇA";
+      } else {
+        badge.className = "text-[10px] font-mono px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30 font-bold uppercase";
+        badge.innerText = "BLOQUEADO PELA ADMIN";
+      }
+
+      if (bell.lastRung) {
+        document.getElementById('bell-last-time').innerText = `Tocado às ${new Date(bell.lastRung).toLocaleTimeString()}`;
+      }
+    }
+
+    // LISTENERS DE INTERAÇÃO
+    document.addEventListener('DOMContentLoaded', () => {
+      setupSSE();
+
+      // Weather buttons
+      document.querySelectorAll('.btn-weather').forEach(b => {
+        b.addEventListener('click', () => {
+          const w = b.getAttribute('data-weather');
+          sendControlAction({ action: 'set_weather', value: w });
+        });
+      });
+
+      // Phase buttons
+      document.querySelectorAll('.btn-phase').forEach(b => {
+        b.addEventListener('click', () => {
+          const p = parseInt(b.getAttribute('data-phase'));
+          sendControlAction({ action: 'set_phase', value: p });
+        });
+      });
+
+      // Wind gust
+      document.getElementById('btn-gust-wind').addEventListener('click', () => {
+        sendControlAction({ action: 'gust_wind' });
+      });
+
+      // Bell switch toggle
+      document.getElementById('toggle-bell-enabled').addEventListener('change', (e) => {
+        sendControlAction({ action: 'set_bell_enabled', enabled: e.target.checked });
+      });
+
+      // Admin ring bell force
+      document.getElementById('btn-ring-bell-admin').addEventListener('click', () => {
+        sendControlAction({ action: 'ring_bell_admin' });
+      });
+
+      // Court status selectors
+      document.querySelectorAll('.btn-court-status').forEach(b => {
+        b.addEventListener('click', () => {
+          currentCourtStatus = b.getAttribute('data-status');
+          document.querySelectorAll('.btn-court-status').forEach(other => {
+            if (other === b) {
+              other.className = "btn-court-status p-2 rounded-xl border border-rose-500 bg-rose-500/20 text-rose-300 font-mono text-xs font-bold";
+            } else {
+              other.className = "btn-court-status p-2 rounded-xl border border-studio-border bg-studio-card text-slate-400 font-mono text-xs font-bold hover:text-white";
+            }
+          });
+        });
+      });
+
+      // Court form submit
+      document.getElementById('form-court').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const courtData = {
+          status: currentCourtStatus,
+          activity: document.getElementById('court-activity').value,
+          remainingMinutes: parseInt(document.getElementById('court-minutes').value) || 0,
+          nextSlot: document.getElementById('court-next').value
+        };
+        sendControlAction({ action: 'set_court', court: courtData });
+      });
+
+      // Toast Broadcast form submit
+      document.getElementById('form-toast').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const title = document.getElementById('toast-title').value.trim();
+        const msg = document.getElementById('toast-msg').value.trim();
+        if (!msg) {
+          showStudioToast("Campo Vazio", "Digite uma mensagem antes de transmitir.", true);
+          return;
+        }
+        sendControlAction({ action: 'send_toast', title: title, message: msg });
+        document.getElementById('toast-msg').value = '';
+      });
+
+      // Toast quick pills
+      document.querySelectorAll('.btn-quick-toast').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.getElementById('toast-msg').value = btn.getAttribute('data-msg');
+        });
+      });
+    });
+  </script>
+</body>
+</html>

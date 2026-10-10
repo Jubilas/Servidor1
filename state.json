@@ -1,0 +1,17 @@
+{
+  "weather": "sun",
+  "sakuraPhase": 3,
+  "windStrength": 1,
+  "court": {
+    "status": "em_uso",
+    "activity": "Basquete 3x3 Juvenil",
+    "remainingMinutes": 22,
+    "nextSlot": "14:30 às 15:30 (Treino de Vôlei)"
+  },
+  "bell": {
+    "enabled": true,
+    "cooldownSeconds": 20,
+    "lastRung": 1791607375077
+  },
+  "lastBroadcast": 1791607403612
+}
