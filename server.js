@@ -99,7 +99,7 @@ const DEFAULT_STATE = {
   weeklyActivities: [
     {
       id: "act-1",
-      icon: "🧘",
+      icon: "zen",
       dayTime: "SÁBADO • 08:00",
       title: "Yoga & Meditação Matinal",
       desc: "Deck dos Mestres. Traga seu tapete de yoga.",
@@ -107,7 +107,7 @@ const DEFAULT_STATE = {
     },
     {
       id: "act-2",
-      icon: "🥕",
+      icon: "organico",
       dayTime: "SÁBADO • 09:30",
       title: "Feirinha Agroecológica",
       desc: "Alameda das Cerejeiras. Frutas e hortaliças orgânicas.",
@@ -115,7 +115,7 @@ const DEFAULT_STATE = {
     },
     {
       id: "act-3",
-      icon: "🏀",
+      icon: "esporte",
       dayTime: "DOMINGO • 15:30",
       title: "Clínica Aberta de Basquete",
       desc: "Quadra Poliesportiva. Todas as idades.",

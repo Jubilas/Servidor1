@@ -2,8 +2,8 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>PRAÇA CONECTA — Painel de Controle Global (/dev)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PRAÇA CONECTA — Painel Dev & Centro de Controle Global</title>
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -11,25 +11,21 @@
   <!-- Google Fonts: Inter & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
   <script>
     tailwind.config = {
-      darkMode: 'class',
       theme: {
         extend: {
           colors: {
             studio: {
-              bg: '#0B0E14',
-              surface: '#151922',
-              card: '#1A202C',
-              panel: 'rgba(26, 32, 44, 0.85)',
-              border: '#2D3748',
-              borderHover: '#4A5568',
-              accent: '#BE123C',
-              accentHover: '#E11D48',
-              cyan: '#0891B2',
-              cyanGlow: '#06B6D4'
+              bg: '#0F131C',
+              surface: '#151B27',
+              card: '#1B2333',
+              border: '#242F45',
+              hover: '#222D42',
+              accent: '#B82048',
+              cyan: '#086375'
             },
             sakura: {
               400: '#FB7185',
@@ -50,22 +46,17 @@
 
   <style>
     * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #0b0e14; }
-    ::-webkit-scrollbar-thumb { background: #2d3748; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #be123c; }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #0F131C; }
+    ::-webkit-scrollbar-thumb { background: #242F45; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #E11D48; }
 
     .glow-border-sakura {
-      box-shadow: 0 0 20px -5px rgba(225, 29, 72, 0.4);
+      box-shadow: 0 0 16px rgba(225, 29, 72, 0.25), inset 0 0 8px rgba(225, 29, 72, 0.15);
     }
     .glow-border-cyan {
-      box-shadow: 0 0 20px -5px rgba(6, 182, 212, 0.4);
+      box-shadow: 0 0 16px rgba(8, 99, 117, 0.35), inset 0 0 8px rgba(8, 99, 117, 0.2);
     }
-    .glow-border-emerald {
-      box-shadow: 0 0 20px -5px rgba(16, 185, 129, 0.4);
-    }
-
-    /* Switch toggle */
     .switch-input:checked ~ .switch-dot {
       transform: translateX(100%);
       background-color: #10B981;
@@ -84,8 +75,11 @@
   <!-- ========================================== -->
   <div id="auth-modal" class="fixed inset-0 z-50 bg-[#0B0E14]/95 backdrop-blur-2xl flex items-center justify-center p-4">
     <div class="w-full max-w-md bg-studio-surface border border-studio-border rounded-xl p-6 sm:p-8 shadow-2xl relative text-center">
-      <div class="w-16 h-16 rounded-xl bg-sakura-500/20 text-sakura-400 border border-sakura-500/30 flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg shadow-sakura-600/20">
-        🔒
+      <div class="w-16 h-16 rounded-xl bg-sakura-500/20 text-sakura-400 border border-sakura-500/30 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-sakura-600/20">
+        <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
       </div>
       
       <h2 class="text-xl sm:text-2xl font-black text-white mb-1.5">Painel Dev Restrito</h2>
@@ -100,8 +94,11 @@
           </label>
           <div class="relative">
             <input id="input-dev-pass" type="password" required placeholder="Digite sua senha..." class="w-full bg-studio-card border border-studio-border rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-sakura-500 font-mono tracking-wider" />
-            <button type="button" id="btn-toggle-pass-visibility" class="absolute right-3 top-3 text-slate-400 hover:text-white text-xs font-mono">
-              👁️
+            <button type="button" id="btn-toggle-pass-visibility" class="absolute right-3 top-3.5 text-slate-400 hover:text-white transition-colors" title="Ver/Ocultar Senha">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
             </button>
           </div>
         </div>
@@ -111,7 +108,10 @@
         </div>
 
         <button type="submit" id="btn-submit-auth" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-sakura-600 to-sakura-700 hover:from-sakura-500 hover:to-sakura-600 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-sakura-600/30 transition-all active:scale-98">
-          <span>🔓</span>
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 9.9-1"></path>
+          </svg>
           <span>Desbloquear Painel de Controle</span>
         </button>
       </form>
@@ -125,8 +125,14 @@
   <!-- TOP HEADER -->
   <header class="h-16 border-b border-studio-border bg-studio-surface/90 backdrop-blur-xl px-4 sm:px-6 flex items-center justify-between sticky top-0 z-40">
     <div class="flex items-center gap-3">
-      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-sakura-600 to-sakura-800 flex items-center justify-center font-bold text-lg shadow-lg shadow-sakura-600/30">
-        🌸
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-sakura-600 to-sakura-800 flex items-center justify-center text-white shadow-lg shadow-sakura-600/30">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="2.5"></circle>
+          <path d="M12 2a4 4 0 0 0-3 3.8c0 2.2 3 4.2 3 4.2s3-2 3-4.2A4 4 0 0 0 12 2z"></path>
+          <path d="M22 12a4 4 0 0 0-3.8-3c-2.2 0-4.2 3-4.2 3s2 3 4.2 3A4 4 0 0 0 22 12z"></path>
+          <path d="M12 22a4 4 0 0 0 3-3.8c0-2.2-3-4.2-3-4.2s-3 2-3 4.2a4 4 0 0 0 3 3.8z"></path>
+          <path d="M2 12a4 4 0 0 0 3.8 3c2.2 0 4.2-3 4.2-3s-2-3-4.2-3A4 4 0 0 0 2 12z"></path>
+        </svg>
       </div>
       <div>
         <div class="flex items-center gap-2">
@@ -154,13 +160,19 @@
 
       <!-- Button to open Mobile Booking -->
       <a href="/agendar" target="_blank" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-studio-border font-mono text-xs flex items-center gap-1.5 transition-all hover:border-slate-500 shadow-sm hidden sm:flex" title="Abrir Agendador Mobile">
+        <svg class="w-3.5 h-3.5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+          <line x1="12" y1="18" x2="12.01" y2="18"></line>
+        </svg>
         <span>Agendar</span>
-        <span class="text-cyan-400">📱</span>
       </a>
 
       <!-- Lock/Logout Button -->
-      <button id="btn-lock-panel" class="px-2.5 py-1.5 rounded-xl bg-rose-950/40 hover:bg-rose-900/60 text-rose-300 border border-rose-800/60 font-mono text-xs flex items-center gap-1 transition-all" title="Bloquear Painel">
-        <span>🔒</span>
+      <button id="btn-lock-panel" class="px-2.5 py-1.5 rounded-xl bg-rose-950/40 hover:bg-rose-900/60 text-rose-300 border border-rose-800/60 font-mono text-xs flex items-center gap-1.5 transition-all" title="Bloquear Painel">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
         <span class="hidden md:inline">Bloquear</span>
       </button>
     </div>
@@ -172,8 +184,10 @@
     <!-- HERO NOTIFICATION BAR -->
     <div class="bg-gradient-to-r from-sakura-900/40 via-studio-surface to-studio-surface p-4 sm:p-5 rounded-xl border border-sakura-700/40 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-xl">
       <div class="flex items-center gap-3.5">
-        <div class="w-11 h-11 rounded-xl bg-sakura-500/20 border border-sakura-500/40 flex items-center justify-center text-xl flex-shrink-0">
-          ⚡
+        <div class="w-11 h-11 rounded-xl bg-sakura-500/20 text-sakura-400 border border-sakura-500/40 flex items-center justify-center flex-shrink-0">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
         </div>
         <div>
           <h1 class="text-sm sm:text-base font-bold text-white flex items-center gap-2">
@@ -201,7 +215,10 @@
         <div>
           <div class="flex items-center justify-between mb-3">
             <div class="flex items-center gap-2">
-              <span class="text-base">☀️</span>
+              <svg class="w-4 h-4 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="4"></circle>
+                <path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41m14.14-14.14l-1.41 1.41"></path>
+              </svg>
               <h2 class="font-bold text-sm text-white uppercase tracking-wider">Clima da Praça</h2>
             </div>
             <span id="badge-current-weather" class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold uppercase">
@@ -215,28 +232,40 @@
           <div class="grid grid-cols-2 gap-2.5">
             <!-- Sun -->
             <button class="btn-weather p-3 rounded-xl border border-studio-border bg-studio-card hover:bg-studio-border text-left transition-all group flex flex-col justify-between" data-weather="sun">
-              <span class="text-2xl mb-2">☀️</span>
+              <svg class="w-6 h-6 mb-2 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="4"></circle>
+                <path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41m14.14-14.14l-1.41 1.41"></path>
+              </svg>
               <span class="text-xs font-bold text-white group-hover:text-amber-300">Sol Radiante</span>
               <span class="text-[10px] text-slate-400">Dia ensolarado (24°C)</span>
             </button>
 
             <!-- Rain -->
             <button class="btn-weather p-3 rounded-xl border border-studio-border bg-studio-card hover:bg-studio-border text-left transition-all group flex flex-col justify-between" data-weather="rain">
-              <span class="text-2xl mb-2">🌧️</span>
+              <svg class="w-6 h-6 mb-2 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"></path>
+                <line x1="8" y1="19" x2="8" y2="21"></line>
+                <line x1="16" y1="19" x2="16" y2="21"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+              </svg>
               <span class="text-xs font-bold text-white group-hover:text-cyan-300">Chuva ASCII</span>
               <span class="text-[10px] text-slate-400">Gotas de chuva em texto</span>
             </button>
 
             <!-- Wind -->
             <button class="btn-weather p-3 rounded-xl border border-studio-border bg-studio-card hover:bg-studio-border text-left transition-all group flex flex-col justify-between" data-weather="wind">
-              <span class="text-2xl mb-2">💨</span>
+              <svg class="w-6 h-6 mb-2 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"></path>
+              </svg>
               <span class="text-xs font-bold text-white group-hover:text-emerald-300">Ventania</span>
               <span class="text-[10px] text-slate-400">Brisa forte & pétalas</span>
             </button>
 
             <!-- Night -->
             <button class="btn-weather p-3 rounded-xl border border-studio-border bg-studio-card hover:bg-studio-border text-left transition-all group flex flex-col justify-between" data-weather="night">
-              <span class="text-2xl mb-2">🌙</span>
+              <svg class="w-6 h-6 mb-2 text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+              </svg>
               <span class="text-xs font-bold text-white group-hover:text-indigo-300">Noite Yozakura</span>
               <span class="text-[10px] text-slate-400">Alto contraste escuro</span>
             </button>
@@ -245,7 +274,9 @@
 
         <div class="mt-4 pt-3 border-t border-studio-border/70 flex items-center justify-between text-[11px] font-mono text-slate-400">
           <span>Persistência:</span>
-          <span class="text-emerald-400">state.json ✓</span>
+          <span class="text-emerald-400 flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> state.json OK
+          </span>
         </div>
       </div>
 
@@ -256,7 +287,13 @@
         <div>
           <div class="flex items-center justify-between mb-3">
             <div class="flex items-center gap-2">
-              <span class="text-base">🌸</span>
+              <svg class="w-4 h-4 text-sakura-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="2.5"></circle>
+                <path d="M12 2a4 4 0 0 0-3 3.8c0 2.2 3 4.2 3 4.2s3-2 3-4.2A4 4 0 0 0 12 2z"></path>
+                <path d="M22 12a4 4 0 0 0-3.8-3c-2.2 0-4.2 3-4.2 3s2 3 4.2 3A4 4 0 0 0 22 12z"></path>
+                <path d="M12 22a4 4 0 0 0 3-3.8c0-2.2-3-4.2-3-4.2s-3 2-3 4.2a4 4 0 0 0 3 3.8z"></path>
+                <path d="M2 12a4 4 0 0 0 3.8 3c2.2 0 4.2-3 4.2-3s-2-3-4.2-3A4 4 0 0 0 2 12z"></path>
+              </svg>
               <h2 class="font-bold text-sm text-white uppercase tracking-wider">Fase da Cerejeira</h2>
             </div>
             <span id="badge-current-phase" class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-sakura-500/20 text-sakura-300 border border-sakura-500/30 font-bold uppercase">
@@ -284,7 +321,7 @@
 
             <!-- Phase 3 -->
             <button class="btn-phase p-3 rounded-xl border border-studio-border bg-studio-card hover:bg-studio-border text-left transition-all group flex flex-col justify-between" data-phase="3">
-              <span class="text-xs font-mono font-bold text-sakura-400 mb-1">FASE 3 ★</span>
+              <span class="text-xs font-mono font-bold text-sakura-400 mb-1">FASE 3 ●</span>
               <span class="text-xs font-bold text-white group-hover:text-sakura-300">Plena Florada (88%)</span>
               <span class="text-[10px] text-slate-400">Mankai / Floração</span>
             </button>
@@ -300,7 +337,9 @@
           <!-- Gust of Wind Button -->
           <div class="mt-4">
             <button id="btn-gust-wind" class="w-full py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-mono text-xs font-bold border border-studio-border flex items-center justify-center gap-2 transition-all active:scale-95 hover:border-sakura-500">
-              <span>🌪️</span>
+              <svg class="w-4 h-4 text-sakura-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"></path>
+              </svg>
               <span>Disparar Rajada de Vento & Pétalas</span>
             </button>
           </div>
@@ -308,7 +347,9 @@
 
         <div class="mt-4 pt-3 border-t border-studio-border/70 flex items-center justify-between text-[11px] font-mono text-slate-400">
           <span>Controle Exclusivo:</span>
-          <span class="text-sakura-400">Painel Dev ✓</span>
+          <span class="text-sakura-400 flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-sakura-400"></span> Painel Dev OK
+          </span>
         </div>
       </div>
 
@@ -319,7 +360,10 @@
         <div>
           <div class="flex items-center justify-between mb-3">
             <div class="flex items-center gap-2">
-              <span class="text-base">🔔</span>
+              <svg class="w-4 h-4 text-sakura-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
+                <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
+              </svg>
               <h2 class="font-bold text-sm text-white uppercase tracking-wider">Sino da Praça</h2>
             </div>
             <span id="badge-bell-status" class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold uppercase">
@@ -359,14 +403,19 @@
 
           <!-- Admin Force Bell Ring Button -->
           <button id="btn-ring-bell-admin" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-sakura-600 to-sakura-700 hover:from-sakura-500 hover:to-sakura-600 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-sakura-600/30 transition-all active:scale-95">
-            <span>🔔</span>
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
+              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
+            </svg>
             <span>Tocar Sino Forçado (Admin Global)</span>
           </button>
         </div>
 
         <div class="mt-4 pt-3 border-t border-studio-border/70 flex items-center justify-between text-[11px] font-mono text-slate-400">
           <span>Anti-Spam:</span>
-          <span class="text-emerald-400">Proteção Ativa ✓</span>
+          <span class="text-emerald-400 flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Proteção Ativa OK
+          </span>
         </div>
       </div>
 
@@ -382,7 +431,10 @@
         <div>
           <div class="flex items-center justify-between mb-3">
             <div class="flex items-center gap-2">
-              <span class="text-base">🏀</span>
+              <svg class="w-4 h-4 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9"></circle>
+                <path d="M12 3a14 14 0 0 0 0 18M3 12h18"></path>
+              </svg>
               <h2 class="font-bold text-sm text-white uppercase tracking-wider">Status da Quadra Poliesportiva</h2>
             </div>
             <span id="badge-court-status" class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-rose-500/20 text-rose-300 border border-rose-500/30 font-bold uppercase">
@@ -399,14 +451,17 @@
             <div>
               <label class="text-xs font-mono text-slate-300 block mb-1.5">Estado da Quadra:</label>
               <div class="grid grid-cols-3 gap-2">
-                <button type="button" class="btn-court-status p-2 rounded-xl border border-rose-500 bg-rose-500/20 text-rose-300 font-mono text-xs font-bold" data-status="em_uso">
-                  🔴 Em Uso
+                <button type="button" class="btn-court-status p-2 rounded-xl border border-rose-500 bg-rose-500/20 text-rose-300 font-mono text-xs font-bold flex items-center justify-center gap-1.5" data-status="em_uso">
+                  <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+                  <span>Em Uso</span>
                 </button>
-                <button type="button" class="btn-court-status p-2 rounded-xl border border-studio-border bg-studio-card text-slate-400 font-mono text-xs font-bold hover:text-white" data-status="livre">
-                  🟢 Livre
+                <button type="button" class="btn-court-status p-2 rounded-xl border border-studio-border bg-studio-card text-slate-400 font-mono text-xs font-bold hover:text-white flex items-center justify-center gap-1.5" data-status="livre">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                  <span>Livre</span>
                 </button>
-                <button type="button" class="btn-court-status p-2 rounded-xl border border-studio-border bg-studio-card text-slate-400 font-mono text-xs font-bold hover:text-white" data-status="manutencao">
-                  🟡 Manutenção
+                <button type="button" class="btn-court-status p-2 rounded-xl border border-studio-border bg-studio-card text-slate-400 font-mono text-xs font-bold hover:text-white flex items-center justify-center gap-1.5" data-status="manutencao">
+                  <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                  <span>Manutenção</span>
                 </button>
               </div>
             </div>
@@ -430,7 +485,11 @@
             </div>
 
             <button type="submit" class="w-full py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-mono text-xs font-bold border border-studio-border flex items-center justify-center gap-2 transition-all hover:border-slate-500">
-              <span>💾</span>
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                <polyline points="7 3 7 8 15 8"></polyline>
+              </svg>
               <span>Salvar e Transmitir Status da Quadra</span>
             </button>
           </form>
@@ -455,7 +514,10 @@
         <div>
           <div class="flex items-center justify-between mb-3">
             <div class="flex items-center gap-2">
-              <span class="text-base">📢</span>
+              <svg class="w-4 h-4 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 5L6 9H2v6h4l5 4V5z"></path>
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+              </svg>
               <h2 class="font-bold text-sm text-white uppercase tracking-wider">Aviso Global no Totem</h2>
             </div>
             <span class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-bold uppercase">
@@ -491,19 +553,22 @@
 
             <!-- Quick Template Pills -->
             <div class="flex flex-wrap gap-1.5">
-              <button type="button" class="btn-quick-toast text-[10px] font-mono px-2.5 py-1 rounded-lg bg-studio-card border border-studio-border text-slate-300 hover:border-slate-500" data-msg="🌧️ Atenção: Previsão de chuva passageira nos próximos 15 minutos na praça.">
-                🌧️ Alerta Chuva
+              <button type="button" class="btn-quick-toast text-[10px] font-mono px-2.5 py-1 rounded-lg bg-studio-card border border-studio-border text-slate-300 hover:border-slate-500" data-msg="Atenção: Previsão de chuva passageira nos próximos 15 minutos na praça.">
+                Alerta Chuva
               </button>
-              <button type="button" class="btn-quick-toast text-[10px] font-mono px-2.5 py-1 rounded-lg bg-studio-card border border-studio-border text-slate-300 hover:border-slate-500" data-msg="🏀 Partida amistosa iniciando agora na quadra poliesportiva. Venha prestigiar!">
-                🏀 Partida na Quadra
+              <button type="button" class="btn-quick-toast text-[10px] font-mono px-2.5 py-1 rounded-lg bg-studio-card border border-studio-border text-slate-300 hover:border-slate-500" data-msg="Partida amistosa iniciando agora na quadra poliesportiva. Venha prestigiar!">
+                Partida na Quadra
               </button>
-              <button type="button" class="btn-quick-toast text-[10px] font-mono px-2.5 py-1 rounded-lg bg-studio-card border border-studio-border text-slate-300 hover:border-slate-500" data-msg="🌸 Ápice da floração das cerejeiras neste final de semana. Horário nobre para fotos: 16h30!">
-                🌸 Floração Sakura
+              <button type="button" class="btn-quick-toast text-[10px] font-mono px-2.5 py-1 rounded-lg bg-studio-card border border-studio-border text-slate-300 hover:border-slate-500" data-msg="Ápice da floração das cerejeiras neste final de semana. Horário nobre para fotos: 16h30!">
+                Floração Sakura
               </button>
             </div>
 
             <button type="submit" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-cyan-600 to-cyan-700 hover:from-cyan-500 hover:to-cyan-600 text-white font-mono text-xs font-bold flex items-center justify-center gap-2 shadow-lg shadow-cyan-600/30 transition-all active:scale-95">
-              <span>📢</span>
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 5L6 9H2v6h4l5 4V5z"></path>
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+              </svg>
               <span>Transmitir Aviso para Todas as Telas</span>
             </button>
           </form>
@@ -522,7 +587,12 @@
         <div>
           <div class="flex items-center justify-between mb-3">
             <div class="flex items-center gap-2">
-              <span class="text-base">📅</span>
+              <svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
               <h2 class="font-bold text-sm text-white uppercase tracking-wider">Atividades da Semana (Calendário)</h2>
             </div>
             <span class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold uppercase">
@@ -543,7 +613,7 @@
           <div class="bg-studio-card/80 p-3.5 rounded-xl border border-studio-border space-y-2.5">
             <span class="text-xs font-bold text-white block">+ Adicionar Nova Atividade:</span>
             <div class="grid grid-cols-3 gap-2">
-              <input id="new-act-icon" type="text" placeholder="Ícone (ex: 🧘)" value="🧘" class="bg-studio-bg border border-studio-border rounded-lg px-2.5 py-1.5 text-xs text-white font-mono" />
+              <input id="new-act-icon" type="text" placeholder="Categoria (zen, feira, esporte)" value="zen" class="bg-studio-bg border border-studio-border rounded-lg px-2.5 py-1.5 text-xs text-white font-mono" />
               <input id="new-act-day" type="text" placeholder="Dia/Horário (ex: SÁB • 08h)" value="SÁBADO • 10:00" class="col-span-2 bg-studio-bg border border-studio-border rounded-lg px-2.5 py-1.5 text-xs text-white font-mono" />
             </div>
             <input id="new-act-title" type="text" placeholder="Título (ex: Oficina de Jardinagem)" value="" class="w-full bg-studio-bg border border-studio-border rounded-lg px-2.5 py-1.5 text-xs text-white font-sans" />
@@ -557,8 +627,12 @@
 
         <div class="mt-4 pt-3 border-t border-studio-border/70 flex items-center justify-between">
           <span class="text-[11px] font-mono text-slate-400">Total programado:</span>
-          <button id="btn-save-activities" class="py-2 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-600 text-white font-mono text-xs font-bold shadow-md">
-            💾 Transmitir Atividades ao Totem
+          <button id="btn-save-activities" class="py-2 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-600 text-white font-mono text-xs font-bold shadow-md flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+              <polyline points="17 21 17 13 7 13 7 21"></polyline>
+            </svg>
+            <span>Transmitir Atividades ao Totem</span>
           </button>
         </div>
       </div>
@@ -570,7 +644,11 @@
         <div>
           <div class="flex items-center justify-between mb-3">
             <div class="flex items-center gap-2">
-              <span class="text-base">🖥️</span>
+              <svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+              </svg>
               <h2 class="font-bold text-sm text-white uppercase tracking-wider">Telas & Dispositivos Ativos</h2>
             </div>
             <span id="badge-screens-active" class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold uppercase">
@@ -592,7 +670,9 @@
 
         <div class="mt-4 pt-3 border-t border-studio-border/70 flex items-center justify-between text-[11px] font-mono text-slate-400">
           <span>Identificação:</span>
-          <span class="text-emerald-400">IDs Amigáveis Ativos ✓</span>
+          <span class="text-emerald-400 flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> IDs Amigáveis Ativos OK
+          </span>
         </div>
       </div>
 
@@ -604,7 +684,10 @@
     <div class="bg-studio-surface border border-studio-border rounded-xl p-5 shadow-lg">
       <div class="flex items-center justify-between mb-3">
         <div class="flex items-center gap-2">
-          <span class="text-base">💻</span>
+          <svg class="w-4 h-4 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="4 17 10 11 4 5"></polyline>
+            <line x1="12" y1="19" x2="20" y2="19"></line>
+          </svg>
           <h2 class="font-bold text-sm text-white uppercase tracking-wider font-mono">Console de Telemetria SSE</h2>
         </div>
         <div class="flex items-center gap-2">
@@ -625,7 +708,9 @@
   <!-- NOTIFICATION TOAST -->
   <div id="studio-toast" class="fixed bottom-6 right-6 z-50 bg-studio-card border border-studio-border shadow-2xl rounded-xl p-4 flex items-center gap-3 transition-all duration-300 opacity-0 pointer-events-none translate-y-4">
     <div id="studio-toast-icon" class="w-8 h-8 rounded-xl bg-sakura-600/20 text-sakura-400 flex items-center justify-center font-bold text-sm">
-      ✓
+      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
     </div>
     <div>
       <div id="studio-toast-title" class="text-xs font-bold text-white">Comando Enviado</div>
@@ -647,6 +732,28 @@
     let currentBookings = [];
     let activeScreens = [];
 
+    // Ícones Vetoriais SVG Reutilizáveis
+    const DEV_ICONS = {
+      mobile: `<svg class="w-4 h-4 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>`,
+      dev: `<svg class="w-4 h-4 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>`,
+      totem: `<svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>`,
+      zen: `<svg class="w-4 h-4 text-sakura-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="5" r="2"></circle><path d="M12 9v4m-5 4 5-2 5 2m-8-2-2-4 5-2 5 2-2 4"></path></svg>`,
+      organico: `<svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.5 10-10 10Z"></path></svg>`,
+      esporte: `<svg class="w-4 h-4 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"></circle><path d="M12 3a14 14 0 0 0 0 18M3 12h18"></path></svg>`,
+      arte: `<svg class="w-4 h-4 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12c0 3.5 2 6.5 5 8 1 .5 1.5-.5 1.5-1.5v-1c0-1.5 1-2.5 2.5-2.5h2c4 0 7-3 7-7 0-4.5-3.5-6-8-6Z"></path></svg>`,
+      geral: `<svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="12" y1="17" x2="12" y2="22"></line><path d="M5 17h14v-2l-3-3V5h1V3H7v2h1v7l-3 3v2z"></path></svg>`
+    };
+
+    function getDevActivityIcon(iconKey) {
+      if (!iconKey) return DEV_ICONS.geral;
+      const k = iconKey.toLowerCase();
+      if (k.includes('zen') || k.includes('yoga') || iconKey === '\u{1F9D8}') return DEV_ICONS.zen;
+      if (k.includes('organico') || k.includes('feira') || iconKey === '\u{1F955}') return DEV_ICONS.organico;
+      if (k.includes('esporte') || k.includes('basquete') || iconKey === '\u{1F3C0}') return DEV_ICONS.esporte;
+      if (k.includes('arte') || k.includes('desenho') || iconKey === '\u{1F3A8}') return DEV_ICONS.arte;
+      return DEV_ICONS.geral;
+    }
+
     // Helper de Toast
     function showStudioToast(title, desc, isError = false) {
       const toast = document.getElementById('studio-toast');
@@ -659,10 +766,10 @@
 
       if (isError) {
         toastIcon.className = "w-8 h-8 rounded-xl bg-rose-600/20 text-rose-400 flex items-center justify-center font-bold text-sm";
-        toastIcon.innerText = "✕";
+        toastIcon.innerHTML = `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
       } else {
         toastIcon.className = "w-8 h-8 rounded-xl bg-emerald-600/20 text-emerald-400 flex items-center justify-center font-bold text-sm";
-        toastIcon.innerText = "✓";
+        toastIcon.innerHTML = `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
       }
 
       toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
@@ -783,12 +890,12 @@
 
       activeScreens.forEach(s => {
         const div = document.createElement('div');
-        const icon = s.type === 'mobile' ? '📱' : (s.type === 'dev' ? '🛠️' : '🖥️');
+        const iconSvg = s.type === 'mobile' ? DEV_ICONS.mobile : (s.type === 'dev' ? DEV_ICONS.dev : DEV_ICONS.totem);
         const typeBadge = s.type === 'mobile' ? 'Mobile' : (s.type === 'dev' ? 'Admin' : 'Totem Público');
         div.className = "p-3 rounded-xl bg-studio-card border border-studio-border flex items-center justify-between text-xs font-mono";
         div.innerHTML = `
           <div class="flex items-center gap-2.5">
-            <span class="text-base">${icon}</span>
+            <span class="p-1 rounded-lg bg-studio-bg flex items-center justify-center">${iconSvg}</span>
             <div>
               <span class="font-bold text-white block">${s.name || s.id}</span>
               <span class="text-[10px] text-slate-400">${typeBadge} • IP: ${s.ip}</span>
@@ -855,10 +962,11 @@
 
       currentActivities.forEach((act, idx) => {
         const div = document.createElement('div');
+        const iconSvg = getDevActivityIcon(act.icon);
         div.className = "flex items-start justify-between p-2.5 rounded-xl bg-studio-card border border-studio-border text-xs";
         div.innerHTML = `
           <div class="flex items-start gap-2.5">
-            <span class="text-xl">${act.icon || '📌'}</span>
+            <span class="p-1.5 rounded-lg bg-studio-bg flex items-center justify-center">${iconSvg}</span>
             <div>
               <span class="text-[10px] font-mono text-sakura-400 font-bold block">${act.dayTime}</span>
               <span class="font-bold text-white text-xs block">${act.title}</span>
@@ -866,7 +974,7 @@
             </div>
           </div>
           <button class="btn-del-act text-rose-400 hover:text-rose-300 p-1 rounded hover:bg-rose-500/20 text-xs" data-idx="${idx}" title="Excluir atividade">
-            ✕
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
           </button>
         `;
         container.appendChild(div);
@@ -939,7 +1047,7 @@
 
       eventSource.addEventListener('bell_ring', (e) => {
         const data = JSON.parse(e.data);
-        logEvent("BELL_RING", `🔔 SINO TOCADO NA PRAÇA! (Origem: ${data.source})`, "text-rose-400");
+        logEvent("BELL_RING", `[SINO] SINO TOCADO NA PRAÇA! (Origem: ${data.source})`, "text-rose-400");
         document.getElementById('bell-last-time').innerText = `Tocado às ${new Date(data.lastRung).toLocaleTimeString()}`;
       });
 
@@ -1027,9 +1135,9 @@
 
       document.querySelectorAll('.btn-court-status').forEach(b => {
         if (b.getAttribute('data-status') === currentCourtStatus) {
-          b.className = "btn-court-status p-2 rounded-xl border border-rose-500 bg-rose-500/20 text-rose-300 font-mono text-xs font-bold";
+          b.className = "btn-court-status p-2 rounded-xl border border-rose-500 bg-rose-500/20 text-rose-300 font-mono text-xs font-bold flex items-center justify-center gap-1.5";
         } else {
-          b.className = "btn-court-status p-2 rounded-xl border border-studio-border bg-studio-card text-slate-400 font-mono text-xs font-bold hover:text-white";
+          b.className = "btn-court-status p-2 rounded-xl border border-studio-border bg-studio-card text-slate-400 font-mono text-xs font-bold hover:text-white flex items-center justify-center gap-1.5";
         }
       });
 
@@ -1132,9 +1240,9 @@
           currentCourtStatus = b.getAttribute('data-status');
           document.querySelectorAll('.btn-court-status').forEach(other => {
             if (other === b) {
-              other.className = "btn-court-status p-2 rounded-xl border border-rose-500 bg-rose-500/20 text-rose-300 font-mono text-xs font-bold";
+              other.className = "btn-court-status p-2 rounded-xl border border-rose-500 bg-rose-500/20 text-rose-300 font-mono text-xs font-bold flex items-center justify-center gap-1.5";
             } else {
-              other.className = "btn-court-status p-2 rounded-xl border border-studio-border bg-studio-card text-slate-400 font-mono text-xs font-bold hover:text-white";
+              other.className = "btn-court-status p-2 rounded-xl border border-studio-border bg-studio-card text-slate-400 font-mono text-xs font-bold hover:text-white flex items-center justify-center gap-1.5";
             }
           });
         });
@@ -1177,7 +1285,7 @@
 
       // Add Activity to list
       document.getElementById('btn-add-activity').addEventListener('click', () => {
-        const icon = document.getElementById('new-act-icon').value.trim() || '📌';
+        const icon = document.getElementById('new-act-icon').value.trim() || 'geral';
         const day = document.getElementById('new-act-day').value.trim();
         const title = document.getElementById('new-act-title').value.trim();
         const desc = document.getElementById('new-act-desc').value.trim();

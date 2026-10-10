@@ -327,7 +327,7 @@
       <!-- Real-time Synchronized Weather in Header -->
       <div class="hidden xl:flex items-center gap-2 bg-[#D8CEB8]/70 px-3 py-1.5 rounded-lg border border-figma-border text-[11px] font-mono">
         <span id="header-weather-badge" class="font-bold text-figma-textPrimary flex items-center gap-1.5">
-          <span id="header-weather-icon">☀️</span> <span id="header-weather-temp">24°C</span>
+          <span id="header-weather-icon" class="flex items-center justify-center"><svg class="w-3.5 h-3.5 inline-block text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41m14.14-14.14l-1.41 1.41"></path></svg></span> <span id="header-weather-temp">24°C</span>
         </span>
         <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
         <span id="header-weather-condition-short" class="text-[10px] text-figma-textSecondary">Ensolarado</span>
@@ -437,8 +437,8 @@
           <!-- Interactive Weather Simulator Banner for the Kiosk -->
           <div class="w-full glass-panel p-4 rounded-xl border border-figma-border mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
             <div class="flex items-center gap-3.5">
-              <div id="hero-weather-icon-box" class="w-12 h-12 rounded-xl bg-amber-500/15 text-amber-700 flex items-center justify-center text-2xl font-bold shadow-inner">
-                ☀️
+              <div id="hero-weather-icon-box" class="w-12 h-12 rounded-xl bg-amber-500/15 text-amber-700 flex items-center justify-center shadow-inner">
+                <svg class="w-6 h-6 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41m14.14-14.14l-1.41 1.41"></path></svg>
               </div>
               <div>
                 <div class="flex items-center gap-2">
@@ -456,7 +456,7 @@
             <!-- Global Community Bell Trigger (Synchronized Furin with 20s Cooldown) -->
             <div class="flex items-center gap-3">
               <button id="btn-community-bell" class="relative group px-4 py-2.5 sm:px-5 sm:py-3 rounded-xl bg-gradient-to-r from-sakura-500 via-sakura-600 to-sakura-700 hover:from-sakura-600 hover:to-sakura-800 text-white font-bold text-xs sm:text-sm flex items-center gap-3 shadow-lg shadow-sakura-500/25 transition-all active:scale-95 border border-white/25">
-                <span id="bell-icon" class="text-xl sm:text-2xl transition-transform group-hover:rotate-12 group-hover:scale-110 select-none">🔔</span>
+                <span id="bell-icon" class="w-6 h-6 flex items-center justify-center transition-transform group-hover:rotate-12 group-hover:scale-110 select-none"><svg class="w-5 h-5 text-current" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg></span>
                 <div class="flex flex-col text-left">
                   <div class="flex items-center gap-1.5">
                     <span id="bell-btn-text" class="leading-tight font-extrabold tracking-wide">Tocar Sino da Praça</span>
@@ -539,8 +539,8 @@
           <div id="main-court-schedule-card" class="w-full glass-panel rounded-xl p-5 sm:p-6 border border-figma-border flex flex-col gap-4 mt-6 shadow-xs">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-figma-border/70">
               <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-lg bg-rose-500/15 text-rose-700 border border-rose-500/30 flex items-center justify-center font-bold text-lg">
-                  📅
+                <div class="w-9 h-9 rounded-lg bg-rose-500/15 text-rose-700 border border-rose-500/30 flex items-center justify-center">
+                  <svg class="w-5 h-5 text-current" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                 </div>
                 <div>
                   <div class="flex items-center gap-2">
@@ -563,12 +563,21 @@
                   <span>↓</span>
                 </button>
                 <a href="/agendar" target="_blank" class="px-3 py-1.5 rounded-lg bg-cyan-700/15 hover:bg-cyan-700/25 text-cyan-800 border border-cyan-700/30 text-xs font-mono font-semibold flex items-center gap-1.5 transition-colors">
-                  <span>📱 App Mobile (/agendar)</span>
+                  <span class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 inline-block text-cyan-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg><span>App Mobile (/agendar)</span></span>
                 </a>
                 <button id="btn-hero-quick-book" class="px-3.5 py-1.5 rounded-lg bg-sakura-500 hover:bg-sakura-600 text-white font-bold text-xs font-mono flex items-center gap-1.5 shadow-sm transition-all hover:scale-105 active:scale-95">
                   <span>+ Reservar</span>
                 </button>
               </div>
+            </div>
+
+            <!-- Seletor de Períodos da Quadra (Mobbin Reference: Timeline por Períodos) -->
+            <div class="flex items-center gap-2 overflow-x-auto pb-1 text-xs font-mono">
+              <span class="text-[11px] text-figma-textMuted uppercase font-semibold mr-1">Filtrar:</span>
+              <button class="court-period-tab active px-3 py-1.5 rounded-lg border border-rose-500 bg-rose-500/15 text-rose-700 font-bold transition-all cursor-pointer" data-period="all">Todos (07h-21h)</button>
+              <button class="court-period-tab px-3 py-1.5 rounded-lg border border-figma-border bg-[#D8CEB8] text-figma-textSecondary hover:text-figma-textPrimary font-semibold transition-all cursor-pointer" data-period="morning">Manhã (07h-11h)</button>
+              <button class="court-period-tab px-3 py-1.5 rounded-lg border border-figma-border bg-[#D8CEB8] text-figma-textSecondary hover:text-figma-textPrimary font-semibold transition-all cursor-pointer" data-period="afternoon">Tarde (12h-17h)</button>
+              <button class="court-period-tab px-3 py-1.5 rounded-lg border border-figma-border bg-[#D8CEB8] text-figma-textSecondary hover:text-figma-textPrimary font-semibold transition-all cursor-pointer" data-period="night">Noite (18h-21h)</button>
             </div>
 
             <!-- Grade de Horários da Aba Principal -->
@@ -615,7 +624,7 @@
         <section id="section-sakura-radar" class="pt-10">
           <div class="glass-panel rounded-xl p-6 sm:p-10 border border-figma-border relative overflow-hidden">
             <div class="flex items-center gap-2 text-sakura-600 font-mono text-xs font-semibold mb-3">
-              <span>🌸 01 // MONITOR FENOLÓGICO DA CEREJEIRA</span>
+              <span class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-sakura-600 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="2.5"></circle><path d="M12 2a4 4 0 0 0-3 3.8c0 2.2 3 4.2 3 4.2s3-2 3-4.2A4 4 0 0 0 12 2z"></path><path d="M22 12a4 4 0 0 0-3.8-3c-2.2 0-4.2 3-4.2 3s2 3 4.2 3A4 4 0 0 0 22 12z"></path><path d="M12 22a4 4 0 0 0 3-3.8c0-2.2-3-4.2-3-4.2s-3 2-3 4.2a4 4 0 0 0 3 3.8z"></path><path d="M2 12a4 4 0 0 0 3.8 3c2.2 0 4.2-3 4.2-3s-2-3-4.2-3A4 4 0 0 0 2 12z"></path></svg><span>01 // MONITOR FENOLÓGICO DA CEREJEIRA</span></span>
             </div>
 
             <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 mb-8">
@@ -629,13 +638,19 @@
               </div>
 
               <!-- Main Bloom Percentage Badge -->
-              <div class="glass-card px-6 py-4 rounded-xl border border-sakura-500/40 flex items-center gap-4">
-                <div class="w-16 h-16 rounded-lg bg-sakura-500/15 border-2 border-sakura-500 flex flex-col items-center justify-center font-mono">
-                  <span id="radar-phase-pct" class="text-lg font-bold text-sakura-700 leading-none">88%</span>
-                  <span id="radar-phase-pct-label" class="text-[9px] text-sakura-600">ABERTA</span>
+              <div class="glass-card px-6 py-4 rounded-xl border border-sakura-500/40 flex items-center gap-5 shadow-xs">
+                <div class="relative w-20 h-20 flex items-center justify-center flex-shrink-0">
+                  <svg class="w-20 h-20 -rotate-90" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="40" stroke="#D8CEB8" stroke-width="7" fill="transparent"></circle>
+                    <circle id="radar-phase-ring" cx="50" cy="50" r="40" stroke="#BE123C" stroke-width="7" stroke-linecap="round" fill="transparent" stroke-dasharray="251.2" stroke-dashoffset="30.1" class="transition-all duration-700"></circle>
+                  </svg>
+                  <div class="absolute flex flex-col items-center">
+                    <span id="radar-phase-pct" class="text-base font-bold text-sakura-700 leading-none font-mono">88%</span>
+                    <span id="radar-phase-pct-label" class="text-[8px] text-sakura-600 font-mono font-semibold uppercase mt-0.5">MANKAI</span>
+                  </div>
                 </div>
                 <div>
-                  <div id="radar-phase-tag" class="text-xs font-mono text-sakura-600 font-bold uppercase">ESTÁGIO ATUAL: MANKAI (満開)</div>
+                  <div id="radar-phase-tag" class="text-xs font-mono text-sakura-600 font-bold uppercase">ESTÁGIO ATUAL: MANKAI (FLORAÇÃO PLENA)</div>
                   <div id="radar-phase-name" class="text-base font-bold text-figma-textPrimary">Plena Floração Ativa</div>
                   <div id="radar-phase-desc" class="text-xs text-figma-textSecondary">Previsão do ápice: <strong>08 de Outubro (3 dias)</strong></div>
                 </div>
@@ -731,7 +746,7 @@
               </div>
 
               <button id="btn-sakura-chime" class="px-4 py-2 rounded-xl bg-sakura-500 hover:bg-sakura-600 text-white font-semibold text-xs transition-all flex items-center gap-1.5 shadow-sm active:scale-95 flex-shrink-0">
-                <span>✿</span>
+                <svg class="w-3.5 h-3.5 text-current inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
                 <span>Tocar Sino Hanami</span>
               </button>
             </div>
@@ -773,8 +788,9 @@
                     <span class="text-xs font-mono font-bold uppercase text-rose-800">STATUS DA QUADRA AGORA</span>
                     <span id="court-status-dot" class="w-3 h-3 rounded-full bg-rose-600 animate-ping"></span>
                   </div>
-                  <div id="court-status-title" class="text-2xl sm:text-3xl font-extrabold text-rose-900 mb-1">
-                    🔴 EM USO AGORA
+                  <div id="court-status-title" class="text-2xl sm:text-3xl font-extrabold text-rose-900 mb-1 flex items-center gap-2">
+                    <span class="w-3 h-3 rounded-full bg-rose-600 inline-block animate-pulse"></span>
+                    <span>EM USO AGORA</span>
                   </div>
                   <p id="court-status-desc" class="text-xs text-rose-800 leading-relaxed">
                     Partida amistosa de <strong>Basquete 3x3 Juvenil</strong>.
@@ -801,19 +817,19 @@
                   <h3 class="text-base font-bold text-figma-textPrimary mb-3">Infraestrutura da Quadra</h3>
                   <div class="space-y-2.5 text-xs text-figma-textSecondary">
                     <div class="flex items-center gap-2">
-                      <span class="text-emerald-700">✓</span>
+                      <svg class="w-3.5 h-3.5 text-emerald-700 flex-shrink-0 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
                       <span>Piso esportivo ecológico amortecido em resina</span>
                     </div>
                     <div class="flex items-center gap-2">
-                      <span class="text-emerald-700">✓</span>
+                      <svg class="w-3.5 h-3.5 text-emerald-700 flex-shrink-0 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
                       <span>Tabelas profissionais de basquete em vidro temperado</span>
                     </div>
                     <div class="flex items-center gap-2">
-                      <span class="text-emerald-700">✓</span>
+                      <svg class="w-3.5 h-3.5 text-emerald-700 flex-shrink-0 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
                       <span>Refletores solares inteligentes LED automatizados até 22h</span>
                     </div>
                     <div class="flex items-center gap-2">
-                      <span class="text-emerald-700">✓</span>
+                      <svg class="w-3.5 h-3.5 text-emerald-700 flex-shrink-0 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
                       <span>Alambrado com isolamento acústico e bebedouro filtrado</span>
                     </div>
                   </div>
@@ -835,7 +851,7 @@
                 </div>
 
                 <button id="btn-open-quick-booking" class="w-full py-2.5 px-4 rounded-lg bg-sakura-500 hover:bg-sakura-600 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all hover:scale-[1.02] active:scale-98">
-                  <span>📅</span>
+                  <svg class="w-4 h-4 text-white inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                   <span>Agendar Horário na Quadra</span>
                 </button>
               </div>
@@ -974,7 +990,7 @@
               <div class="absolute inset-0 w-full h-full bg-[#3d332a] flex items-center justify-center overflow-hidden">
                 <img src="./assets/praca_antiga-w7oZNVHw.jpg" alt="Foto Histórica da Praça" class="w-full h-full object-cover filter contrast-105 brightness-95" />
                 <div class="absolute top-4 left-4 bg-black/75 backdrop-blur-md text-amber-200 text-xs font-mono px-3 py-1.5 rounded-lg border border-amber-300/30 flex items-center gap-2">
-                  <span>📷</span>
+                  <svg class="w-3.5 h-3.5 text-amber-200 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
                   <span>REGISTRO HISTÓRICO // A PRAÇA ORIGINAL</span>
                 </div>
               </div>
@@ -984,7 +1000,7 @@
                 <div class="w-full h-full absolute top-0 left-0 bg-[#292524] flex items-center justify-center overflow-hidden">
                   <img src="./assets/logo-BSOEStq9.jpg" alt="Projeto Conecta Revitalizado" class="w-full h-full object-cover filter saturate-150 contrast-110" style="width: 100%; height: 100%; max-width: none;" id="ba-after-img" />
                   <div class="absolute top-4 right-4 bg-sakura-900/80 backdrop-blur-md text-white text-xs font-mono px-3 py-1.5 rounded-lg border border-sakura-500/40 flex items-center gap-2">
-                    <span>🌸</span>
+                    <svg class="w-3.5 h-3.5 text-sakura-300 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="2.5"></circle><path d="M12 2a4 4 0 0 0-3 3.8c0 2.2 3 4.2 3 4.2s3-2 3-4.2A4 4 0 0 0 12 2z"></path><path d="M22 12a4 4 0 0 0-3.8-3c-2.2 0-4.2 3-4.2 3s2 3 4.2 3A4 4 0 0 0 22 12z"></path><path d="M12 22a4 4 0 0 0 3-3.8c0-2.2-3-4.2-3-4.2s-3 2-3 4.2a4 4 0 0 0 3 3.8z"></path><path d="M2 12a4 4 0 0 0 3.8 3c2.2 0 4.2-3 4.2-3s-2-3-4.2-3A4 4 0 0 0 2 12z"></path></svg>
                     <span>PROJETO CONECTA // ARQUITETURA BIOCLIMÁTICA</span>
                   </div>
                 </div>
@@ -999,8 +1015,8 @@
             <!-- Memória & Patrimônio Coletivo -->
             <div class="glass-card p-6 rounded-xl border border-figma-border mb-10 flex flex-col md:flex-row items-center justify-between gap-6 bg-gradient-to-r from-emerald-500/10 via-transparent to-sakura-500/10">
               <div class="flex items-start gap-4">
-                <div class="w-12 h-12 rounded-lg bg-emerald-600/15 text-emerald-800 flex items-center justify-center text-2xl font-bold flex-shrink-0">
-                  🌳
+                <div class="w-12 h-12 rounded-lg bg-emerald-600/15 text-emerald-800 flex items-center justify-center flex-shrink-0">
+                  <svg class="w-7 h-7 text-emerald-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3a7 7 0 0 0-7 7c0 2.4 1.2 4.5 3 5.7V21h8v-5.3c1.8-1.2 3-3.3 3-5.7a7 7 0 0 0-7-7z"></path></svg>
                 </div>
                 <div>
                   <h4 class="text-base font-bold text-figma-textPrimary mb-1">Preservação do Patrimônio e Memória Viva</h4>
@@ -1057,7 +1073,7 @@
         <section id="section-comunidade" class="pt-10">
           <div class="glass-panel rounded-xl p-6 sm:p-10 border border-figma-border">
             <div class="flex items-center gap-2 text-sakura-600 font-mono text-xs font-semibold mb-3">
-              <span>📸 05 // MURAL DA COMUNIDADE & AGENDA CULTURAL</span>
+              <span class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-sakura-600 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg><span>05 // MURAL DA COMUNIDADE & AGENDA CULTURAL</span></span>
             </div>
 
             <div class="flex flex-col lg:flex-row items-start lg:items-end justify-between gap-4 mb-8">
@@ -1117,7 +1133,7 @@
 
             <div id="weekly-activities-container" class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
               <div class="p-4 rounded-xl bg-[#DCD2BE] border border-figma-border flex items-start gap-3">
-                <div class="text-2xl">🧘</div>
+                <div class="w-10 h-10 rounded-lg bg-sakura-500/15 text-sakura-600 flex items-center justify-center flex-shrink-0"><svg class="w-5 h-5 text-current" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="5" r="2"></circle><path d="M12 9v4m-5 4 5-2 5 2m-8-2-2-4 5-2 5 2-2 4"></path></svg></div>
                 <div>
                   <div class="font-mono text-[10px] text-sakura-600 font-bold uppercase">SÁBADO • 08:00</div>
                   <div class="font-bold text-sm text-figma-textPrimary">Yoga & Meditação Matinal</div>
@@ -1126,7 +1142,7 @@
               </div>
 
               <div class="p-4 rounded-xl bg-[#DCD2BE] border border-figma-border flex items-start gap-3">
-                <div class="text-2xl">🥕</div>
+                <div class="w-10 h-10 rounded-lg bg-emerald-500/15 text-emerald-700 flex items-center justify-center flex-shrink-0"><svg class="w-5 h-5 text-current" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.5 10-10 10Z"></path></svg></div>
                 <div>
                   <div class="font-mono text-[10px] text-emerald-700 font-bold uppercase">SÁBADO • 09:30</div>
                   <div class="font-bold text-sm text-figma-textPrimary">Feirinha Agroecológica</div>
@@ -1135,7 +1151,7 @@
               </div>
 
               <div class="p-4 rounded-xl bg-[#DCD2BE] border border-figma-border flex items-start gap-3">
-                <div class="text-2xl">🏀</div>
+                <div class="w-10 h-10 rounded-lg bg-cyan-700/15 text-cyan-800 flex items-center justify-center flex-shrink-0"><svg class="w-5 h-5 text-current" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"></circle><path d="M12 3a14 14 0 0 0 0 18M3 12h18"></path></svg></div>
                 <div>
                   <div class="font-mono text-[10px] text-cyan-800 font-bold uppercase">DOMINGO • 15:30</div>
                   <div class="font-bold text-sm text-figma-textPrimary">Clínica Aberta de Basquete</div>
@@ -1150,7 +1166,7 @@
         <section id="section-zeladoria" class="pt-10">
           <div class="glass-panel rounded-xl p-6 sm:p-10 border border-figma-border">
             <div class="flex items-center gap-2 text-rose-700 font-mono text-xs font-semibold mb-3">
-              <span>🚨 06 // ZELADORIA CIDADÃ & APOIO DE EMERGÊNCIA</span>
+              <span class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-rose-700 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg><span>06 // ZELADORIA CIDADÃ & APOIO DE EMERGÊNCIA</span></span>
             </div>
 
             <div class="flex flex-col lg:flex-row items-start lg:items-end justify-between gap-4 mb-8">
@@ -1447,7 +1463,7 @@
             <label class="text-[11px] text-figma-textSecondary">Conjunto de Caracteres</label>
             <select id="select-charset" class="w-full bg-[#DCD2BE] border border-figma-border rounded-lg px-2.5 py-1.5 text-xs text-figma-textPrimary focus:outline-none focus:border-sakura-500 cursor-pointer font-mono font-medium">
               <option value="classic" selected>ASCII Clássico (@ # % * + = - : .)</option>
-              <option value="sakura">Sakura Kanji & Floral (🌸 桜 木 花 咲 •)</option>
+              <option value="sakura">Sakura Kanji & Mon (桜 木 花 咲 • ◈)</option>
               <option value="cyber">Cyber Hex (0 1 x / \ [ ] { } &lt; &gt;)</option>
               <option value="architectural">Blueprint CAD (█ ▓ ▒ ░ ┼ ─ │ ┌)</option>
             </select>
@@ -1509,10 +1525,10 @@
               <span id="label-inspector-phase" class="font-mono text-sakura-600 font-bold text-[10px]">Fase 3: Mankai</span>
             </div>
             <div class="grid grid-cols-2 gap-1.5 text-[10px] font-mono">
-              <button class="btn-inspector-phase p-1.5 rounded-md border border-figma-border bg-[#D8CEB8] hover:bg-figma-hover text-left transition-all" data-phase="1">❄️ 1. Inverno</button>
-              <button class="btn-inspector-phase p-1.5 rounded-md border border-figma-border bg-[#D8CEB8] hover:bg-figma-hover text-left transition-all" data-phase="2">🌱 2. Botões</button>
-              <button class="btn-inspector-phase p-1.5 rounded-md border border-sakura-500 bg-sakura-500 text-white font-bold text-left transition-all active" data-phase="3">🌸 3. Mankai</button>
-              <button class="btn-inspector-phase p-1.5 rounded-md border border-figma-border bg-[#D8CEB8] hover:bg-figma-hover text-left transition-all" data-phase="4">🍃 4. Hazakura</button>
+              <button class="btn-inspector-phase p-1.5 rounded-md border border-figma-border bg-[#D8CEB8] hover:bg-figma-hover text-left transition-all" data-phase="1">[I] 1. Inverno</button>
+              <button class="btn-inspector-phase p-1.5 rounded-md border border-figma-border bg-[#D8CEB8] hover:bg-figma-hover text-left transition-all" data-phase="2">[II] 2. Botões</button>
+              <button class="btn-inspector-phase p-1.5 rounded-md border border-sakura-500 bg-sakura-500 text-white font-bold text-left transition-all active" data-phase="3">[III] 3. Mankai</button>
+              <button class="btn-inspector-phase p-1.5 rounded-md border border-figma-border bg-[#D8CEB8] hover:bg-figma-hover text-left transition-all" data-phase="4">[IV] 4. Hazakura</button>
             </div>
           </div>
 
@@ -1541,7 +1557,7 @@
 
           <!-- Petal Storm Trigger -->
           <button id="btn-inspector-storm" class="w-full py-2.5 px-3 rounded-lg bg-sakura-500/15 hover:bg-sakura-500/25 text-sakura-700 border border-sakura-500/40 text-xs font-semibold flex items-center justify-center gap-2 transition-all active:scale-95">
-            <span>✿</span>
+            <svg class="w-3.5 h-3.5 text-current inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"></path></svg>
             <span>Desprender Novas Pétalas</span>
           </button>
         </div>
@@ -1585,7 +1601,7 @@
 
       <!-- Action 3: Disparar Tempestade -->
       <button id="dock-tool-gust" class="px-3 py-1.5 rounded-xl bg-sakura-500/15 hover:bg-sakura-500/25 text-sakura-700 border border-sakura-500/30 flex items-center gap-1.5 text-xs font-semibold transition-all hover:scale-105 active:scale-95" title="Ativar Rajada de Vento nas Pétalas [Espaço]">
-        <span>✿</span>
+        <svg class="w-3.5 h-3.5 text-current inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"></path></svg>
         <span class="hidden sm:inline">Rajada Sakura</span>
       </button>
 
@@ -1603,13 +1619,13 @@
     <div id="global-broadcast-card" class="w-full max-w-3xl lg:max-w-4xl rounded-xl p-6 sm:p-10 shadow-2xl text-center transform scale-95 transition-all duration-300 flex flex-col items-center relative">
       
       <!-- Close button in top right -->
-      <button id="btn-close-broadcast" class="absolute top-4 right-4 sm:top-5 sm:right-5 w-9 h-9 rounded-lg border flex items-center justify-center font-mono text-sm transition-all" title="Fechar Aviso">
-        ✕
+      <button id="btn-close-broadcast" class="absolute top-4 right-4 sm:top-5 sm:right-5 w-9 h-9 rounded-lg border flex items-center justify-center transition-all" title="Fechar Aviso">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
       </button>
 
       <!-- Megaphone Icon -->
-      <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-lg bg-sakura-500/15 text-sakura-600 border border-sakura-500/30 flex items-center justify-center text-3xl sm:text-4xl mb-4 shadow-sm animate-bounce">
-        📢
+      <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-lg bg-sakura-500/15 text-sakura-600 border border-sakura-500/30 flex items-center justify-center mb-4 shadow-sm animate-bounce">
+        <svg class="w-8 h-8 sm:w-10 sm:h-10 text-sakura-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
       </div>
 
       <div class="text-[11px] sm:text-xs font-mono font-bold uppercase tracking-widest text-sakura-600 mb-2">
@@ -1661,7 +1677,7 @@
 
       <div id="screensaver-court-badge-container" class="glass-panel px-4 py-2 rounded-xl border border-rose-500/40 bg-rose-500/15 text-rose-300 font-mono text-xs flex items-center gap-2">
         <span id="screensaver-court-dot" class="w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping"></span>
-        <span id="screensaver-court-badge">QUADRA: 🔴 EM USO (22m rest.)</span>
+        <span id="screensaver-court-badge">QUADRA: ● EM USO (22m rest.)</span>
       </div>
     </div>
 
@@ -1674,7 +1690,7 @@
         SEGUNDA-FEIRA, 05 DE OUTUBRO DE 2026
       </div>
       <div class="mt-4 flex flex-wrap items-center justify-center gap-3 px-5 py-2 rounded-lg border border-figma-border bg-[#D8CEB8]/70 text-xs sm:text-sm font-mono text-figma-textSecondary screensaver-pill">
-        <span id="screensaver-weather-icon" class="text-lg">☀️</span>
+        <span id="screensaver-weather-icon" class="text-lg flex items-center justify-center"><svg class="w-5 h-5 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41m14.14-14.14l-1.41 1.41"></path></svg></span>
         <span id="screensaver-weather-temp" class="font-bold text-figma-textPrimary">24°C</span>
         <span>•</span>
         <span id="screensaver-weather-condition">Céu Aberto</span>
@@ -1685,8 +1701,8 @@
 
     <!-- Pulsating Touch Prompt at bottom -->
     <div class="flex flex-col items-center gap-2 text-center animate-bounce">
-      <div class="w-10 h-10 rounded-full bg-sakura-500/20 text-sakura-700 flex items-center justify-center text-lg font-bold border border-sakura-500/40">
-        👆
+      <div class="w-10 h-10 rounded-full bg-sakura-500/20 text-sakura-700 flex items-center justify-center border border-sakura-500/40">
+        <svg class="w-5 h-5 text-sakura-600 animate-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v3m0 14v3M2 12h3m14 0h3"></path></svg>
       </div>
       <span class="text-xs font-mono font-bold tracking-widest text-figma-textPrimary uppercase">
         TOQUE EM QUALQUER LUGAR PARA INTERAGIR
@@ -1702,13 +1718,13 @@
     <div class="glass-panel w-full max-w-lg rounded-xl border border-figma-border p-6 sm:p-8 flex flex-col gap-6 shadow-2xl relative transform scale-95 transition-transform duration-300" id="modal-booking-card">
       
       <!-- Close Button -->
-      <button id="btn-close-booking" class="absolute top-5 right-5 w-8 h-8 rounded-full hover:bg-figma-hover flex items-center justify-center text-figma-textMuted hover:text-figma-textPrimary font-mono text-sm transition-colors">
-        ✕
+      <button id="btn-close-booking" class="absolute top-5 right-5 w-8 h-8 rounded-full hover:bg-figma-hover flex items-center justify-center text-figma-textMuted hover:text-figma-textPrimary transition-colors">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
       </button>
 
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-sakura-500/15 text-sakura-600 flex items-center justify-center text-xl font-bold">
-          🏀
+        <div class="w-10 h-10 rounded-xl bg-sakura-500/15 text-sakura-600 flex items-center justify-center">
+          <svg class="w-5 h-5 text-current" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"></circle><path d="M12 3a14 14 0 0 0 0 18M3 12h18"></path></svg>
         </div>
         <div>
           <span class="text-[10px] font-mono text-sakura-600 font-bold uppercase tracking-wider block">AGENDAMENTO COMUNITÁRIO</span>
@@ -1731,17 +1747,21 @@
       <div>
         <label class="text-xs font-semibold text-figma-textSecondary block mb-2 font-mono">SELECIONE A MODALIDADE:</label>
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-          <button class="btn-sport-opt active p-2.5 rounded-xl border border-sakura-500 bg-sakura-500 text-white font-semibold text-center transition-all" data-sport="Basquete">
-            🏀 Basquete
+          <button class="btn-sport-opt active p-2.5 rounded-xl border border-sakura-500 bg-sakura-500 text-white font-semibold text-center transition-all flex items-center justify-center gap-1.5" data-sport="Basquete">
+            <svg class="w-4 h-4 text-current" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"></circle><path d="M12 3a14 14 0 0 0 0 18M3 12h18"></path></svg>
+            <span>Basquete</span>
           </button>
-          <button class="btn-sport-opt p-2.5 rounded-xl border border-figma-border bg-[#D8CEB8] hover:bg-figma-hover text-figma-textPrimary font-semibold text-center transition-all" data-sport="Vôlei">
-            🏐 Vôlei
+          <button class="btn-sport-opt p-2.5 rounded-xl border border-figma-border bg-[#D8CEB8] hover:bg-figma-hover text-figma-textPrimary font-semibold text-center transition-all flex items-center justify-center gap-1.5" data-sport="Vôlei">
+            <svg class="w-4 h-4 text-current" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"></circle><path d="M12 12a9 9 0 0 0 6.36-2.64M12 12a9 9 0 0 1-2.64 6.36M12 12a9 9 0 0 0-3.72-8.19"></path></svg>
+            <span>Vôlei</span>
           </button>
-          <button class="btn-sport-opt p-2.5 rounded-xl border border-figma-border bg-[#D8CEB8] hover:bg-figma-hover text-figma-textPrimary font-semibold text-center transition-all" data-sport="Futsal">
-            ⚽ Futsal
+          <button class="btn-sport-opt p-2.5 rounded-xl border border-figma-border bg-[#D8CEB8] hover:bg-figma-hover text-figma-textPrimary font-semibold text-center transition-all flex items-center justify-center gap-1.5" data-sport="Futsal">
+            <svg class="w-4 h-4 text-current" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"></circle><polygon points="12 7.5 15.8 10.3 14.3 14.8 9.7 14.8 8.2 10.3"></polygon></svg>
+            <span>Futsal</span>
           </button>
-          <button class="btn-sport-opt p-2.5 rounded-xl border border-figma-border bg-[#D8CEB8] hover:bg-figma-hover text-figma-textPrimary font-semibold text-center transition-all" data-sport="Beach Tennis">
-            🎾 Beach Tennis
+          <button class="btn-sport-opt p-2.5 rounded-xl border border-figma-border bg-[#D8CEB8] hover:bg-figma-hover text-figma-textPrimary font-semibold text-center transition-all flex items-center justify-center gap-1.5" data-sport="Beach Tennis">
+            <svg class="w-4 h-4 text-current" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="9" r="6"></circle><path d="M12 15v6m-2 0h4"></path></svg>
+            <span>Beach Tennis</span>
           </button>
         </div>
       </div>
@@ -1793,7 +1813,7 @@
       <!-- Action Buttons -->
       <div class="flex items-center gap-3">
         <button id="btn-confirm-kiosk-booking" class="flex-1 py-3 px-4 rounded-xl bg-sakura-500 hover:bg-sakura-600 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-sakura-500/20 transition-all active:scale-98">
-          <span>✓</span>
+          <svg class="w-4 h-4 text-current" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
           <span>Validar Reserva Direta no Totem</span>
         </button>
         <button id="btn-cancel-booking" class="py-3 px-4 rounded-xl border border-figma-border bg-[#D8CEB8] hover:bg-figma-hover text-figma-textSecondary text-xs font-semibold transition-all">
@@ -1807,8 +1827,8 @@
   <!-- MODAL: ZELADORIA CONFIRMATION -->
   <div id="modal-zeladoria" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
     <div class="glass-panel w-full max-w-md rounded-xl border border-figma-border p-6 sm:p-8 flex flex-col gap-4 shadow-2xl relative text-center">
-      <div class="w-14 h-14 rounded-xl bg-emerald-500/20 text-emerald-700 flex items-center justify-center text-2xl mx-auto border border-emerald-500/40">
-        ✓
+      <div class="w-14 h-14 rounded-xl bg-emerald-500/20 text-emerald-700 flex items-center justify-center mx-auto border border-emerald-500/40">
+        <svg class="w-7 h-7 text-emerald-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
       </div>
       <h3 class="text-xl font-bold text-figma-textPrimary">Chamado Registrado!</h3>
       <p class="text-xs text-figma-textSecondary leading-relaxed">
@@ -1844,7 +1864,7 @@
     class TextScramble {
       constructor(el) {
         this.el = el;
-        this.chars = '!<>-_\\/[]{}—=+*^?#_░▒▓✿❀🌸0123456789CONECTA';
+        this.chars = '!<>-_\\/[]{}—=+*^?#_░▒▓◈◇桜0123456789CONECTA';
         this.update = this.update.bind(this);
       }
       
@@ -2075,7 +2095,7 @@
 
         // Charset glyph maps sorted from subtle stipple to dense ink luminance
         this.charsets = {
-          sakura: ['·', '°', 'o', 'x', '🌸', '枝', '木', '花', '咲', '✿', '❀', '●'],
+          sakura: ['·', '°', 'o', 'x', '桜', '枝', '木', '花', '咲', '◈', '◇', '●'],
           classic: ['.', ':', '-', '=', '+', '*', '%', '@', '#', 'W', '$', '8', '&'],
           cyber: ['·', '0', '1', 'x', '/', '\\', '[', ']', '{', '}', '<', '>', '#', '%'],
           architectural: ['·', '─', '│', '┼', '┌', '┐', '└', '┘', '▒', '░', '▓', '█']
@@ -2619,10 +2639,10 @@
           this.rimLight.color.setHex(0xbe123c);
           this.rimLight.intensity = 2.8;
 
-          if (iconHero) iconHero.innerText = '☀️';
+          if (iconHero) iconHero.innerHTML = TOTEM_ICONS.sun;
           if (tempHero) tempHero.innerText = '24.2°C';
           if (condHero) condHero.innerText = 'Céu Claro com Brisa Leve';
-          if (iconHeader) iconHeader.innerText = '☀️';
+          if (iconHeader) iconHeader.innerHTML = TOTEM_ICONS.sun;
           if (tempHeader) tempHeader.innerText = '24°C';
           sound.playClick();
           showToast('Clima da Praça: Ensolarado (24°C)');
@@ -2642,10 +2662,10 @@
           this.rimLight.color.setHex(0xbe123c);
           this.rimLight.intensity = 2.0;
 
-          if (iconHero) iconHero.innerText = '🌧️';
+          if (iconHero) iconHero.innerHTML = TOTEM_ICONS.rain;
           if (tempHero) tempHero.innerText = '20.5°C';
           if (condHero) condHero.innerText = 'Chuva Convectiva com Gotas ASCII';
-          if (iconHeader) iconHeader.innerText = '🌧️';
+          if (iconHeader) iconHeader.innerHTML = TOTEM_ICONS.rain;
           if (tempHeader) tempHeader.innerText = '20°C';
           sound.playRainDrops();
           showToast('Clima da Praça: Chuva Ativa em ASCII (20°C)');
@@ -2664,10 +2684,10 @@
           this.rimLight.color.setHex(0xbe123c);
           this.rimLight.intensity = 2.8;
           this.burstPetals();
-          if (iconHero) iconHero.innerText = '💨';
+          if (iconHero) iconHero.innerHTML = TOTEM_ICONS.wind;
           if (tempHero) tempHero.innerText = '22.0°C';
           if (condHero) condHero.innerText = 'Rajadas Fortes de Vento';
-          if (iconHeader) iconHeader.innerText = '💨';
+          if (iconHeader) iconHeader.innerHTML = TOTEM_ICONS.wind;
           if (tempHeader) tempHeader.innerText = '22°C';
           sound.playFurin();
           showToast('Clima da Praça: Ventania e Dança de Pétalas');
@@ -2689,10 +2709,10 @@
           this.bloomLight.color.setHex(0x818cf8); // Subtle mystical violet glow (NO ORANGE!)
           this.bloomLight.intensity = 0.9;
 
-          if (iconHero) iconHero.innerText = '🌙';
+          if (iconHero) iconHero.innerHTML = TOTEM_ICONS.night;
           if (tempHero) tempHero.innerText = '18.4°C';
           if (condHero) condHero.innerText = 'Noite Enluarada Serena (Yozakura)';
-          if (iconHeader) iconHeader.innerText = '🌙';
+          if (iconHeader) iconHeader.innerHTML = TOTEM_ICONS.night;
           if (tempHeader) tempHeader.innerText = '18°C';
           sound.playFurin();
           showToast('Clima da Praça: Noite Enluarada Serena');
@@ -2766,6 +2786,13 @@
         if (ssPhase) ssPhase.innerText = cur.ss;
         if (heroPetals) heroPetals.innerText = cur.petals;
         if (inspectorPhase) inspectorPhase.innerText = cur.insp;
+
+        const ringEl = document.getElementById('radar-phase-ring');
+        if (ringEl) {
+          const pctVal = parseInt(cur.pct) || 0;
+          const offset = 251.2 * (1 - pctVal / 100);
+          ringEl.style.strokeDashoffset = offset.toFixed(1);
+        }
 
         // Update active classes on cards
         document.querySelectorAll('.phase-card').forEach(card => {
@@ -3773,7 +3800,7 @@
           this.eventSource.addEventListener('wind_gust', () => {
             this.engine.burstPetals();
             this.sound.playFurin();
-            showToast("💨 Rajada de vento viva na praça!");
+            showToast("Rajada de vento viva na praça!");
           });
 
           this.eventSource.addEventListener('court_change', (e) => {
@@ -3799,7 +3826,7 @@
               const data = JSON.parse(e.data);
               if (data.activities) {
                 renderWeeklyActivities(data.activities);
-                showToast("📅 Atividades da semana sincronizadas!");
+                showToast("Atividades da semana sincronizadas!");
               }
             } catch(err) {}
           });
@@ -3832,16 +3859,20 @@
 
         updateWeatherHeader(weather) {
           const map = {
-            sun: { icon: "☀️", temp: "24°C", text: "Ensolarado" },
-            rain: { icon: "🌧️", temp: "20°C", text: "Chuva ASCII" },
-            wind: { icon: "💨", temp: "22°C", text: "Ventania" },
-            night: { icon: "🌙", temp: "18°C", text: "Noite Yozakura" }
+            sun: { icon: TOTEM_ICONS.sun, temp: "24°C", text: "Ensolarado" },
+            rain: { icon: TOTEM_ICONS.rain, temp: "20°C", text: "Chuva ASCII" },
+            wind: { icon: TOTEM_ICONS.wind, temp: "22°C", text: "Ventania" },
+            night: { icon: TOTEM_ICONS.night, temp: "18°C", text: "Noite Yozakura" }
           };
           const cur = map[weather] || map.sun;
           const iconEl = document.getElementById('header-weather-icon');
+          const heroIconEl = document.getElementById('hero-weather-icon-box');
+          const ssIconEl = document.getElementById('screensaver-weather-icon');
           const tempEl = document.getElementById('header-weather-temp');
           const condEl = document.getElementById('header-weather-condition-short');
-          if (iconEl) iconEl.innerText = cur.icon;
+          if (iconEl) iconEl.innerHTML = cur.icon;
+          if (heroIconEl) heroIconEl.innerHTML = cur.icon;
+          if (ssIconEl) ssIconEl.innerHTML = cur.icon;
           if (tempEl) tempEl.innerText = cur.temp;
           if (condEl) condEl.innerText = cur.text;
         }
@@ -3867,8 +3898,8 @@
             this.courtIsBusy = true;
             this.courtSeconds = (court.remainingMinutes || 22) * 60;
             if (courtStatusTitle) {
-              courtStatusTitle.innerText = "🔴 EM USO AGORA";
-              courtStatusTitle.className = "text-2xl sm:text-3xl font-extrabold text-rose-900 mb-1";
+              courtStatusTitle.innerHTML = '<span class="w-3 h-3 rounded-full bg-rose-600 inline-block mr-2 animate-pulse"></span><span>EM USO AGORA</span>';
+              courtStatusTitle.className = "text-2xl sm:text-3xl font-extrabold text-rose-900 mb-1 flex items-center";
             }
             if (courtStatusDesc) {
               courtStatusDesc.innerHTML = `Partida amistosa de <strong>${court.activity || 'Basquete 3x3'}</strong>.`;
@@ -3882,15 +3913,15 @@
             }
             if (quickCourtTimer) quickCourtTimer.innerText = `${court.remainingMinutes || 22} min restantes`;
 
-            // Status da Quadra na tela AFK: Vermelho (🔴 EM USO)
+            // Status da Quadra na tela AFK: Vermelho (EM USO)
             if (ssCourtDot) ssCourtDot.className = "w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping";
             if (ssCourtContainer) ssCourtContainer.className = "glass-panel px-4 py-2 rounded-xl border border-rose-500/40 bg-rose-500/15 text-rose-300 font-mono text-xs flex items-center gap-2";
-            if (ssCourtBadge) ssCourtBadge.innerText = `QUADRA: 🔴 EM USO (${court.remainingMinutes || 22}m rest.)`;
+            if (ssCourtBadge) ssCourtBadge.innerText = `QUADRA: ● EM USO (${court.remainingMinutes || 22}m rest.)`;
           } else if (court.status === "livre") {
             this.courtIsBusy = false;
             if (courtStatusTitle) {
-              courtStatusTitle.innerText = "🟢 LIVRE PARA JOGAR";
-              courtStatusTitle.className = "text-2xl sm:text-3xl font-extrabold text-emerald-900 mb-1";
+              courtStatusTitle.innerHTML = '<span class="w-3 h-3 rounded-full bg-emerald-600 inline-block mr-2"></span><span>LIVRE PARA JOGAR</span>';
+              courtStatusTitle.className = "text-2xl sm:text-3xl font-extrabold text-emerald-900 mb-1 flex items-center";
             }
             if (courtStatusDesc) {
               courtStatusDesc.innerText = "Nenhuma partida agendada para o momento. Entre e aproveite!";
@@ -3905,15 +3936,15 @@
             if (courtCountdown) courtCountdown.innerText = "LIBERADA";
             if (quickCourtTimer) quickCourtTimer.innerText = "Livre para jogar";
 
-            // Status da Quadra na tela AFK: Verde (🟢 LIVRE)
+            // Status da Quadra na tela AFK: Verde (LIVRE)
             if (ssCourtDot) ssCourtDot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500";
             if (ssCourtContainer) ssCourtContainer.className = "glass-panel px-4 py-2 rounded-xl border border-emerald-500/40 bg-emerald-500/15 text-emerald-300 font-mono text-xs flex items-center gap-2";
-            if (ssCourtBadge) ssCourtBadge.innerText = "QUADRA: 🟢 LIVRE PARA JOGAR";
+            if (ssCourtBadge) ssCourtBadge.innerText = "QUADRA: ● LIVRE PARA JOGAR";
           } else {
             this.courtIsBusy = false;
             if (courtStatusTitle) {
-              courtStatusTitle.innerText = "🟡 MANUTENÇÃO TÉCNICA";
-              courtStatusTitle.className = "text-2xl sm:text-3xl font-extrabold text-amber-900 mb-1";
+              courtStatusTitle.innerHTML = '<span class="w-3 h-3 rounded-full bg-amber-600 inline-block mr-2"></span><span>MANUTENÇÃO TÉCNICA</span>';
+              courtStatusTitle.className = "text-2xl sm:text-3xl font-extrabold text-amber-900 mb-1 flex items-center";
             }
             if (courtStatusDesc) {
               courtStatusDesc.innerText = "Pintura e manutenção de tabelas pela prefeitura.";
@@ -3928,10 +3959,10 @@
             if (courtCountdown) courtCountdown.innerText = "MANUTENÇÃO";
             if (quickCourtTimer) quickCourtTimer.innerText = "Em manutenção";
 
-            // Status da Quadra na tela AFK: Amarelo (🟡 MANUTENÇÃO)
+            // Status da Quadra na tela AFK: Amarelo (MANUTENÇÃO)
             if (ssCourtDot) ssCourtDot.className = "w-2.5 h-2.5 rounded-full bg-amber-500";
             if (ssCourtContainer) ssCourtContainer.className = "glass-panel px-4 py-2 rounded-xl border border-amber-500/40 bg-amber-500/15 text-amber-300 font-mono text-xs flex items-center gap-2";
-            if (ssCourtBadge) ssCourtBadge.innerText = "QUADRA: 🟡 MANUTENÇÃO TÉCNICA";
+            if (ssCourtBadge) ssCourtBadge.innerText = "QUADRA: ● MANUTENÇÃO TÉCNICA";
           }
 
           if (this.courtBookings) {
@@ -3980,7 +4011,7 @@
             setTimeout(() => ripple.classList.add('opacity-0'), 1400);
           }
 
-          showToast("🔔 O Sino da Praça foi tocado! Harmônicos de Furin na praça.");
+          showToast("O Sino da Praça foi tocado! Harmônicos de Furin na praça.");
           const cd = data.cooldownSeconds || 20;
           this.startCooldown(cd);
         }
@@ -3998,7 +4029,7 @@
               if (btn) btn.classList.add('opacity-60', 'cursor-wait');
               if (text) text.innerText = `Aguarde (${this.bellRemaining}s)`;
               if (sub) sub.innerText = `Próximo toque liberado em ${this.bellRemaining}s`;
-              if (icon) icon.innerText = "⏳";
+              if (icon) icon.innerHTML = TOTEM_ICONS.timer;
               this.bellRemaining--;
             } else {
               clearInterval(this.bellInterval);
@@ -4006,7 +4037,7 @@
               if (btn) btn.classList.remove('opacity-60', 'cursor-wait');
               if (text) text.innerText = "Tocar Sino da Praça";
               if (sub) sub.innerText = "Sincronizado em todas as telas • 20s delay";
-              if (icon) icon.innerText = "🔔";
+              if (icon) icon.innerHTML = TOTEM_ICONS.bell;
             }
           };
 
@@ -4163,10 +4194,13 @@
         container.innerHTML = '';
         activities.forEach(act => {
           const card = document.createElement('div');
-          card.className = 'p-4 rounded-xl bg-[#DCD2BE] border border-figma-border flex items-start gap-3 transition-all hover:border-sakura-500/40';
+          card.className = 'p-4 rounded-xl bg-[#DCD2BE] border border-figma-border flex items-start gap-3 transition-all hover:border-sakura-500/40 hover:bg-[#E2D9C6]';
           const timeLabel = act.dayTime || (act.day && act.time ? `${act.day} • ${act.time}` : (act.day || act.time || 'DATA A DEFINIR'));
+          const iconSvg = getTotemActivityIcon(act.icon);
           card.innerHTML = `
-            <div class="text-2xl">${act.icon || '📌'}</div>
+            <div class="w-10 h-10 rounded-lg bg-sakura-500/15 text-sakura-600 flex items-center justify-center flex-shrink-0">
+              ${iconSvg}
+            </div>
             <div>
               <div class="font-mono text-[10px] text-sakura-600 font-bold uppercase">${timeLabel}</div>
               <div class="font-bold text-sm text-figma-textPrimary">${act.title || ''}</div>
@@ -4184,11 +4218,21 @@
       const heroCourtGrid = document.getElementById('hero-court-schedule-grid');
       const heroCourtStatusPill = document.getElementById('hero-court-status-pill');
       let currentCourtBookings = [];
+      let currentCourtData = { status: "em_uso", remainingMinutes: 22 };
+      let currentCourtPeriod = 'all'; // 'all' | 'morning' | 'afternoon' | 'night'
       let selectedSlotTime = "16:00 às 17:00";
 
-      function renderCourtScheduleGrid(bookings, court) {
+      function renderCourtScheduleGrid(bookings, court, period = null) {
         if (Array.isArray(bookings)) {
           currentCourtBookings = bookings;
+        }
+        if (court) {
+          currentCourtData = court;
+        } else {
+          court = currentCourtData;
+        }
+        if (period) {
+          currentCourtPeriod = period;
         }
 
         const now = new Date();
@@ -4197,15 +4241,34 @@
         // Update hero status pill
         if (heroCourtStatusPill && court) {
           if (court.status === 'em_uso') {
-            heroCourtStatusPill.className = "text-[9px] font-mono px-2 py-0.5 rounded-md bg-rose-500/15 text-rose-700 font-bold uppercase border border-rose-500/30 flex items-center gap-1";
-            heroCourtStatusPill.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-rose-600 animate-ping"></span> 🔴 EM USO (${court.remainingMinutes || 20}m)`;
+            heroCourtStatusPill.className = "text-[9px] font-mono px-2 py-0.5 rounded-md bg-rose-500/15 text-rose-700 font-bold uppercase border border-rose-500/30 flex items-center gap-1.5";
+            heroCourtStatusPill.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-rose-600 animate-ping"></span> <span>EM USO (${court.remainingMinutes || 20}m)</span>`;
           } else if (court.status === 'livre') {
-            heroCourtStatusPill.className = "text-[9px] font-mono px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-700 font-bold uppercase border border-emerald-500/30 flex items-center gap-1";
-            heroCourtStatusPill.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> 🟢 LIVRE AGORA`;
+            heroCourtStatusPill.className = "text-[9px] font-mono px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-700 font-bold uppercase border border-emerald-500/30 flex items-center gap-1.5";
+            heroCourtStatusPill.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> <span>LIVRE AGORA</span>`;
           } else {
-            heroCourtStatusPill.className = "text-[9px] font-mono px-2 py-0.5 rounded-md bg-amber-500/15 text-amber-700 font-bold uppercase border border-amber-500/30 flex items-center gap-1";
-            heroCourtStatusPill.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span> 🟡 MANUTENÇÃO`;
+            heroCourtStatusPill.className = "text-[9px] font-mono px-2 py-0.5 rounded-md bg-amber-500/15 text-amber-700 font-bold uppercase border border-amber-500/30 flex items-center gap-1.5";
+            heroCourtStatusPill.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span> <span>MANUTENÇÃO</span>`;
           }
+        }
+
+        // Update active class on period tabs
+        document.querySelectorAll('.court-period-tab').forEach(tab => {
+          if (tab.getAttribute('data-period') === currentCourtPeriod) {
+            tab.className = "court-period-tab active px-3 py-1.5 rounded-lg border border-rose-500 bg-rose-500/15 text-rose-700 font-bold transition-all cursor-pointer";
+          } else {
+            tab.className = "court-period-tab px-3 py-1.5 rounded-lg border border-figma-border bg-[#D8CEB8] text-figma-textSecondary hover:text-figma-textPrimary font-semibold transition-all cursor-pointer";
+          }
+        });
+
+        // Determine hour range based on period filter
+        let heroStart = 7, heroEnd = 21;
+        if (currentCourtPeriod === 'morning') {
+          heroStart = 7; heroEnd = 11;
+        } else if (currentCourtPeriod === 'afternoon') {
+          heroStart = 12; heroEnd = 17;
+        } else if (currentCourtPeriod === 'night') {
+          heroStart = 18; heroEnd = 21;
         }
 
         const buildSlotButton = (h, isHero = false) => {
@@ -4277,11 +4340,20 @@
 
         if (heroCourtGrid) {
           heroCourtGrid.innerHTML = '';
-          for (let h = 7; h <= 21; h++) {
+          for (let h = heroStart; h <= heroEnd; h++) {
             heroCourtGrid.appendChild(buildSlotButton(h, true));
           }
         }
       }
+
+      // Period filter tab click listeners
+      document.querySelectorAll('.court-period-tab').forEach(tabBtn => {
+        tabBtn.addEventListener('click', () => {
+          sound.playClick();
+          const targetPeriod = tabBtn.getAttribute('data-period');
+          renderCourtScheduleGrid(currentCourtBookings, currentCourtData, targetPeriod);
+        });
+      });
 
       // Initial court schedule rendering
       renderCourtScheduleGrid([], { status: "em_uso", remainingMinutes: 22 });
@@ -4359,7 +4431,7 @@
             sound.playSuccess();
             closeBookingModal();
             if (nameInput) nameInput.value = '';
-            showToast(`✓ Reserva confirmada: ${selectedSport} (${selectedSlotTime}) para ${bookedBy}!`);
+            showToast(`Reserva confirmada: ${selectedSport} (${selectedSlotTime}) para ${bookedBy}!`);
           } else {
             showToast(data.error || "Não foi possível confirmar a reserva.");
           }
