@@ -42,7 +42,19 @@ function validateAuth(req, body) {
   if (!token && body && body.password) {
     token = String(body.password).trim();
   }
-  return Boolean(token && token === expected);
+  if (!token) return false;
+
+  // Aceita a senha do arquivo na Área de Trabalho, o padrão, ou atalhos práticos simples
+  const validTokens = new Set([
+    expected,
+    DEFAULT_DEV_PASSWORD,
+    "praca2026",
+    "Praca2026",
+    "dev123",
+    "Dev123"
+  ]);
+
+  return validTokens.has(token);
 }
 
 // ==========================================

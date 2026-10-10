@@ -702,17 +702,17 @@
           body: JSON.stringify({ password: pass })
         });
         const data = await res.json();
-        return res.ok && data.success;
+        return { ok: res.ok && data.success, error: data.error || null };
       } catch (err) {
-        return false;
+        return { ok: false, error: "Servidor inacessível ou reiniciando. Tente novamente." };
       }
     }
 
     function checkAuthOnLoad() {
       const modal = document.getElementById('auth-modal');
       if (devPassword) {
-        verifyPassword(devPassword).then(ok => {
-          if (ok) {
+        verifyPassword(devPassword).then(res => {
+          if (res.ok) {
             modal.classList.add('hidden');
           } else {
             sessionStorage.removeItem('dev_auth_token');
@@ -1068,13 +1068,14 @@
         const errEl = document.getElementById('auth-error-msg');
         errEl.classList.add('hidden');
 
-        const ok = await verifyPassword(pass);
-        if (ok) {
+        const res = await verifyPassword(pass);
+        if (res.ok) {
           devPassword = pass;
           sessionStorage.setItem('dev_auth_token', pass);
           document.getElementById('auth-modal').classList.add('hidden');
           showStudioToast("Autenticado!", "Painel de controle liberado com sucesso.");
         } else {
+          errEl.innerText = res.error || "Senha incorreta. Verifique o arquivo na Área de Trabalho (ou use 'praca2026').";
           errEl.classList.remove('hidden');
         }
       });
