@@ -58,46 +58,86 @@
     }
   </script>
 
-  <style>
-    * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #e1d8c4b3; }
-    ::-webkit-scrollbar-thumb { background: #b8ad98; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #be123c; }
+<style>
+    * { box-sizing: border-box; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+    /* METALAB & TEAK REFINED DARK DESIGN SYSTEM */
+    body {
+      background-color: #0a0a0c !important;
+      color: #f4f4f6 !important;
+    }
 
     .main-content-backdrop {
-      background: transparent;
-      border: none;
-      box-shadow: none;
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
     }
+
+    /* Dark Glassmorphism for MetaLab / Teak aesthetic */
     .glass-panel {
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      background: rgba(253, 251, 247, 0.60);
-      border: 1px solid rgba(222, 214, 196, 0.75);
-      box-shadow: 0 10px 30px -5px rgba(50, 40, 30, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+      background: rgba(18, 19, 22, 0.78);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      color: #f4f4f6;
     }
+
     .glass-card {
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      background: rgba(255, 255, 255, 0.50);
-      border: 1px solid rgba(228, 220, 203, 0.70);
-      box-shadow: 0 4px 16px rgba(50, 40, 30, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      background: rgba(22, 24, 29, 0.68);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      color: #f4f4f6;
     }
+
     .glass-card:hover {
-      background: rgba(255, 255, 255, 0.72);
-      border-color: #BE123C;
-      box-shadow: 0 12px 28px rgba(190, 18, 60, 0.12), 0 2px 8px rgba(50, 40, 30, 0.06);
+      background: rgba(28, 30, 38, 0.88);
+      border-color: rgba(244, 63, 94, 0.35);
+      box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.6), 0 0 18px rgba(244, 63, 94, 0.08);
+      transform: translateY(-2px);
     }
+
+    /* FLOATING PILL DOCK (METALAB / TEAK) */
+    #floating-nav-dock {
+      background: rgba(18, 19, 22, 0.82);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    #floating-nav-dock .nav-tab {
+      border-radius: 9999px;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease;
+      cursor: pointer;
+    }
+
+    #floating-nav-dock .nav-tab.active {
+      color: #ffffff !important;
+    }
+
+    #nav-sliding-indicator {
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
     .nav-pill-dock {
-      background: rgba(225, 216, 196, 0.7);
+      background: rgba(18, 19, 22, 0.78);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       padding: 3px;
       border-radius: 9999px;
-      border: 1px solid rgba(200, 190, 168, 0.8);
-      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(60, 48, 36, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(0, 0, 0, 0.4);
     }
+
     .nav-tab {
       border-radius: 9999px;
       padding: 6px 14px;
@@ -106,54 +146,184 @@
       letter-spacing: -0.01em;
       transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
       cursor: pointer;
+      color: #9ca3af;
     }
+
     .nav-tab:hover {
-      color: #1C1917;
+      color: #ffffff;
     }
+
     .nav-tab.active {
-      background: #FFFFFF !important;
-      color: #1C1917 !important;
+      background: rgba(255, 255, 255, 0.12) !important;
+      color: #ffffff !important;
       font-weight: 700 !important;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
     }
-    .ruler-x {
-      color: #786c56;
-      background-color: #d8ceb8;
-      background-image: linear-gradient(90deg, #b5aa94 1px, #0000 1px), linear-gradient(90deg, #786c56 1px, #0000 1px);
-      background-position: bottom;
-      background-repeat: repeat-x;
-      background-size: 10px 5px, 50px 10px;
+
+    /* CUSTOM MINIMALIST TACTILE SCROLLBAR (FAR RIGHT) */
+    #custom-scroll-container {
+      touch-action: none;
+      cursor: pointer;
     }
-    .ruler-y {
-      color: #786c56;
-      background-color: #d8ceb8;
-      background-image: linear-gradient(0deg, #b5aa94 1px, #0000 1px), linear-gradient(0deg, #786c56 1px, #0000 1px);
-      background-position: 100%;
-      background-repeat: repeat-y;
-      background-size: 5px 10px, 10px 50px;
+
+    #custom-scroll-track {
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     }
-    input[type=range] { appearance: none; background: #c8bea8; border-radius: 2px; height: 4px; }
-    input[type=range]::-webkit-slider-thumb {
-      appearance: none; cursor: pointer; background: #be123c; border-radius: 50%; width: 13px; height: 13px;
-      transition: transform .15s; box-shadow: 0 0 8px #be123c80;
+
+    #custom-scroll-thumb {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+      min-height: 28px;
+      position: absolute;
     }
-    input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.3); }
-    .scramble-char { color: #be123c; text-shadow: 0 0 6px #be123c66; font-weight: 700; }
-    .mode-hybrid-blend { mix-blend-mode: multiply; }
-    .ba-slider-container { -webkit-user-select: none; user-select: none; border-radius: 0.75rem; position: relative; overflow: hidden; }
-    .ba-after-layer { width: 100%; height: 100%; position: absolute; top: 0; left: 0; overflow: hidden; }
-    .ba-slider-divider { cursor: ew-resize; touch-action: none; background: #be123c; width: 3px; position: absolute; top: 0; bottom: 0; box-shadow: 0 0 12px #be123c99; }
-    .ba-handle-btn {
-      color: #fff; pointer-events: none; background: #be123c; border: 2px solid #fff; border-radius: 50%;
-      justify-content: center; align-items: center; width: 36px; height: 36px; font-size: 13px; font-weight: 700;
-      display: flex; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); box-shadow: 0 4px 14px #00000047;
+
+    /* Generous hit-box for comfortable touch and mouse interaction */
+    #custom-scroll-thumb::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      bottom: -10px;
+      left: -16px;
+      right: -16px;
+      cursor: grab;
     }
+
+    #custom-scroll-thumb:active::before {
+      cursor: grabbing;
+    }
+
+    #content-scroller {
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    #content-scroller::-webkit-scrollbar {
+      display: none;
+      width: 0;
+      height: 0;
+    }
+
+    /* CINEMATIC ASCII BOOT SEQUENCE ANIMATIONS */
+    .boot-active .boot-reveal {
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+
+    .boot-active .boot-reveal.dock-reveal,
+    .boot-active .boot-reveal.nav-dock-reveal {
+      transform: translateY(-50%) translateX(-28px) !important;
+    }
+
+    .boot-active .boot-reveal.tools-dock-reveal {
+      transform: translateY(24px) !important;
+    }
+
+    .boot-active .boot-reveal.header-reveal {
+      transform: translateY(-16px) !important;
+    }
+
+    .boot-active .boot-reveal.content-reveal {
+      transform: translateY(24px) !important;
+    }
+
+    .boot-active .boot-reveal.scroll-reveal {
+      opacity: 0 !important;
+      transform: translateX(16px) !important;
+    }
+
+    .boot-reveal {
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+
+    .boot-ready .boot-reveal.dock-reveal,
+    .boot-ready .boot-reveal.nav-dock-reveal {
+      opacity: 1 !important;
+      transform: translateY(-50%) translateX(0) !important;
+      pointer-events: auto !important;
+      transition-delay: 80ms !important;
+    }
+
+    .boot-ready .boot-reveal.header-reveal {
+      opacity: 1 !important;
+      transform: translateY(0) !important;
+      pointer-events: auto !important;
+      transition-delay: 180ms !important;
+    }
+
+    .boot-ready .boot-reveal.content-reveal {
+      opacity: 1 !important;
+      transform: translateY(0) !important;
+      pointer-events: auto !important;
+      transition-delay: 300ms !important;
+    }
+
+    .boot-ready .boot-reveal.scroll-reveal {
+      opacity: 1 !important;
+      transform: translateX(0) !important;
+      pointer-events: auto !important;
+      transition-delay: 420ms !important;
+    }
+
+    .boot-ready .boot-reveal.tools-dock-reveal {
+      opacity: 1 !important;
+      transform: translateY(0) !important;
+      pointer-events: auto !important;
+      transition-delay: 500ms !important;
+    }
+
+    /* RESPONSIVE MOBILE FLOATING BOTTOM DOCK (< 768px) */
+    @media (max-width: 767px) {
+      .boot-active .boot-reveal.dock-reveal,
+      .boot-active .boot-reveal.nav-dock-reveal {
+        transform: translateX(-50%) translateY(28px) !important;
+      }
+      .boot-ready .boot-reveal.dock-reveal,
+      .boot-ready .boot-reveal.nav-dock-reveal {
+        transform: translateX(-50%) translateY(0) !important;
+      }
+      #floating-nav-dock {
+        top: auto !important;
+        bottom: 16px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        flex-direction: row !important;
+        max-width: 94vw !important;
+        overflow-x: auto !important;
+        padding: 6px 8px !important;
+        gap: 4px !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+      }
+      #floating-dock {
+        bottom: 78px !important;
+        right: 16px !important;
+      }
+      #floating-nav-dock .nav-tab {
+        width: 38px !important;
+        height: 38px !important;
+        padding: 0 !important;
+        flex-shrink: 0 !important;
+      }
+      #floating-nav-dock .nav-tooltip {
+        display: none !important;
+      }
+    }
+
+    /* SCREENSAVER ACTIVE OVERRIDES */
+    body.screensaver-active #floating-nav-dock,
+    body.screensaver-active #custom-scroll-container,
+    body.screensaver-active #floating-dock {
+      opacity: 0 !important;
+      pointer-events: none !important;
+      visibility: hidden !important;
+      transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s !important;
+    }
+
     header, .ruler-x, .ruler-y, #floating-dock, #content-scroller, #inspector-panel {
       transition: opacity .5s cubic-bezier(.16, 1, .3, 1), visibility .5s !important;
     }
+
     #totem-screensaver {
       z-index: 9999; -webkit-backdrop-filter: none; opacity: 0; pointer-events: none;
-      background: radial-gradient(circle, #e1d8c400 0%, #e1d8c447 90%);
+      background: radial-gradient(circle, rgba(10, 10, 12, 0.4) 0%, rgba(10, 10, 12, 0.95) 90%);
       flex-direction: column; justify-content: space-between; align-items: center; padding: 2.5rem;
       transition: opacity .6s cubic-bezier(.16, 1, .3, 1); display: flex; position: fixed; inset: 0;
     }
@@ -167,11 +337,11 @@
     body.screensaver-active #engine-overlay-vignette { opacity: .15 !important; }
 
     /* YOZAKURA NIGHT MODE (HIGH CONTRAST & DARK OVERRIDES) */
-    body.mode-night { color: #f8fafc !important; background-color: #0b0e14 !important; }
-    body.mode-night #engine-background-container { background-color: #0b0e14 !important; }
-    body.mode-night #engine-viewport { background-color: #0e121a !important; }
-    body.mode-night #engine-overlay-vignette { background: radial-gradient(circle, rgba(14, 18, 26, 0.2) 0%, rgba(11, 14, 20, 0.92) 90%) !important; }
-    body.mode-night header { color: #f8fafc !important; background-color: rgba(20, 26, 36, 0.95) !important; border-color: #2d3748 !important; }
+    body.mode-night { color: #f8fafc !important; background-color: #070a0f !important; }
+    body.mode-night #engine-background-container { background-color: #070a0f !important; }
+    body.mode-night #engine-viewport { background-color: #0b0e14 !important; }
+    body.mode-night #engine-overlay-vignette { background: radial-gradient(circle, rgba(7, 10, 15, 0.2) 0%, rgba(7, 10, 15, 0.95) 90%) !important; }
+    body.mode-night header { color: #f8fafc !important; background-color: rgba(14, 18, 26, 0.95) !important; border-color: rgba(255, 255, 255, 0.1) !important; }
     body.mode-night .main-content-backdrop {
       background: transparent !important;
       border: none !important;
@@ -179,8 +349,8 @@
       box-shadow: none !important;
     }
     body.mode-night .nav-pill-dock {
-      background: rgba(20, 26, 38, 0.85) !important;
-      border-color: rgba(45, 55, 72, 0.8) !important;
+      background: rgba(14, 18, 26, 0.9) !important;
+      border-color: rgba(255, 255, 255, 0.12) !important;
     }
     body.mode-night .nav-tab {
       color: #94A3B8;
@@ -189,28 +359,28 @@
       color: #F8FAFC;
     }
     body.mode-night .nav-tab.active {
-      background: #242F45 !important;
+      background: rgba(255, 255, 255, 0.16) !important;
       color: #F8FAFC !important;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
     }
     body.mode-night .glass-panel {
       color: #f1f5f9 !important;
       backdrop-filter: blur(16px) !important;
       -webkit-backdrop-filter: blur(16px) !important;
-      background-color: rgba(20, 26, 36, 0.65) !important;
-      border-color: rgba(45, 55, 72, 0.75) !important;
-      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+      background-color: rgba(14, 18, 26, 0.75) !important;
+      border-color: rgba(255, 255, 255, 0.1) !important;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
     }
     body.mode-night .glass-card {
       color: #f1f5f9 !important;
-      backdrop-filter: blur(12px) !important;
-      -webkit-backdrop-filter: blur(12px) !important;
-      background-color: rgba(20, 26, 36, 0.65) !important;
-      border-color: rgba(51, 65, 85, 0.75) !important;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+      backdrop-filter: blur(14px) !important;
+      -webkit-backdrop-filter: blur(14px) !important;
+      background-color: rgba(16, 21, 30, 0.7) !important;
+      border-color: rgba(255, 255, 255, 0.1) !important;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
     }
     body.mode-night .glass-card:hover {
-      background-color: rgba(30, 41, 56, 0.80) !important;
+      background-color: rgba(22, 30, 44, 0.88) !important;
       border-color: #e11d48 !important;
     }
     body.mode-night h1, body.mode-night h2, body.mode-night h3, body.mode-night h4 { color: #f8fafc !important; }
@@ -218,61 +388,21 @@
     body.mode-night .text-figma-textPrimary { color: #f8fafc !important; }
     body.mode-night .text-figma-textSecondary { color: #cbd5e1 !important; }
     body.mode-night .text-figma-textMuted { color: #94a3b8 !important; }
-    body.mode-night .border-figma-border { border-color: #2d3748 !important; }
-    body.mode-night .ruler-x, body.mode-night .ruler-y { background-color: #151922 !important; color: #64748b !important; border-color: #2d3748 !important; }
-    body.mode-night .bg-\[\#DCD2BE\], body.mode-night .bg-\[\#D8CEB8\], body.mode-night .bg-\[\#E1D8C4\],
-    body.mode-night .bg-\[\#EEE6D7\], body.mode-night .bg-\[\#F6F0E4\] {
-      background-color: #1a2230 !important; border-color: #2d3748 !important; color: #f1f5f9 !important;
-    }
-    body.mode-night .bg-\[\#D8CEB8\]\/70, body.mode-night .bg-\[\#D8CEB8\]\/80, body.mode-night .bg-\[\#E1D8C4\]\/60,
-    body.mode-night .bg-\[\#EFE8D8\]\/50, body.mode-night details {
-      background-color: rgba(22, 29, 41, 0.85) !important; border-color: #2d3748 !important; color: #f1f5f9 !important;
-    }
-    body.mode-night .bg-figma-surface { background-color: #141a24 !important; }
-    body.mode-night .bg-figma-hover { background-color: #1e293b !important; }
-    body.mode-night .bg-figma-active { background-color: #283548 !important; }
-    body.mode-night .bg-figma-hover:hover { background-color: #2c3b52 !important; }
-    body.mode-night #floating-dock > div { background-color: rgba(20, 26, 36, 0.95) !important; border-color: #2d3748 !important; }
-    body.mode-night #totem-screensaver { background: radial-gradient(circle, rgba(14, 18, 26, 0.3) 0%, rgba(11, 14, 20, 0.95) 90%) !important; }
-    body.mode-night #totem-screensaver .screensaver-card { background-color: rgba(20, 26, 36, 0.92) !important; border-color: #2d3748 !important; }
-    body.mode-night #totem-screensaver .screensaver-pill { color: #e2e8f0 !important; background-color: rgba(26, 34, 48, 0.9) !important; border-color: #334155 !important; }
-    body.mode-night #modal-booking-card, body.mode-night #modal-zeladoria > div {
-      background-color: #141a24 !important; border-color: #334155 !important; color: #f8fafc !important;
-    }
-    body.mode-night input, body.mode-night select, body.mode-night textarea {
-      background-color: #1e293b !important; color: #f8fafc !important; border-color: #334155 !important;
-    }
-    body.mode-night .btn-report-issue, body.mode-night .btn-park-poi, body.mode-night .btn-sport-opt {
-      background-color: #1a2230 !important; color: #e2e8f0 !important; border-color: #2d3748 !important;
-    }
-    body.mode-night .btn-report-issue:hover, body.mode-night .btn-park-poi:hover, body.mode-night .btn-sport-opt:hover {
-      background-color: rgba(225, 29, 72, 0.25) !important; border-color: #e11d48 !important;
-    }
-    body.mode-night .text-cyan-700, body.mode-night .text-cyan-800, body.mode-night .text-cyan-900 { color: #38bdf8 !important; }
-    body.mode-night .text-sakura-600, body.mode-night .text-sakura-700, body.mode-night .text-sakura-800 { color: #fb7185 !important; }
-    body.mode-night .text-emerald-700, body.mode-night .text-emerald-800 { color: #34d399 !important; }
-    body.mode-night .text-amber-700, body.mode-night .text-amber-800, body.mode-night .text-amber-900 { color: #fbbf24 !important; }
-    body.mode-night .text-rose-600, body.mode-night .text-rose-700, body.mode-night .text-rose-800, body.mode-night .text-rose-900 { color: #fb7185 !important; }
-    body.mode-night .text-cyan-950 { color: #bae6fd !important; }
-    body.mode-night .text-emerald-950 { color: #a7f3d0 !important; }
-    body.mode-night .text-rose-950 { color: #fecdd3 !important; }
-    body.mode-night .bg-slate-300 { background-color: #334155 !important; }
-    body.mode-night .text-slate-700 { color: #cbd5e1 !important; }
-    body.mode-night .text-\[\#786C56\] { color: #94a3b8 !important; }
+    body.mode-night .border-figma-border { border-color: rgba(255, 255, 255, 0.1) !important; }
 
     .court-slot { transition: all .2s cubic-bezier(.16, 1, .3, 1); }
     .court-slot:hover { transform: translateY(-2px); }
     body.mode-night .court-slot {
-      background-color: rgba(20, 26, 36, 0.55);
-      border-color: rgba(51, 65, 85, 0.6);
+      background-color: rgba(16, 21, 30, 0.65);
+      border-color: rgba(255, 255, 255, 0.1);
     }
 
     /* GLOBAL BROADCAST MODAL: ADAPTIVE FIGMA CRAFT THEME */
     #global-broadcast-modal {
-      background-color: rgba(45, 36, 30, 0.45);
+      background-color: rgba(10, 10, 12, 0.75);
     }
     body.mode-night #global-broadcast-modal {
-      background-color: rgba(7, 10, 15, 0.85) !important;
+      background-color: rgba(5, 7, 10, 0.9) !important;
     }
     body:not(.mode-night) #global-broadcast-card {
       background-color: #FBF7EE !important;
@@ -356,14 +486,14 @@
   </style>
 </head>
 
-<body class="bg-figma-bg text-figma-textPrimary font-sans h-screen w-screen overflow-hidden flex flex-col select-none relative">
+<body class="bg-[#0a0a0c] text-zinc-100 font-sans h-screen w-screen overflow-hidden flex flex-col select-none relative boot-active">
 
   <!-- 
     BACKGROUND GRAPHICAL ENGINE:
     - #webgl-canvas: Raw Three.js 3D WebGL Scene
     - #ascii-canvas: Real-time ASCII Rasterizer Buffer reading from 3D Engine
   -->
-  <div id="engine-background-container" class="fixed inset-0 w-full h-full z-0 overflow-hidden pointer-events-auto bg-[#E1D8C4]">
+  <div id="engine-background-container" class="fixed inset-0 w-full h-full z-0 overflow-hidden pointer-events-auto bg-[#0a0a0c]">
     <!-- WebGL Canvas (3D Sakura Tree Engine) -->
     <canvas id="webgl-canvas" class="absolute inset-0 w-full h-full block transition-opacity duration-500"></canvas>
 
@@ -371,11 +501,79 @@
     <canvas id="ascii-canvas" class="absolute inset-0 w-full h-full block transition-opacity duration-500 pointer-events-none"></canvas>
 
     <!-- Atmospheric Vignette & Depth Mask for Warm Paper -->
-    <div id="engine-overlay-vignette" class="absolute inset-0 bg-radial from-transparent via-[#E1D8C4]/20 to-[#E1D8C4]/65 pointer-events-none transition-opacity duration-500"></div>
+    <div id="engine-overlay-vignette" class="absolute inset-0 bg-radial from-transparent via-[#0a0a0c]/25 to-[#0a0a0c]/85 pointer-events-none transition-opacity duration-500"></div>
   </div>
 
   <!-- TOP FIGMA STUDIO & TOTEM PUBLIC APP HEADER -->
-  <header class="h-14 border-b border-figma-border bg-figma-surface/90 backdrop-blur-xl flex items-center justify-between px-3 z-40 flex-shrink-0 text-figma-textPrimary">
+  
+  <!-- CINEMATIC ASCII BOOT HUD -->
+  <div id="ascii-boot-hud" class="fixed bottom-8 left-8 z-50 font-mono text-[11px] text-zinc-400 flex flex-col gap-1 tracking-wider uppercase pointer-events-none transition-opacity duration-500">
+    <div class="flex items-center gap-2">
+      <span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>
+      <span class="font-bold text-zinc-200">PRAÇA CONECTA // SYSTEM BOOT</span>
+    </div>
+    <div id="boot-status-text" class="text-[10px] text-zinc-400">INITIALIZING ASCII VOXEL MATRIX...</div>
+    <div class="w-40 h-[2px] bg-white/10 rounded-full overflow-hidden mt-1">
+      <div id="boot-progress-bar" class="h-full w-0 bg-gradient-to-r from-rose-500 to-rose-400 transition-all duration-75"></div>
+    </div>
+  </div>
+
+  <!-- LATERAL FLOATING PILL DOCK (METALAB / FLOATING PILLS STYLE) -->
+  <nav id="floating-nav-dock" class="boot-reveal dock-reveal nav-dock-reveal fixed left-4 lg:left-6 top-1/2 -translate-y-1/2 z-40 flex flex-col items-center gap-1.5 p-2 rounded-full border border-white/[0.08] bg-[#121316]/80 backdrop-blur-xl shadow-2xl transition-all duration-500" data-prevent-tree-drag="true">
+    <!-- Active Sliding Indicator Pill -->
+    <div id="nav-sliding-indicator" class="absolute rounded-full bg-white/[0.12] border border-white/[0.16] shadow-sm pointer-events-none transition-all duration-350 ease-[cubic-bezier(0.16,1,0.3,1)]"></div>
+
+    <!-- 1. Início -->
+    <button data-scroll-to="section-hero" data-tab="inicio" class="nav-tab active group relative flex items-center justify-center w-11 h-11 rounded-full text-zinc-400 hover:text-white transition-colors duration-200 cursor-pointer" title="Início">
+      <svg class="w-5 h-5 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+      <span class="nav-tooltip hidden md:block absolute left-full ml-3 px-2.5 py-1 rounded-md bg-[#16181d]/95 backdrop-blur-md border border-white/10 text-[10px] font-mono tracking-wider uppercase text-zinc-200 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 translate-x-1 group-hover:translate-x-0 shadow-xl">Início</span>
+    </button>
+
+    <!-- 2. Floração Sakura -->
+    <button data-scroll-to="section-sakura-radar" data-tab="sakura" class="nav-tab group relative flex items-center justify-center w-11 h-11 rounded-full text-zinc-400 hover:text-white transition-colors duration-200 cursor-pointer" title="Floração Sakura">
+      <svg class="w-5 h-5 pointer-events-none text-rose-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"></circle><path d="M12 2a4 4 0 0 1 4 4c0 2-2 4-4 6-2-2-4-4-4-6a4 4 0 0 1 4-4z"></path><path d="M22 12a4 4 0 0 1-4 4c-2 0-4-2-6-4 2-2 4-4 6-4a4 4 0 0 1 4 4z"></path><path d="M12 22a4 4 0 0 1-4-4c0-2 2-4 4-6 2 2 4 4 4 6a4 4 0 0 1-4 4z"></path><path d="M2 12a4 4 0 0 1 4-4c2 0 4 2 6 4-2 2-4 4-6 4a4 4 0 0 1-4-4z"></path></svg>
+      <span class="nav-tooltip hidden md:block absolute left-full ml-3 px-2.5 py-1 rounded-md bg-[#16181d]/95 backdrop-blur-md border border-white/10 text-[10px] font-mono tracking-wider uppercase text-zinc-200 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 translate-x-1 group-hover:translate-x-0 shadow-xl">Floração Sakura</span>
+    </button>
+
+    <!-- 3. Quadra -->
+    <button data-scroll-to="section-quadra" data-tab="quadra" class="nav-tab group relative flex items-center justify-center w-11 h-11 rounded-full text-zinc-400 hover:text-white transition-colors duration-200 cursor-pointer" title="Quadra">
+      <svg class="w-5 h-5 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect width="18" height="14" x="3" y="5" rx="2"></rect><path d="M12 5v14M3 12h18"></path><circle cx="12" cy="12" r="3"></circle></svg>
+      <span class="nav-tooltip hidden md:block absolute left-full ml-3 px-2.5 py-1 rounded-md bg-[#16181d]/95 backdrop-blur-md border border-white/10 text-[10px] font-mono tracking-wider uppercase text-zinc-200 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 translate-x-1 group-hover:translate-x-0 shadow-xl">Quadra</span>
+    </button>
+
+    <!-- 4. Maquete 3D -->
+    <button data-scroll-to="section-praca3d" data-tab="maquete" class="nav-tab group relative flex items-center justify-center w-11 h-11 rounded-full text-zinc-400 hover:text-white transition-colors duration-200 cursor-pointer" title="Maquete 3D">
+      <svg class="w-5 h-5 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m21.12 6.4-6.05-4.06a4.97 4.97 0 0 0-6.14 0L2.88 6.4A2 2 0 0 0 2 8v8a2 2 0 0 0 .88 1.6l6.05 4.06a4.97 4.97 0 0 0 6.14 0l6.05-4.06A2 2 0 0 0 22 16V8a2 2 0 0 0-.88-1.6z"></path><path d="M12 22V12M2.5 7.5l9.5 5 9.5-5"></path></svg>
+      <span class="nav-tooltip hidden md:block absolute left-full ml-3 px-2.5 py-1 rounded-md bg-[#16181d]/95 backdrop-blur-md border border-white/10 text-[10px] font-mono tracking-wider uppercase text-zinc-200 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 translate-x-1 group-hover:translate-x-0 shadow-xl">Maquete 3D</span>
+    </button>
+
+    <!-- 5. Memorial -->
+    <button data-scroll-to="section-historia" data-tab="memorial" class="nav-tab group relative flex items-center justify-center w-11 h-11 rounded-full text-zinc-400 hover:text-white transition-colors duration-200 cursor-pointer" title="Memorial">
+      <svg class="w-5 h-5 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path><path d="M6 6h10M6 10h10M6 14h6"></path></svg>
+      <span class="nav-tooltip hidden md:block absolute left-full ml-3 px-2.5 py-1 rounded-md bg-[#16181d]/95 backdrop-blur-md border border-white/10 text-[10px] font-mono tracking-wider uppercase text-zinc-200 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 translate-x-1 group-hover:translate-x-0 shadow-xl">Memorial</span>
+    </button>
+
+    <!-- 6. Mural -->
+    <button data-scroll-to="section-comunidade" data-tab="mural" class="nav-tab group relative flex items-center justify-center w-11 h-11 rounded-full text-zinc-400 hover:text-white transition-colors duration-200 cursor-pointer" title="Mural">
+      <svg class="w-5 h-5 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+      <span class="nav-tooltip hidden md:block absolute left-full ml-3 px-2.5 py-1 rounded-md bg-[#16181d]/95 backdrop-blur-md border border-white/10 text-[10px] font-mono tracking-wider uppercase text-zinc-200 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 translate-x-1 group-hover:translate-x-0 shadow-xl">Mural</span>
+    </button>
+
+    <!-- 7. SOS -->
+    <button data-scroll-to="section-zeladoria" data-tab="sos" class="nav-tab group relative flex items-center justify-center w-11 h-11 rounded-full text-zinc-400 hover:text-white transition-colors duration-200 cursor-pointer" title="SOS">
+      <svg class="w-5 h-5 pointer-events-none text-rose-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="M12 8v4M12 16h.01"></path></svg>
+      <span class="nav-tooltip hidden md:block absolute left-full ml-3 px-2.5 py-1 rounded-md bg-[#16181d]/95 backdrop-blur-md border border-white/10 text-[10px] font-mono tracking-wider uppercase text-zinc-200 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 translate-x-1 group-hover:translate-x-0 shadow-xl">SOS</span>
+    </button>
+  </nav>
+
+  <!-- TACTILE MINIMALIST CUSTOM SCROLLBAR (FAR RIGHT) -->
+  <div id="custom-scroll-container" class="boot-reveal scroll-reveal fixed right-2 sm:right-3 top-20 bottom-20 w-8 z-40 flex items-center justify-center select-none" data-prevent-tree-drag="true">
+    <div id="custom-scroll-track" class="w-[3px] h-full bg-white/10 rounded-full relative cursor-pointer hover:bg-white/20 transition-colors">
+      <div id="custom-scroll-thumb" class="absolute top-0 w-[5px] -left-[1px] bg-white/40 hover:bg-white/80 active:bg-rose-500 rounded-full cursor-grab active:cursor-grabbing transition-colors shadow-sm"></div>
+    </div>
+  </div>
+
+  <header class="boot-reveal header-reveal h-14 border-b border-white/[0.08] bg-[#121316]/80 backdrop-blur-xl flex items-center justify-between px-3 sm:px-5 z-40 flex-shrink-0 text-zinc-100">
     
     <!-- Left: Brand / Totem Identifier & Clock -->
     <div class="flex items-center gap-2.5 sm:gap-3">
@@ -461,9 +659,9 @@
   <div class="flex-1 flex overflow-hidden relative z-20">
 
     <!-- SCROLLABLE FOREGROUND CONTENT (Website Layer with Glassmorphism) -->
-    <main id="content-scroller" class="flex-1 h-full overflow-y-auto overflow-x-hidden relative transition-opacity duration-300 pt-16">
+    <main id="content-scroller" class="boot-reveal content-reveal flex-1 h-full overflow-y-auto overflow-x-hidden relative transition-opacity duration-300 pt-16">
       
-      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:pl-24 lg:pr-14 py-6 sm:py-10">
         <!-- Main Content Area with Transparent Layout Layer for 3D/ASCII Background Visibility -->
         <div id="main-content-canvas" class="main-content-backdrop flex flex-col gap-16 transition-all">
 
@@ -1665,7 +1863,7 @@
   </div>
 
   <!-- FLOATING FIGMA BOTTOM DOCK (Controls Quick Orbit, Reset, Wind Gust) -->
-  <div id="floating-dock" class="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-40">
+  <div id="floating-dock" class="boot-reveal dock-reveal tools-dock-reveal fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-40" data-prevent-tree-drag="true">
     <div class="glass-panel px-3 py-2 rounded-2xl border border-figma-border shadow-2xl flex items-center gap-1.5 sm:gap-2">
       
       <!-- Tool 1: Pointer Orbit -->
@@ -2236,7 +2434,26 @@
         this.scene.background = null;
 
         this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-        this.camera.position.set(0, 16, 42);
+        this.camera.position.set(0, 16, window.innerWidth < 768 ? 52 : 42);
+
+        // Cinematic Tab Navigation & Smooth Camera Targets
+        this.targetCamPos = new THREE.Vector3(0, 16, window.innerWidth < 768 ? 52 : 42);
+        this.targetLookAt = new THREE.Vector3(0, 10, 0);
+        this.currentLookAt = new THREE.Vector3(0, 10, 0);
+        this.defaultRotY = 0;
+        this.defaultRotX = 0;
+        this.targetBloomIntensity = 2.0;
+        this.targetPetalDensity = 380;
+        this.scrollScaleFactor = 1.0;
+        this.targetTreeScale = new THREE.Vector3(1, 1, 1);
+        this.targetContrast = 1.0;
+
+        // Cinematic ASCII Boot Sequence State
+        this.bootStartTime = performance.now();
+        this.bootDuration = 1400; // 1.4s
+        this.isBooting = true;
+        this.bootProgress = 0;
+        this.bootCompleted = false;
 
         this.renderer = new THREE.WebGLRenderer({
           canvas: this.webglCanvas,
@@ -2531,7 +2748,16 @@
         const w = window.innerWidth;
         const h = window.innerHeight;
 
-        this.camera.aspect = w / h;
+        const aspect = w / h;
+        this.camera.aspect = aspect;
+        if (w < 768) {
+          // Dynamic camera distance compensation for vertical mobile screens
+          this.targetCamPos.z = Math.max(52, Math.round(34 / Math.max(0.48, aspect)));
+          this.glyphSize = w < 480 ? 8 : (w < 640 ? 9 : 10);
+        } else {
+          this.targetCamPos.z = 42;
+          this.glyphSize = 10;
+        }
         this.camera.updateProjectionMatrix();
 
         this.renderer.setSize(w, h);
@@ -2575,10 +2801,19 @@
         const buffer = this.pixelBuffer;
         const halfGlyph = glyphSize / 2;
 
-        // Rasterize pixels to Monospace ASCII characters
+        // Rasterize pixels to Monospace ASCII characters with Boot Unpack Scanline & Progressive Dispersion
+        const isBoot = this.isBooting && this.bootProgress < 1;
+        const visibleHeightRows = isBoot ? Math.floor(h * Math.min(1, this.bootProgress * 1.18)) : h;
+        const activeRowCutoff = isBoot ? Math.max(0, h - visibleHeightRows) : 0;
+
         for (let y = 0; y < h; y++) {
           // WebGL buffers are inverted vertically (Y=0 at bottom)
           const targetY = (h - 1 - y);
+          if (isBoot && targetY < activeRowCutoff) {
+            continue; // Scanline unpack: rows emerge from base upwards
+          }
+
+          const isGlitchEdge = isBoot && (targetY >= activeRowCutoff && targetY < activeRowCutoff + 5);
           const posY = targetY * glyphSize + halfGlyph;
 
           for (let x = 0; x < w; x++) {
@@ -2588,32 +2823,65 @@
             const b = buffer[index + 2];
             const a = buffer[index + 3];
 
-            // Only render glyphs where 3D geometry exists (transparent paper background)
+            // Only render glyphs where 3D geometry exists
             if (a > 20) {
-              // Luminance formula
-              let lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-              lum = Math.pow(Math.min(1, Math.max(0, lum)), contrast);
-
               let char;
-              // If rain is active and this pixel is a dark blue rain drop
-              if (this.isRaining && b > r + 10 && lum < 0.5) {
-                const rainGlyphs = ['│', '|', '/', '!', '·'];
-                char = rainGlyphs[(x + y) % rainGlyphs.length];
-              } else {
-                const charIndex = Math.min(numChars - 1, Math.max(0, Math.floor(lum * numChars)));
-                char = charset[charIndex];
-              }
-
-              // Apply ink color transformation: authentic calligraphy sumi-e ink for day, cool lunar silver/cyan for night
               let darkR, darkG, darkB;
-              if (this.weatherMode === 'night') {
-                darkR = Math.max(25, Math.min(235, Math.round(r * 0.85 + 40)));
-                darkG = Math.max(30, Math.min(240, Math.round(g * 0.90 + 50)));
-                darkB = Math.max(50, Math.min(255, Math.round(b * 1.15 + 85)));
+
+              if (isGlitchEdge && Math.random() > 0.25) {
+                // Subtle matrix dispersion glitch at unpack frontier
+                const glitchChars = ['·', '0', '1', 'x', '▒', '░', '█', '/', '\\', '+', '◈', '◇'];
+                char = glitchChars[Math.floor(Math.random() * glitchChars.length)];
+                darkR = Math.min(255, r + 80);
+                darkG = Math.min(255, g + 85);
+                darkB = Math.min(255, b + 140);
               } else {
-                darkR = Math.max(12, Math.min(220, Math.round(r * inkFactor)));
-                darkG = Math.max(10, Math.min(200, Math.round(g * inkFactor)));
-                darkB = Math.max(10, Math.min(200, Math.round(b * inkFactor)));
+                // Luminance formula
+                let lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+                lum = Math.pow(Math.min(1, Math.max(0, lum)), contrast);
+
+                if (isBoot) {
+                  // Progressive matrix dispersion resolving into solid character density
+                  const resolveDist = targetY - activeRowCutoff;
+                  const resolveChance = Math.min(1.0, (resolveDist + 1) / Math.max(1, visibleHeightRows * 0.45));
+                  if (Math.random() > resolveChance) {
+                    const matrixScatter = ['·', ':', '·', 'x', ' '];
+                    char = matrixScatter[(x + y) % matrixScatter.length];
+                  }
+                }
+
+                if (!char) {
+                  if (this.isRaining && b > r + 10 && lum < 0.5) {
+                    const rainGlyphs = ['│', '|', '/', '!', '·'];
+                    char = rainGlyphs[(x + y) % rainGlyphs.length];
+                  } else {
+                    const charIndex = Math.min(numChars - 1, Math.max(0, Math.floor(lum * numChars)));
+                    char = charset[charIndex];
+                  }
+                }
+
+                // Refined Teak / MetaLab dark palette with sumi-e ink and lunar silver highlights
+                if (this.weatherMode === 'night') {
+                  darkR = Math.max(30, Math.min(240, Math.round(r * 0.85 + 40)));
+                  darkG = Math.max(35, Math.min(245, Math.round(g * 0.90 + 50)));
+                  darkB = Math.max(60, Math.min(255, Math.round(b * 1.15 + 85)));
+                } else {
+                  darkR = Math.max(25, Math.min(235, Math.round(r * 1.1 + 15)));
+                  darkG = Math.max(20, Math.min(215, Math.round(g * 0.95 + 10)));
+                  darkB = Math.max(25, Math.min(225, Math.round(b * 1.0 + 15)));
+                }
+
+                // Sakura mode foliage & petal tint enhancement
+                if (this.currentTab === 'sakura' && (r > g + 15 || b > g + 10)) {
+                  darkR = Math.min(255, Math.round(darkR * 1.25 + 20));
+                  darkG = Math.max(15, Math.round(darkG * 0.82));
+                  darkB = Math.min(255, Math.round(darkB * 1.12 + 25));
+                } else if (this.currentTab === 'quadra') {
+                  // Clean architectural / structural blueprint highlights
+                  darkR = Math.max(20, Math.round(darkR * 0.85));
+                  darkG = Math.min(240, Math.round(darkG * 1.05 + 10));
+                  darkB = Math.min(255, Math.round(darkB * 1.2 + 20));
+                }
               }
 
               const posX = x * glyphSize + halfGlyph;
@@ -2625,8 +2893,50 @@
       }
 
       render(time) {
-        // Auto-rotation & user drag interpolation
-        if (this.autoRotate) {
+        // Boot progress tracking & staggered reveal
+        if (this.isBooting) {
+          const elapsed = performance.now() - this.bootStartTime;
+          this.bootProgress = Math.min(1, elapsed / this.bootDuration);
+
+          const pBar = document.getElementById('boot-progress-bar');
+          if (pBar) pBar.style.width = `${Math.round(this.bootProgress * 100)}%`;
+
+          const pText = document.getElementById('boot-status-text');
+          if (pText) {
+            if (this.bootProgress < 0.25) pText.innerText = 'INITIALIZING MATRIX VOXELS...';
+            else if (this.bootProgress < 0.6) pText.innerText = 'UNPACKING BRANCH HIERARCHY...';
+            else if (this.bootProgress < 0.95) pText.innerText = 'STABILIZING ASCII FIELD...';
+            else pText.innerText = 'ASCII FIELD STABILIZED';
+          }
+
+          if (this.bootProgress >= 1 && !this.bootCompleted) {
+            this.bootCompleted = true;
+            this.isBooting = false;
+            if (typeof triggerStaggeredUIReveal === 'function') {
+              triggerStaggeredUIReveal();
+            }
+          }
+        }
+
+        // Auto-rotation & Magnetic Return (Spring-Back)
+        const timeSinceDrag = Date.now() - (window.lastDragInteractionTime || 0);
+        const shouldSpringBack = !window.isTreeDragging && (window.lastDragInteractionTime || 0) > 0 && timeSinceDrag >= 1500;
+
+        if (shouldSpringBack) {
+          // Smooth magnetic return (spring-back) interpolation to default axis
+          const dy = this.defaultRotY - this.targetRotY;
+          const dx = this.defaultRotX - this.targetRotX;
+          this.targetRotY += dy * 0.05;
+          this.targetRotX += dx * 0.05;
+
+          // When close enough, snap to default viewing axis
+          if (Math.abs(dy) < 0.002 && Math.abs(dx) < 0.002) {
+            this.targetRotY = this.defaultRotY;
+            this.targetRotX = this.defaultRotX;
+            window.lastDragInteractionTime = 0; // Settled back to rest
+          }
+        } else if (this.autoRotate && !window.isTreeDragging) {
+          // Idle sway / auto-rotation around default axis when user is not actively interacting
           this.targetRotY += this.rotationSpeed;
         }
 
@@ -2635,6 +2945,31 @@
 
         this.treeRoot.rotation.y = this.currentRotY;
         this.treeRoot.rotation.x = this.currentRotX;
+
+        // Smooth tree morphological scaling & contrast interpolation
+        if (this.targetTreeScale) {
+          this.treeRoot.scale.lerp(this.targetTreeScale, 0.05);
+        }
+        if (this.targetContrast !== undefined) {
+          this.contrast += (this.targetContrast - this.contrast) * 0.06;
+        }
+
+        // Smooth camera lerp for tab transitions & dynamic scroll scale
+        const finalCamPos = this.targetCamPos.clone();
+        if (this.scrollScaleFactor && this.scrollScaleFactor !== 1.0) {
+          finalCamPos.z += (1 - this.scrollScaleFactor) * 16;
+        }
+        this.camera.position.lerp(finalCamPos, 0.06);
+        this.currentLookAt.lerp(this.targetLookAt, 0.06);
+        this.camera.lookAt(this.currentLookAt);
+
+        // Smooth bloom lighting & petal density lerp
+        if (this.bloomLight && this.targetBloomIntensity) {
+          this.bloomLight.intensity += (this.targetBloomIntensity - this.bloomLight.intensity) * 0.05;
+        }
+        if (this.targetPetalDensity && this.activePetalsCount !== this.targetPetalDensity) {
+          this.activePetalsCount += Math.round((this.targetPetalDensity - this.activePetalsCount) * 0.08);
+        }
 
         // Update Cam readout in UI
         const camDegY = Math.round(((this.currentRotY * 180 / Math.PI) % 360 + 360) % 360);
@@ -2717,6 +3052,85 @@
           this.renderer.setRenderTarget(null);
           this.renderer.render(this.scene, this.camera);
           this.rasterizeAscii();
+        }
+      }
+
+      setTabState(tabKey) {
+        this.currentTab = tabKey;
+        if (typeof sound !== 'undefined' && sound.playClick) sound.playClick();
+
+        if (tabKey === 'inicio') {
+          this.targetCamPos.set(0, 16, window.innerWidth < 768 ? 52 : 42);
+          this.targetLookAt.set(0, 10, 0);
+          this.charsetKey = 'classic';
+          this.targetPetalDensity = 380;
+          this.targetBloomIntensity = 2.0;
+          this.targetContrast = 1.0;
+          this.targetTreeScale.set(1.0, 1.0, 1.0);
+          this.defaultRotY = 0;
+          this.defaultRotX = 0;
+        } else if (tabKey === 'sakura') {
+          this.targetCamPos.set(0, 15, window.innerWidth < 768 ? 50 : 38);
+          this.targetLookAt.set(0, 12, 0);
+          this.charsetKey = 'sakura';
+          this.targetPetalDensity = 520;
+          this.targetBloomIntensity = 3.4;
+          this.targetContrast = 1.05;
+          this.targetTreeScale.set(1.08, 1.04, 1.08);
+          this.burstPetals();
+          this.defaultRotY = 0.15;
+          this.defaultRotX = 0.05;
+        } else if (tabKey === 'quadra') {
+          this.targetCamPos.set(12, 17, window.innerWidth < 768 ? 54 : 42);
+          this.targetLookAt.set(0, 9, 0);
+          this.charsetKey = 'architectural';
+          this.targetPetalDensity = 140;
+          this.targetBloomIntensity = 1.6;
+          this.targetContrast = 1.35;
+          this.targetTreeScale.set(0.92, 1.15, 0.92);
+          this.defaultRotY = 0.35;
+          this.defaultRotX = 0.1;
+        } else if (tabKey === 'maquete') {
+          // Isometric 3D mesh perspective transition
+          this.targetCamPos.set(24, 28, window.innerWidth < 768 ? 48 : 36);
+          this.targetLookAt.set(0, 8, 0);
+          this.charsetKey = 'architectural';
+          this.targetPetalDensity = 220;
+          this.targetBloomIntensity = 2.2;
+          this.targetContrast = 1.25;
+          this.targetTreeScale.set(0.96, 0.96, 0.96);
+          this.defaultRotY = -0.45;
+          this.defaultRotX = 0.25;
+        } else if (tabKey === 'memorial') {
+          this.targetCamPos.set(0, 14, window.innerWidth < 768 ? 52 : 40);
+          this.targetLookAt.set(0, 11, 0);
+          this.charsetKey = 'classic';
+          this.targetPetalDensity = 260;
+          this.targetBloomIntensity = 1.8;
+          this.targetContrast = 0.95;
+          this.targetTreeScale.set(1.0, 1.0, 1.0);
+          this.defaultRotY = -0.1;
+          this.defaultRotX = 0;
+        } else if (tabKey === 'mural') {
+          this.targetCamPos.set(-8, 16, window.innerWidth < 768 ? 52 : 40);
+          this.targetLookAt.set(0, 10, 0);
+          this.charsetKey = 'cyber';
+          this.targetPetalDensity = 420;
+          this.targetBloomIntensity = 2.8;
+          this.targetContrast = 1.15;
+          this.targetTreeScale.set(1.02, 1.02, 1.02);
+          this.defaultRotY = -0.25;
+          this.defaultRotX = 0.05;
+        } else if (tabKey === 'sos') {
+          this.targetCamPos.set(0, 16, window.innerWidth < 768 ? 56 : 44);
+          this.targetLookAt.set(0, 10, 0);
+          this.charsetKey = 'classic';
+          this.targetPetalDensity = 200;
+          this.targetBloomIntensity = 2.4;
+          this.targetContrast = 1.4;
+          this.targetTreeScale.set(0.95, 1.05, 0.95);
+          this.defaultRotY = 0;
+          this.defaultRotX = 0;
         }
       }
 
@@ -3729,6 +4143,7 @@
       const webglCanvas = document.getElementById('webgl-canvas');
       const asciiCanvas = document.getElementById('ascii-canvas');
       const engine = new Sakura3DEngine(webglCanvas, asciiCanvas);
+      window.engine = engine;
 
       // Initialize 3D Interactive Park Model (Maquete 3D)
       const parkCanvas = document.getElementById('park-3d-canvas');
@@ -3802,21 +4217,54 @@
         }
       });
 
-      // Smooth Jump Links for Navigation & Section Scroll Spy
+      // Global Navigation & Sliding Active Pill Indicator
       const navTabs = document.querySelectorAll('.nav-tab');
+
+      function updateSlidingIndicator(activeTabBtn) {
+        const indicator = document.getElementById('nav-sliding-indicator');
+        const dock = document.getElementById('floating-nav-dock');
+        if (!indicator || !dock || !activeTabBtn) return;
+        const dockRect = dock.getBoundingClientRect();
+        const tabRect = activeTabBtn.getBoundingClientRect();
+
+        const isMobile = window.innerWidth < 768;
+        if (isMobile) {
+          indicator.style.width = `${tabRect.width}px`;
+          indicator.style.height = `${tabRect.height}px`;
+          indicator.style.top = `${tabRect.top - dockRect.top}px`;
+          indicator.style.left = `${tabRect.left - dockRect.left + dock.scrollLeft}px`;
+        } else {
+          indicator.style.width = `${tabRect.width}px`;
+          indicator.style.height = `${tabRect.height}px`;
+          indicator.style.left = `${tabRect.left - dockRect.left}px`;
+          indicator.style.top = `${tabRect.top - dockRect.top}px`;
+        }
+      }
+
       function setActiveNavTab(targetId) {
+        let matchedTab = null;
         navTabs.forEach(tab => {
           if (tab.getAttribute('data-scroll-to') === targetId) {
             tab.classList.add('active');
+            if (tab.closest('#floating-nav-dock')) matchedTab = tab;
           } else {
             tab.classList.remove('active');
           }
         });
+
+        if (matchedTab) {
+          updateSlidingIndicator(matchedTab);
+          const tabKey = matchedTab.getAttribute('data-tab') || 'inicio';
+          if (window.engine && typeof window.engine.setTabState === 'function') {
+            window.engine.setTabState(tabKey);
+          }
+        }
       }
 
       document.querySelectorAll('[data-scroll-to]').forEach(btn => {
-        btn.addEventListener('click', () => {
-          sound.playClick();
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (typeof sound !== 'undefined') sound.playClick();
           const targetId = btn.getAttribute('data-scroll-to');
           const targetEl = document.getElementById(targetId);
           if (targetEl) {
@@ -3824,6 +4272,156 @@
           }
           setActiveNavTab(targetId);
         });
+      });
+
+      // Magnetic microinteractions for floating dock pills
+      document.querySelectorAll('#floating-nav-dock .nav-tab').forEach(tab => {
+        tab.addEventListener('mousemove', (e) => {
+          if (window.innerWidth < 768) return;
+          const rect = tab.getBoundingClientRect();
+          const x = (e.clientX - rect.left - rect.width / 2) * 0.25;
+          const y = (e.clientY - rect.top - rect.height / 2) * 0.25;
+          tab.style.transform = `translate(${x}px, ${y}px)`;
+        });
+        tab.addEventListener('mouseleave', () => {
+          tab.style.transform = 'translate(0px, 0px)';
+        });
+      });
+
+      // TACTILE MINIMALIST SCROLLBAR WITH DYNAMIC SCENE TRANSITIONS
+      const scrollerEl = document.getElementById('content-scroller');
+      const scrollContainerEl = document.getElementById('custom-scroll-container');
+      const scrollTrackEl = document.getElementById('custom-scroll-track');
+      const scrollThumbEl = document.getElementById('custom-scroll-thumb');
+      const vignetteEl = document.getElementById('engine-overlay-vignette');
+      const engineBgContainer = document.getElementById('engine-background-container');
+
+      let isThumbDragging = false;
+      let thumbDragStartY = 0;
+      let thumbStartScrollTop = 0;
+
+      function updateScrollUI() {
+        if (!scrollerEl || !scrollTrackEl || !scrollThumbEl) return;
+        const maxScroll = scrollerEl.scrollHeight - scrollerEl.clientHeight;
+        const ratio = maxScroll > 0 ? Math.max(0, Math.min(1, scrollerEl.scrollTop / maxScroll)) : 0;
+        const trackH = scrollTrackEl.clientHeight;
+        const thumbH = Math.max(28, Math.min(80, trackH * (scrollerEl.clientHeight / (scrollerEl.scrollHeight || 1))));
+        scrollThumbEl.style.height = `${thumbH}px`;
+        const maxThumbY = trackH - thumbH;
+        const thumbY = ratio * maxThumbY;
+        scrollThumbEl.style.transform = `translateY(${thumbY}px)`;
+
+        // Dynamic scroll transitions for 3D camera depth, scale, and atmospheric vignette
+        if (window.engine) {
+          window.engine.scrollScaleFactor = 1.0 - ratio * 0.14;
+        }
+        if (vignetteEl) {
+          vignetteEl.style.opacity = (0.2 + ratio * 0.38).toFixed(2);
+        }
+        if (engineBgContainer) {
+          // Dynamic depth of field shift on scroll
+          const blurPx = (ratio * 1.8).toFixed(1);
+          engineBgContainer.style.filter = blurPx > 0 ? `blur(${blurPx}px)` : 'none';
+        }
+      }
+
+      if (scrollerEl) {
+        scrollerEl.addEventListener('scroll', updateScrollUI, { passive: true });
+      }
+
+      if (scrollContainerEl && scrollTrackEl && scrollThumbEl && scrollerEl) {
+        // Prevent scrollbar interactions from leaking to 3D canvas
+        ['mousedown', 'touchstart', 'pointerdown'].forEach(evt => {
+          scrollContainerEl.addEventListener(evt, (e) => e.stopPropagation(), { passive: false });
+        });
+
+        function handleThumbDragStart(clientY) {
+          isThumbDragging = true;
+          thumbDragStartY = clientY;
+          thumbStartScrollTop = scrollerEl.scrollTop;
+          document.body.classList.add('select-none');
+        }
+
+        scrollThumbEl.addEventListener('mousedown', (e) => {
+          e.stopPropagation();
+          handleThumbDragStart(e.clientY);
+        });
+
+        scrollThumbEl.addEventListener('touchstart', (e) => {
+          e.stopPropagation();
+          if (e.touches.length === 1) {
+            handleThumbDragStart(e.touches[0].clientY);
+          }
+        }, { passive: false });
+
+        window.addEventListener('mousemove', (e) => {
+          if (!isThumbDragging) return;
+          const dy = e.clientY - thumbDragStartY;
+          const trackH = scrollTrackEl.clientHeight;
+          const thumbH = scrollThumbEl.clientHeight;
+          const maxThumbY = trackH - thumbH;
+          const maxScroll = scrollerEl.scrollHeight - scrollerEl.clientHeight;
+          if (maxThumbY > 0) {
+            scrollerEl.scrollTop = thumbStartScrollTop + (dy / maxThumbY) * maxScroll;
+          }
+        });
+
+        window.addEventListener('touchmove', (e) => {
+          if (!isThumbDragging || e.touches.length !== 1) return;
+          e.preventDefault(); // Prevent native gesture interference while dragging custom scroll thumb
+          const dy = e.touches[0].clientY - thumbDragStartY;
+          const trackH = scrollTrackEl.clientHeight;
+          const thumbH = scrollThumbEl.clientHeight;
+          const maxThumbY = trackH - thumbH;
+          const maxScroll = scrollerEl.scrollHeight - scrollerEl.clientHeight;
+          if (maxThumbY > 0) {
+            scrollerEl.scrollTop = thumbStartScrollTop + (dy / maxThumbY) * maxScroll;
+          }
+        }, { passive: false });
+
+        window.addEventListener('mouseup', () => {
+          if (isThumbDragging) {
+            isThumbDragging = false;
+            document.body.classList.remove('select-none');
+          }
+        });
+
+        window.addEventListener('touchend', () => {
+          if (isThumbDragging) isThumbDragging = false;
+        });
+
+        // Click track or container to jump scroll position
+        scrollContainerEl.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (e.target === scrollThumbEl) return;
+          const rect = scrollTrackEl.getBoundingClientRect();
+          const clickY = e.clientY - rect.top;
+          const ratio = Math.max(0, Math.min(1, clickY / rect.height));
+          const maxScroll = scrollerEl.scrollHeight - scrollerEl.clientHeight;
+          scrollerEl.scrollTo({ top: ratio * maxScroll, behavior: 'smooth' });
+        });
+      }
+
+      // STAGGERED UI REVEAL TRIGGER
+      function triggerStaggeredUIReveal() {
+        if (document.body.classList.contains('boot-ready')) return;
+        document.body.classList.remove('boot-active');
+        document.body.classList.add('boot-ready');
+        const hud = document.getElementById('ascii-boot-hud');
+        if (hud) {
+          hud.style.opacity = '0';
+          setTimeout(() => { try { hud.remove(); } catch(e) {} }, 600);
+        }
+        setTimeout(() => {
+          const activeTab = document.querySelector('#floating-nav-dock .nav-tab.active');
+          if (activeTab) updateSlidingIndicator(activeTab);
+          updateScrollUI();
+        }, 120);
+      }
+      window.triggerStaggeredUIReveal = triggerStaggeredUIReveal;
+      setTimeout(triggerStaggeredUIReveal, 1500);
+      ['click', 'keydown', 'touchstart'].forEach(evt => {
+        window.addEventListener(evt, triggerStaggeredUIReveal, { once: true, passive: true });
       });
 
       // Scroll Spy for Floating Pill Dock
@@ -5039,56 +5637,124 @@
         showToast("Textos re-descriptografados com sucesso.");
       });
 
-      // Mouse & Touch 3D Orbit Drag Interaction
-      let isDragging = false;
-      let startX = 0;
-      let startY = 0;
+      // STRICT POINTER DRAG INTERACTION & MAGNETIC SPRING-BACK
+      window.isTreeDragging = false;
+      window.lastDragInteractionTime = 0;
+      let dragStartX = 0;
+      let dragStartY = 0;
+
+      function isUIInteractiveElement(el) {
+        if (!el || !(el instanceof Element)) return false;
+        return Boolean(el.closest(
+          'button, a, input, select, textarea, label, ' +
+          '.glass-card, .glass-panel, .card-container, #main-court-schedule-card, ' +
+          '#floating-nav-dock, .nav-pill-dock, .nav-tab, ' +
+          '#custom-scroll-container, #custom-scroll-track, #custom-scroll-thumb, ' +
+          'header, footer, #floating-dock, #totem-screensaver, #global-broadcast-modal, ' +
+          '#modal-booking, #modal-zeladoria, #ba-slider, canvas#park-3d-canvas, ' +
+          '#weekly-activities-container, #inspector-panel, #toast, ' +
+          'p, h1, h2, h3, h4, h5, h6, span, strong, b, em, i, li, ul, ol, table, ' +
+          '[data-prevent-tree-drag], .prevent-tree-drag'
+        ));
+      }
+
+      function isCanvasEmptySpace(el) {
+        if (!el || !(el instanceof Element)) return false;
+        // Direct canvas or engine background container
+        if (el.id === 'webgl-canvas' || el.id === 'ascii-canvas' || el.id === 'engine-background-container') {
+          return true;
+        }
+        // In Zen mode, anything except header and docks is direct canvas
+        if (zenActive && !el.closest('header, #floating-dock, #floating-nav-dock')) {
+          return true;
+        }
+        // If element is any UI interactive element or text node, NEVER rotate tree
+        if (isUIInteractiveElement(el)) {
+          return false;
+        }
+        // If clicking on scroller layout layer itself (empty background space showing through)
+        if (el.id === 'content-scroller' || el.id === 'main-content-canvas' || el.classList.contains('main-content-backdrop')) {
+          return true;
+        }
+        // If target is inside an element that explicitly prevents drag
+        if (el.closest('[data-prevent-tree-drag], .prevent-tree-drag')) {
+          return false;
+        }
+        return false;
+      }
+
+      // Strict UI Isolation: Attach stopPropagation on all interactive elements
+      document.querySelectorAll(
+        'button, a, input, select, textarea, .glass-card, .glass-panel, ' +
+        '#floating-nav-dock, #floating-dock, #custom-scroll-container, ' +
+        '#global-broadcast-modal, #modal-booking, #modal-zeladoria'
+      ).forEach(el => {
+        ['mousedown', 'touchstart', 'pointerdown'].forEach(evt => {
+          el.addEventListener(evt, (e) => e.stopPropagation(), { passive: true });
+        });
+      });
 
       window.addEventListener('mousedown', (e) => {
-        if (e.target.closest('input, button, select, a, canvas#park-3d-canvas, #ba-slider')) return;
-        isDragging = true;
-        startX = e.clientX;
-        startY = e.clientY;
+        if (!isCanvasEmptySpace(e.target)) return;
+        window.isTreeDragging = true;
+        dragStartX = e.clientX;
+        dragStartY = e.clientY;
+        window.lastDragInteractionTime = Date.now();
       });
 
       window.addEventListener('mousemove', (e) => {
-        if (!isDragging) return;
-        const dx = e.clientX - startX;
-        const dy = e.clientY - startY;
-        startX = e.clientX;
-        startY = e.clientY;
+        if (!window.isTreeDragging) return;
+        const dx = e.clientX - dragStartX;
+        const dy = e.clientY - dragStartY;
+        dragStartX = e.clientX;
+        dragStartY = e.clientY;
 
-        engine.targetRotY += dx * 0.007;
-        engine.targetRotX += dy * 0.005;
-        engine.targetRotX = Math.max(-0.6, Math.min(0.6, engine.targetRotX));
+        if (window.engine) {
+          window.engine.targetRotY += dx * 0.007;
+          window.engine.targetRotX += dy * 0.005;
+          window.engine.targetRotX = Math.max(-0.6, Math.min(0.6, window.engine.targetRotX));
+        }
+        window.lastDragInteractionTime = Date.now();
       });
 
       window.addEventListener('mouseup', () => {
-        isDragging = false;
+        if (window.isTreeDragging) {
+          window.isTreeDragging = false;
+          window.lastDragInteractionTime = Date.now();
+        }
       });
 
-      // Touch events for tablets/smartphones
+      // Touch handlers: strictly isolate canvas touch from mobile content scrolling
       window.addEventListener('touchstart', (e) => {
-        if (e.touches.length === 1 && !e.target.closest('input, button, select, a, canvas#park-3d-canvas, #ba-slider')) {
-          isDragging = true;
-          startX = e.touches[0].clientX;
-          startY = e.touches[0].clientY;
-        }
+        if (e.touches.length !== 1) return;
+        // On touch screens, only initiate 3D tree drag when touching direct canvas elements or in Zen mode
+        const isDirectCanvas = e.target.id === 'webgl-canvas' || e.target.id === 'ascii-canvas' || e.target.id === 'engine-background-container' || (zenActive && !e.target.closest('header, #floating-dock, #floating-nav-dock'));
+        if (!isDirectCanvas) return;
+        window.isTreeDragging = true;
+        dragStartX = e.touches[0].clientX;
+        dragStartY = e.touches[0].clientY;
+        window.lastDragInteractionTime = Date.now();
       }, { passive: true });
 
       window.addEventListener('touchmove', (e) => {
-        if (!isDragging || e.touches.length !== 1) return;
-        const dx = e.touches[0].clientX - startX;
-        const dy = e.touches[0].clientY - startY;
-        startX = e.touches[0].clientX;
-        startY = e.touches[0].clientY;
+        if (!window.isTreeDragging || e.touches.length !== 1) return;
+        const dx = e.touches[0].clientX - dragStartX;
+        const dy = e.touches[0].clientY - dragStartY;
+        dragStartX = e.touches[0].clientX;
+        dragStartY = e.touches[0].clientY;
 
-        engine.targetRotY += dx * 0.009;
-        engine.targetRotX += dy * 0.007;
+        if (window.engine) {
+          window.engine.targetRotY += dx * 0.009;
+          window.engine.targetRotX += dy * 0.007;
+        }
+        window.lastDragInteractionTime = Date.now();
       }, { passive: true });
 
       window.addEventListener('touchend', () => {
-        isDragging = false;
+        if (window.isTreeDragging) {
+          window.isTreeDragging = false;
+          window.lastDragInteractionTime = Date.now();
+        }
       });
 
       // Keyboard shortcuts: Space (Storm), R (Reset), V (Zen mode)
