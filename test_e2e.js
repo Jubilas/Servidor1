@@ -1,7 +1,13 @@
 import http from 'node:http';
 import fs from 'node:fs';
 
-const PASS = 'PracaConecta#2026!Dev';
+// Senha do painel dev vem do ambiente (a mesma usada pelo server.js)
+const DEV_PASS = process.env.PRACA_DEV_PASSWORD;
+if (!DEV_PASS) {
+  console.error("Defina PRACA_DEV_PASSWORD (a mesma senha do servidor) antes de rodar os testes.");
+  process.exit(1);
+}
+const PASS = DEV_PASS;
 
 function request(options, data = null) {
   return new Promise((resolve, reject) => {

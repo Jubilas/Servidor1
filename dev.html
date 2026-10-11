@@ -84,7 +84,7 @@
       
       <h2 class="text-xl sm:text-2xl font-black text-white mb-1.5">Painel Dev Restrito</h2>
       <p class="text-xs text-slate-400 leading-relaxed mb-6">
-        Este painel controla os totens públicos e o sistema central da praça. Digite a senha administrativa salva em sua <strong>Área de Trabalho</strong> (<code class="text-sakura-300">senha_painel_dev.txt</code>).
+        Este painel controla os totens públicos e o sistema central da praça. Digite a senha administrativa configurada no servidor (<code class="text-sakura-300">PRACA_DEV_PASSWORD</code>).
       </p>
 
       <form id="form-auth" class="space-y-4">
@@ -1193,7 +1193,7 @@
           document.getElementById('auth-modal').classList.add('hidden');
           showStudioToast("Autenticado!", "Painel de controle liberado com sucesso.");
         } else {
-          errEl.innerText = res.error || "Senha incorreta. Verifique o arquivo na Área de Trabalho (ou use 'praca2026').";
+          errEl.innerText = res.error || "Senha incorreta ou painel bloqueado (PRACA_DEV_PASSWORD não definida no servidor).";
           errEl.classList.remove('hidden');
         }
       });

@@ -4,6 +4,7 @@ import path from "node:path";
 import zlib from "node:zlib";
 import { fileURLToPath } from "node:url";
 import os from "node:os";
+import crypto from "node:crypto";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -11,29 +12,46 @@ const PORT = Number(process.env.PORT) || Number(process.argv[2]) || 8080;
 const HOST = process.env.HOST || "0.0.0.0";
 const PUBLIC_DIR = __dirname;
 const STATE_FILE = path.join(PUBLIC_DIR, "state.json");
-const DEV_PASSWORD_FILE = "C:\\Users\\goiab\\Desktop\\senha_painel_dev.txt";
-const DEFAULT_DEV_PASSWORD = "PracaConecta#2026!Dev";
+// Senha do painel dev: NUNCA fica no código. Vem do ambiente da máquina do totem.
+//   PRACA_DEV_PASSWORD       -> a senha em si
+//   PRACA_DEV_PASSWORD_FILE  -> (opcional) caminho de um arquivo com a senha
+//                               (aceita só a senha ou uma linha "Senha: ...")
+// Sem nenhuma das duas, o painel /dev fica bloqueado.
+const DEV_PASSWORD_ENV = "PRACA_DEV_PASSWORD";
+const DEV_PASSWORD_FILE_ENV = "PRACA_DEV_PASSWORD_FILE";
 
 // ==========================================
 // AUTENTICAÇÃO DO PAINEL DEV (/dev)
 // ==========================================
 function getDevPassword() {
-  try {
-    if (fs.existsSync(DEV_PASSWORD_FILE)) {
-      const content = fs.readFileSync(DEV_PASSWORD_FILE, "utf-8");
+  const fromEnv = (process.env[DEV_PASSWORD_ENV] || "").trim();
+  if (fromEnv) return fromEnv;
+
+  const filePath = (process.env[DEV_PASSWORD_FILE_ENV] || "").trim();
+  if (filePath) {
+    try {
+      const content = fs.readFileSync(filePath, "utf-8");
       const match = content.match(/Senha:\s*([^\r\n]+)/);
-      if (match && match[1].trim()) {
-        return match[1].trim();
-      }
+      const value = (match ? match[1] : content.split(/\r?\n/)[0] || "").trim();
+      if (value) return value;
+    } catch (err) {
+      console.error(`[AUTH] Não foi possível ler ${DEV_PASSWORD_FILE_ENV}:`, err.message);
     }
-  } catch (err) {
-    console.error("[AUTH] Erro ao ler senha do arquivo na Área de Trabalho:", err.message);
   }
-  return DEFAULT_DEV_PASSWORD;
+  return "";
+}
+
+// Comparação em tempo constante (o tempo de resposta não revela partes da senha)
+function safeEqual(a, b) {
+  const ha = crypto.createHash("sha256").update(String(a)).digest();
+  const hb = crypto.createHash("sha256").update(String(b)).digest();
+  return crypto.timingSafeEqual(ha, hb);
 }
 
 function validateAuth(req, body) {
   const expected = getDevPassword();
+  if (!expected) return false; // painel bloqueado: nenhuma senha configurada
+
   const authHeader = req.headers["authorization"] || "";
   let token = "";
   if (authHeader.startsWith("Bearer ")) {
@@ -44,17 +62,7 @@ function validateAuth(req, body) {
   }
   if (!token) return false;
 
-  // Aceita a senha do arquivo na Área de Trabalho, o padrão, ou atalhos práticos simples
-  const validTokens = new Set([
-    expected,
-    DEFAULT_DEV_PASSWORD,
-    "praca2026",
-    "Praca2026",
-    "dev123",
-    "Dev123"
-  ]);
-
-  return validTokens.has(token);
+  return safeEqual(token, expected);
 }
 
 // ==========================================
@@ -755,6 +763,12 @@ server.listen(PORT, HOST, () => {
   console.log(`  * Agendamento Mobile : http://localhost:${PORT}/agendar`);
   for (const ip of localIps) {
     console.log(`  * Na Rede Local/Celular : http://${ip}:${PORT}/ (Totem) | /dev (Painel) | /agendar`);
+  }
+  console.log("-".repeat(65));
+  if (getDevPassword()) {
+    console.log("  Painel Dev        : ATIVO (senha via variável de ambiente)");
+  } else {
+    console.log(`  Painel Dev        : BLOQUEADO -- defina ${DEV_PASSWORD_ENV} para liberar`);
   }
   console.log("-".repeat(65));
   console.log("  Pressione Ctrl + C para encerrar o servidor.\n");
