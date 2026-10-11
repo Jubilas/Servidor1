@@ -61,52 +61,48 @@
 <style>
     * { box-sizing: border-box; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
 
-    /* METALAB & TEAK REFINED DARK DESIGN SYSTEM */
-    body {
-      background-color: #0a0a0c !important;
-      color: #f4f4f6 !important;
-    }
-
+    /* REFINED VISUAL DESIGN SYSTEM (DAYTIME LIGHT MODE DEFAULT) */
     .main-content-backdrop {
       background: transparent !important;
       border: none !important;
       box-shadow: none !important;
     }
 
-    /* Dark Glassmorphism for MetaLab / Teak aesthetic */
+    /* Refined Glassmorphism for Daytime Light Mode */
     .glass-panel {
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      background: rgba(18, 19, 22, 0.78);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06);
-      color: #f4f4f6;
+      background: rgba(253, 251, 247, 0.65);
+      border: 1px solid rgba(222, 214, 196, 0.75);
+      box-shadow: 0 10px 30px -5px rgba(50, 40, 30, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+      color: #1C1917;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .glass-card {
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      background: rgba(22, 24, 29, 0.68);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.55);
+      border: 1px solid rgba(228, 220, 203, 0.70);
+      box-shadow: 0 4px 16px rgba(50, 40, 30, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.6);
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      color: #f4f4f6;
+      color: #1C1917;
     }
 
     .glass-card:hover {
-      background: rgba(28, 30, 38, 0.88);
-      border-color: rgba(244, 63, 94, 0.35);
-      box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.6), 0 0 18px rgba(244, 63, 94, 0.08);
+      background: rgba(255, 255, 255, 0.75);
+      border-color: #BE123C;
+      box-shadow: 0 12px 28px rgba(190, 18, 60, 0.12), 0 2px 8px rgba(50, 40, 30, 0.06);
       transform: translateY(-2px);
     }
 
-    /* FLOATING PILL DOCK (METALAB / TEAK) */
+    /* FLOATING PILL DOCK (LIGHT GLASS FOR DAY, OBSIDIAN FOR NIGHT) */
     #floating-nav-dock {
-      background: rgba(18, 19, 22, 0.82);
+      background: rgba(253, 251, 247, 0.85);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.09);
-      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(200, 190, 168, 0.85);
+      box-shadow: 0 20px 40px -10px rgba(50, 40, 30, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.8);
       transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
@@ -114,28 +110,33 @@
       border-radius: 9999px;
       transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease;
       cursor: pointer;
+      color: #57534E;
+    }
+
+    #floating-nav-dock .nav-tab:hover {
+      color: #1C1917;
     }
 
     #floating-nav-dock .nav-tab.active {
-      color: #ffffff !important;
+      color: #1C1917 !important;
     }
 
     #nav-sliding-indicator {
       border-radius: 9999px;
-      background: rgba(255, 255, 255, 0.12);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(200, 190, 168, 0.9);
+      box-shadow: 0 4px 12px rgba(50, 40, 30, 0.08);
       transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .nav-pill-dock {
-      background: rgba(18, 19, 22, 0.78);
+      background: rgba(238, 230, 215, 0.82);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       padding: 3px;
       border-radius: 9999px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(200, 190, 168, 0.85);
+      box-shadow: inset 0 1px 2px rgba(50, 40, 30, 0.06), 0 2px 8px rgba(50, 40, 30, 0.04);
     }
 
     .nav-tab {
@@ -146,18 +147,18 @@
       letter-spacing: -0.01em;
       transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
       cursor: pointer;
-      color: #9ca3af;
+      color: #57534E;
     }
 
     .nav-tab:hover {
-      color: #ffffff;
+      color: #1C1917;
     }
 
     .nav-tab.active {
-      background: rgba(255, 255, 255, 0.12) !important;
-      color: #ffffff !important;
+      background: rgba(255, 255, 255, 0.9) !important;
+      color: #1C1917 !important;
       font-weight: 700 !important;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 2px 6px rgba(50, 40, 30, 0.1);
     }
 
     /* CUSTOM MINIMALIST TACTILE SCROLLBAR (FAR RIGHT) */
@@ -167,13 +168,19 @@
     }
 
     #custom-scroll-track {
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      background: rgba(200, 190, 168, 0.45);
+      box-shadow: 0 0 10px rgba(50, 40, 30, 0.08);
     }
 
     #custom-scroll-thumb {
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+      background: #A89E88;
+      box-shadow: 0 2px 8px rgba(50, 40, 30, 0.15);
       min-height: 28px;
       position: absolute;
+    }
+
+    #custom-scroll-thumb:hover {
+      background: #BE123C;
     }
 
     /* Generous hit-box for comfortable touch and mouse interaction */
@@ -348,20 +355,39 @@
       border-color: transparent !important;
       box-shadow: none !important;
     }
+    body.mode-night #floating-nav-dock {
+      background: rgba(14, 18, 26, 0.90) !important;
+      border-color: rgba(255, 255, 255, 0.12) !important;
+      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+    }
+    body.mode-night #floating-nav-dock .nav-tab {
+      color: #94A3B8 !important;
+    }
+    body.mode-night #floating-nav-dock .nav-tab:hover {
+      color: #F8FAFC !important;
+    }
+    body.mode-night #floating-nav-dock .nav-tab.active {
+      color: #ffffff !important;
+    }
+    body.mode-night #nav-sliding-indicator {
+      background: rgba(255, 255, 255, 0.12) !important;
+      border: 1px solid rgba(255, 255, 255, 0.18) !important;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4) !important;
+    }
     body.mode-night .nav-pill-dock {
       background: rgba(14, 18, 26, 0.9) !important;
       border-color: rgba(255, 255, 255, 0.12) !important;
     }
     body.mode-night .nav-tab {
-      color: #94A3B8;
+      color: #94A3B8 !important;
     }
     body.mode-night .nav-tab:hover {
-      color: #F8FAFC;
+      color: #F8FAFC !important;
     }
     body.mode-night .nav-tab.active {
       background: rgba(255, 255, 255, 0.16) !important;
       color: #F8FAFC !important;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5) !important;
     }
     body.mode-night .glass-panel {
       color: #f1f5f9 !important;
@@ -382,6 +408,22 @@
     body.mode-night .glass-card:hover {
       background-color: rgba(22, 30, 44, 0.88) !important;
       border-color: #e11d48 !important;
+    }
+    body.mode-night #custom-scroll-track {
+      background: rgba(255, 255, 255, 0.1) !important;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5) !important;
+    }
+    body.mode-night #custom-scroll-thumb {
+      background: rgba(255, 255, 255, 0.4) !important;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.7) !important;
+    }
+    body.mode-night #custom-scroll-thumb:hover {
+      background: #E11D48 !important;
+    }
+    body.mode-night #floating-dock {
+      background-color: rgba(14, 18, 26, 0.9) !important;
+      border-color: rgba(255, 255, 255, 0.12) !important;
+      color: #cbd5e1 !important;
     }
     body.mode-night h1, body.mode-night h2, body.mode-night h3, body.mode-night h4 { color: #f8fafc !important; }
     body.mode-night p { color: #cbd5e1 !important; }
@@ -486,14 +528,14 @@
   </style>
 </head>
 
-<body class="bg-[#0a0a0c] text-zinc-100 font-sans h-screen w-screen overflow-hidden flex flex-col select-none relative boot-active">
+<body class="bg-figma-bg text-figma-textPrimary font-sans h-screen w-screen overflow-hidden flex flex-col select-none relative boot-active">
 
   <!-- 
     BACKGROUND GRAPHICAL ENGINE:
     - #webgl-canvas: Raw Three.js 3D WebGL Scene
     - #ascii-canvas: Real-time ASCII Rasterizer Buffer reading from 3D Engine
   -->
-  <div id="engine-background-container" class="fixed inset-0 w-full h-full z-0 overflow-hidden pointer-events-auto bg-[#0a0a0c]">
+  <div id="engine-background-container" class="fixed inset-0 w-full h-full z-0 overflow-hidden pointer-events-auto bg-[#E1D8C4]">
     <!-- WebGL Canvas (3D Sakura Tree Engine) -->
     <canvas id="webgl-canvas" class="absolute inset-0 w-full h-full block transition-opacity duration-500"></canvas>
 
@@ -501,79 +543,79 @@
     <canvas id="ascii-canvas" class="absolute inset-0 w-full h-full block transition-opacity duration-500 pointer-events-none"></canvas>
 
     <!-- Atmospheric Vignette & Depth Mask for Warm Paper -->
-    <div id="engine-overlay-vignette" class="absolute inset-0 bg-radial from-transparent via-[#0a0a0c]/25 to-[#0a0a0c]/85 pointer-events-none transition-opacity duration-500"></div>
+    <div id="engine-overlay-vignette" class="absolute inset-0 bg-radial from-transparent via-[#E1D8C4]/20 to-[#E1D8C4]/65 pointer-events-none transition-opacity duration-500"></div>
   </div>
 
   <!-- TOP FIGMA STUDIO & TOTEM PUBLIC APP HEADER -->
   
   <!-- CINEMATIC ASCII BOOT HUD -->
-  <div id="ascii-boot-hud" class="fixed bottom-8 left-8 z-50 font-mono text-[11px] text-zinc-400 flex flex-col gap-1 tracking-wider uppercase pointer-events-none transition-opacity duration-500">
+  <div id="ascii-boot-hud" class="fixed bottom-8 left-8 z-50 font-mono text-[11px] text-figma-textSecondary flex flex-col gap-1 tracking-wider uppercase pointer-events-none transition-opacity duration-500">
     <div class="flex items-center gap-2">
       <span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>
-      <span class="font-bold text-zinc-200">PRAÇA CONECTA // SYSTEM BOOT</span>
+      <span class="font-bold text-figma-textPrimary">PRAÇA CONECTA // SYSTEM BOOT</span>
     </div>
-    <div id="boot-status-text" class="text-[10px] text-zinc-400">INITIALIZING ASCII VOXEL MATRIX...</div>
-    <div class="w-40 h-[2px] bg-white/10 rounded-full overflow-hidden mt-1">
+    <div id="boot-status-text" class="text-[10px] text-figma-textMuted">INITIALIZING ASCII VOXEL MATRIX...</div>
+    <div class="w-40 h-[2px] bg-black/10 dark:bg-white/10 rounded-full overflow-hidden mt-1">
       <div id="boot-progress-bar" class="h-full w-0 bg-gradient-to-r from-rose-500 to-rose-400 transition-all duration-75"></div>
     </div>
   </div>
 
-  <!-- LATERAL FLOATING PILL DOCK (METALAB / FLOATING PILLS STYLE) -->
-  <nav id="floating-nav-dock" class="boot-reveal dock-reveal nav-dock-reveal fixed left-4 lg:left-6 top-1/2 -translate-y-1/2 z-40 flex flex-col items-center gap-1.5 p-2 rounded-full border border-white/[0.08] bg-[#121316]/80 backdrop-blur-xl shadow-2xl transition-all duration-500" data-prevent-tree-drag="true">
+  <!-- LATERAL FLOATING PILL DOCK (LIGHT GLASS FOR DAY, OBSIDIAN FOR NIGHT) -->
+  <nav id="floating-nav-dock" class="boot-reveal dock-reveal nav-dock-reveal fixed left-4 lg:left-6 top-1/2 -translate-y-1/2 z-40 flex flex-col items-center gap-1.5 p-2 rounded-full border border-figma-border shadow-2xl transition-all duration-500" data-prevent-tree-drag="true">
     <!-- Active Sliding Indicator Pill -->
-    <div id="nav-sliding-indicator" class="absolute rounded-full bg-white/[0.12] border border-white/[0.16] shadow-sm pointer-events-none transition-all duration-350 ease-[cubic-bezier(0.16,1,0.3,1)]"></div>
+    <div id="nav-sliding-indicator" class="absolute rounded-full shadow-sm pointer-events-none transition-all duration-350 ease-[cubic-bezier(0.16,1,0.3,1)]"></div>
 
     <!-- 1. Início -->
-    <button data-scroll-to="section-hero" data-tab="inicio" class="nav-tab active group relative flex items-center justify-center w-11 h-11 rounded-full text-zinc-400 hover:text-white transition-colors duration-200 cursor-pointer" title="Início">
+    <button data-scroll-to="section-hero" data-tab="inicio" class="nav-tab active group relative flex items-center justify-center w-11 h-11 rounded-full text-figma-textSecondary hover:text-figma-textPrimary transition-colors duration-200 cursor-pointer" title="Início">
       <svg class="w-5 h-5 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-      <span class="nav-tooltip hidden md:block absolute left-full ml-3 px-2.5 py-1 rounded-md bg-[#16181d]/95 backdrop-blur-md border border-white/10 text-[10px] font-mono tracking-wider uppercase text-zinc-200 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 translate-x-1 group-hover:translate-x-0 shadow-xl">Início</span>
+      <span class="nav-tooltip hidden md:block absolute left-full ml-3 px-2.5 py-1 rounded-md bg-[#1C1917]/95 backdrop-blur-md border border-[#44403C] text-[10px] font-mono tracking-wider uppercase text-zinc-100 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 translate-x-1 group-hover:translate-x-0 shadow-xl">Início</span>
     </button>
 
     <!-- 2. Floração Sakura -->
-    <button data-scroll-to="section-sakura-radar" data-tab="sakura" class="nav-tab group relative flex items-center justify-center w-11 h-11 rounded-full text-zinc-400 hover:text-white transition-colors duration-200 cursor-pointer" title="Floração Sakura">
-      <svg class="w-5 h-5 pointer-events-none text-rose-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"></circle><path d="M12 2a4 4 0 0 1 4 4c0 2-2 4-4 6-2-2-4-4-4-6a4 4 0 0 1 4-4z"></path><path d="M22 12a4 4 0 0 1-4 4c-2 0-4-2-6-4 2-2 4-4 6-4a4 4 0 0 1 4 4z"></path><path d="M12 22a4 4 0 0 1-4-4c0-2 2-4 4-6 2 2 4 4 4 6a4 4 0 0 1-4 4z"></path><path d="M2 12a4 4 0 0 1 4-4c2 0 4 2 6 4-2 2-4 4-6 4a4 4 0 0 1-4-4z"></path></svg>
-      <span class="nav-tooltip hidden md:block absolute left-full ml-3 px-2.5 py-1 rounded-md bg-[#16181d]/95 backdrop-blur-md border border-white/10 text-[10px] font-mono tracking-wider uppercase text-zinc-200 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 translate-x-1 group-hover:translate-x-0 shadow-xl">Floração Sakura</span>
+    <button data-scroll-to="section-sakura-radar" data-tab="sakura" class="nav-tab group relative flex items-center justify-center w-11 h-11 rounded-full text-figma-textSecondary hover:text-figma-textPrimary transition-colors duration-200 cursor-pointer" title="Floração Sakura">
+      <svg class="w-5 h-5 pointer-events-none text-rose-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"></circle><path d="M12 2a4 4 0 0 1 4 4c0 2-2 4-4 6-2-2-4-4-4-6a4 4 0 0 1 4-4z"></path><path d="M22 12a4 4 0 0 1-4 4c-2 0-4-2-6-4 2-2 4-4 6-4a4 4 0 0 1 4 4z"></path><path d="M12 22a4 4 0 0 1-4-4c0-2 2-4 4-6 2 2 4 4 4 6a4 4 0 0 1-4 4z"></path><path d="M2 12a4 4 0 0 1 4-4c2 0 4 2 6 4-2 2-4 4-6 4a4 4 0 0 1-4-4z"></path></svg>
+      <span class="nav-tooltip hidden md:block absolute left-full ml-3 px-2.5 py-1 rounded-md bg-[#1C1917]/95 backdrop-blur-md border border-[#44403C] text-[10px] font-mono tracking-wider uppercase text-zinc-100 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 translate-x-1 group-hover:translate-x-0 shadow-xl">Floração Sakura</span>
     </button>
 
     <!-- 3. Quadra -->
-    <button data-scroll-to="section-quadra" data-tab="quadra" class="nav-tab group relative flex items-center justify-center w-11 h-11 rounded-full text-zinc-400 hover:text-white transition-colors duration-200 cursor-pointer" title="Quadra">
+    <button data-scroll-to="section-quadra" data-tab="quadra" class="nav-tab group relative flex items-center justify-center w-11 h-11 rounded-full text-figma-textSecondary hover:text-figma-textPrimary transition-colors duration-200 cursor-pointer" title="Quadra">
       <svg class="w-5 h-5 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect width="18" height="14" x="3" y="5" rx="2"></rect><path d="M12 5v14M3 12h18"></path><circle cx="12" cy="12" r="3"></circle></svg>
-      <span class="nav-tooltip hidden md:block absolute left-full ml-3 px-2.5 py-1 rounded-md bg-[#16181d]/95 backdrop-blur-md border border-white/10 text-[10px] font-mono tracking-wider uppercase text-zinc-200 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 translate-x-1 group-hover:translate-x-0 shadow-xl">Quadra</span>
+      <span class="nav-tooltip hidden md:block absolute left-full ml-3 px-2.5 py-1 rounded-md bg-[#1C1917]/95 backdrop-blur-md border border-[#44403C] text-[10px] font-mono tracking-wider uppercase text-zinc-100 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 translate-x-1 group-hover:translate-x-0 shadow-xl">Quadra</span>
     </button>
 
     <!-- 4. Maquete 3D -->
-    <button data-scroll-to="section-praca3d" data-tab="maquete" class="nav-tab group relative flex items-center justify-center w-11 h-11 rounded-full text-zinc-400 hover:text-white transition-colors duration-200 cursor-pointer" title="Maquete 3D">
+    <button data-scroll-to="section-praca3d" data-tab="maquete" class="nav-tab group relative flex items-center justify-center w-11 h-11 rounded-full text-figma-textSecondary hover:text-figma-textPrimary transition-colors duration-200 cursor-pointer" title="Maquete 3D">
       <svg class="w-5 h-5 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m21.12 6.4-6.05-4.06a4.97 4.97 0 0 0-6.14 0L2.88 6.4A2 2 0 0 0 2 8v8a2 2 0 0 0 .88 1.6l6.05 4.06a4.97 4.97 0 0 0 6.14 0l6.05-4.06A2 2 0 0 0 22 16V8a2 2 0 0 0-.88-1.6z"></path><path d="M12 22V12M2.5 7.5l9.5 5 9.5-5"></path></svg>
-      <span class="nav-tooltip hidden md:block absolute left-full ml-3 px-2.5 py-1 rounded-md bg-[#16181d]/95 backdrop-blur-md border border-white/10 text-[10px] font-mono tracking-wider uppercase text-zinc-200 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 translate-x-1 group-hover:translate-x-0 shadow-xl">Maquete 3D</span>
+      <span class="nav-tooltip hidden md:block absolute left-full ml-3 px-2.5 py-1 rounded-md bg-[#1C1917]/95 backdrop-blur-md border border-[#44403C] text-[10px] font-mono tracking-wider uppercase text-zinc-100 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 translate-x-1 group-hover:translate-x-0 shadow-xl">Maquete 3D</span>
     </button>
 
     <!-- 5. Memorial -->
-    <button data-scroll-to="section-historia" data-tab="memorial" class="nav-tab group relative flex items-center justify-center w-11 h-11 rounded-full text-zinc-400 hover:text-white transition-colors duration-200 cursor-pointer" title="Memorial">
+    <button data-scroll-to="section-historia" data-tab="memorial" class="nav-tab group relative flex items-center justify-center w-11 h-11 rounded-full text-figma-textSecondary hover:text-figma-textPrimary transition-colors duration-200 cursor-pointer" title="Memorial">
       <svg class="w-5 h-5 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path><path d="M6 6h10M6 10h10M6 14h6"></path></svg>
-      <span class="nav-tooltip hidden md:block absolute left-full ml-3 px-2.5 py-1 rounded-md bg-[#16181d]/95 backdrop-blur-md border border-white/10 text-[10px] font-mono tracking-wider uppercase text-zinc-200 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 translate-x-1 group-hover:translate-x-0 shadow-xl">Memorial</span>
+      <span class="nav-tooltip hidden md:block absolute left-full ml-3 px-2.5 py-1 rounded-md bg-[#1C1917]/95 backdrop-blur-md border border-[#44403C] text-[10px] font-mono tracking-wider uppercase text-zinc-100 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 translate-x-1 group-hover:translate-x-0 shadow-xl">Memorial</span>
     </button>
 
     <!-- 6. Mural -->
-    <button data-scroll-to="section-comunidade" data-tab="mural" class="nav-tab group relative flex items-center justify-center w-11 h-11 rounded-full text-zinc-400 hover:text-white transition-colors duration-200 cursor-pointer" title="Mural">
+    <button data-scroll-to="section-comunidade" data-tab="mural" class="nav-tab group relative flex items-center justify-center w-11 h-11 rounded-full text-figma-textSecondary hover:text-figma-textPrimary transition-colors duration-200 cursor-pointer" title="Mural">
       <svg class="w-5 h-5 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-      <span class="nav-tooltip hidden md:block absolute left-full ml-3 px-2.5 py-1 rounded-md bg-[#16181d]/95 backdrop-blur-md border border-white/10 text-[10px] font-mono tracking-wider uppercase text-zinc-200 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 translate-x-1 group-hover:translate-x-0 shadow-xl">Mural</span>
+      <span class="nav-tooltip hidden md:block absolute left-full ml-3 px-2.5 py-1 rounded-md bg-[#1C1917]/95 backdrop-blur-md border border-[#44403C] text-[10px] font-mono tracking-wider uppercase text-zinc-100 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 translate-x-1 group-hover:translate-x-0 shadow-xl">Mural</span>
     </button>
 
     <!-- 7. SOS -->
-    <button data-scroll-to="section-zeladoria" data-tab="sos" class="nav-tab group relative flex items-center justify-center w-11 h-11 rounded-full text-zinc-400 hover:text-white transition-colors duration-200 cursor-pointer" title="SOS">
+    <button data-scroll-to="section-zeladoria" data-tab="sos" class="nav-tab group relative flex items-center justify-center w-11 h-11 rounded-full text-figma-textSecondary hover:text-figma-textPrimary transition-colors duration-200 cursor-pointer" title="SOS">
       <svg class="w-5 h-5 pointer-events-none text-rose-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="M12 8v4M12 16h.01"></path></svg>
-      <span class="nav-tooltip hidden md:block absolute left-full ml-3 px-2.5 py-1 rounded-md bg-[#16181d]/95 backdrop-blur-md border border-white/10 text-[10px] font-mono tracking-wider uppercase text-zinc-200 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 translate-x-1 group-hover:translate-x-0 shadow-xl">SOS</span>
+      <span class="nav-tooltip hidden md:block absolute left-full ml-3 px-2.5 py-1 rounded-md bg-[#1C1917]/95 backdrop-blur-md border border-[#44403C] text-[10px] font-mono tracking-wider uppercase text-zinc-100 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 translate-x-1 group-hover:translate-x-0 shadow-xl">SOS</span>
     </button>
   </nav>
 
   <!-- TACTILE MINIMALIST CUSTOM SCROLLBAR (FAR RIGHT) -->
   <div id="custom-scroll-container" class="boot-reveal scroll-reveal fixed right-2 sm:right-3 top-20 bottom-20 w-8 z-40 flex items-center justify-center select-none" data-prevent-tree-drag="true">
-    <div id="custom-scroll-track" class="w-[3px] h-full bg-white/10 rounded-full relative cursor-pointer hover:bg-white/20 transition-colors">
-      <div id="custom-scroll-thumb" class="absolute top-0 w-[5px] -left-[1px] bg-white/40 hover:bg-white/80 active:bg-rose-500 rounded-full cursor-grab active:cursor-grabbing transition-colors shadow-sm"></div>
+    <div id="custom-scroll-track" class="w-[3px] h-full rounded-full relative cursor-pointer transition-colors">
+      <div id="custom-scroll-thumb" class="absolute top-0 w-[5px] -left-[1px] rounded-full cursor-grab active:cursor-grabbing transition-colors shadow-sm"></div>
     </div>
   </div>
 
-  <header class="boot-reveal header-reveal h-14 border-b border-white/[0.08] bg-[#121316]/80 backdrop-blur-xl flex items-center justify-between px-3 sm:px-5 z-40 flex-shrink-0 text-zinc-100">
+  <header class="boot-reveal header-reveal h-14 border-b border-figma-border bg-figma-surface/90 backdrop-blur-xl flex items-center justify-between px-3 sm:px-5 z-40 flex-shrink-0 text-figma-textPrimary">
     
     <!-- Left: Brand / Totem Identifier & Clock -->
     <div class="flex items-center gap-2.5 sm:gap-3">
@@ -2860,27 +2902,40 @@
                   }
                 }
 
-                // Refined Teak / MetaLab dark palette with sumi-e ink and lunar silver highlights
+                // Authentic sumi-e calligraphy ink for warm day paper, and cool lunar highlights for night
                 if (this.weatherMode === 'night') {
                   darkR = Math.max(30, Math.min(240, Math.round(r * 0.85 + 40)));
                   darkG = Math.max(35, Math.min(245, Math.round(g * 0.90 + 50)));
                   darkB = Math.max(60, Math.min(255, Math.round(b * 1.15 + 85)));
                 } else {
-                  darkR = Math.max(25, Math.min(235, Math.round(r * 1.1 + 15)));
-                  darkG = Math.max(20, Math.min(215, Math.round(g * 0.95 + 10)));
-                  darkB = Math.max(25, Math.min(225, Math.round(b * 1.0 + 15)));
+                  const inkFactor = this.inkDarkness || 0.55;
+                  darkR = Math.max(12, Math.min(220, Math.round(r * inkFactor)));
+                  darkG = Math.max(10, Math.min(200, Math.round(g * inkFactor)));
+                  darkB = Math.max(10, Math.min(200, Math.round(b * inkFactor)));
                 }
 
                 // Sakura mode foliage & petal tint enhancement
                 if (this.currentTab === 'sakura' && (r > g + 15 || b > g + 10)) {
-                  darkR = Math.min(255, Math.round(darkR * 1.25 + 20));
-                  darkG = Math.max(15, Math.round(darkG * 0.82));
-                  darkB = Math.min(255, Math.round(darkB * 1.12 + 25));
+                  if (this.weatherMode === 'night') {
+                    darkR = Math.min(255, Math.round(darkR * 1.25 + 20));
+                    darkG = Math.max(15, Math.round(darkG * 0.82));
+                    darkB = Math.min(255, Math.round(darkB * 1.12 + 25));
+                  } else {
+                    darkR = Math.min(220, Math.round(darkR * 1.2 + 25));
+                    darkG = Math.max(10, Math.round(darkG * 0.7));
+                    darkB = Math.max(10, Math.round(darkB * 0.7));
+                  }
                 } else if (this.currentTab === 'quadra') {
                   // Clean architectural / structural blueprint highlights
-                  darkR = Math.max(20, Math.round(darkR * 0.85));
-                  darkG = Math.min(240, Math.round(darkG * 1.05 + 10));
-                  darkB = Math.min(255, Math.round(darkB * 1.2 + 20));
+                  if (this.weatherMode === 'night') {
+                    darkR = Math.max(20, Math.round(darkR * 0.85));
+                    darkG = Math.min(240, Math.round(darkG * 1.05 + 10));
+                    darkB = Math.min(255, Math.round(darkB * 1.2 + 20));
+                  } else {
+                    darkR = Math.max(10, Math.round(darkR * 0.7));
+                    darkG = Math.min(180, Math.round(darkG * 0.95 + 15));
+                    darkB = Math.min(200, Math.round(darkB * 1.1 + 25));
+                  }
                 }
               }
 
