@@ -66,25 +66,26 @@
     ::-webkit-scrollbar-thumb:hover { background: #be123c; }
 
     .main-content-backdrop {
-      background: #FAF6ED;
-      background: linear-gradient(180deg, #FDFBF5 0%, #F5F0E4 100%);
-      border: 1px solid #D8CEB8;
-      box-shadow: 0 24px 60px -15px rgba(50, 40, 30, 0.16), 0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+      background: transparent;
+      border: none;
+      box-shadow: none;
     }
     .glass-panel {
-      -webkit-backdrop-filter: blur(24px);
-      background: #FFFDF8;
-      border: 1px solid #DED6C4;
-      box-shadow: 0 10px 30px -5px rgba(50, 40, 30, 0.08), inset 0 1px 0 #FFFFFF;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      background: rgba(253, 251, 247, 0.60);
+      border: 1px solid rgba(222, 214, 196, 0.75);
+      box-shadow: 0 10px 30px -5px rgba(50, 40, 30, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.7);
     }
     .glass-card {
-      -webkit-backdrop-filter: blur(20px);
-      background: #FFFFFF;
-      border: 1px solid #E4DCCB;
-      box-shadow: 0 4px 16px rgba(50, 40, 30, 0.05);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.50);
+      border: 1px solid rgba(228, 220, 203, 0.70);
+      box-shadow: 0 4px 16px rgba(50, 40, 30, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.6);
     }
     .glass-card:hover {
-      background: #FFFFFF;
+      background: rgba(255, 255, 255, 0.72);
       border-color: #BE123C;
       box-shadow: 0 12px 28px rgba(190, 18, 60, 0.12), 0 2px 8px rgba(50, 40, 30, 0.06);
     }
@@ -172,10 +173,10 @@
     body.mode-night #engine-overlay-vignette { background: radial-gradient(circle, rgba(14, 18, 26, 0.2) 0%, rgba(11, 14, 20, 0.92) 90%) !important; }
     body.mode-night header { color: #f8fafc !important; background-color: rgba(20, 26, 36, 0.95) !important; border-color: #2d3748 !important; }
     body.mode-night .main-content-backdrop {
-      background: #0D121B !important;
-      background: linear-gradient(180deg, #0F1420 0%, #0A0E16 100%) !important;
-      border-color: #242F45 !important;
-      box-shadow: 0 24px 60px -15px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.04) inset !important;
+      background: transparent !important;
+      border: none !important;
+      border-color: transparent !important;
+      box-shadow: none !important;
     }
     body.mode-night .nav-pill-dock {
       background: rgba(20, 26, 38, 0.85) !important;
@@ -193,14 +194,25 @@
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
     }
     body.mode-night .glass-panel {
-      color: #f1f5f9 !important; background-color: rgba(20, 26, 38, 0.98) !important; border-color: #2d3748 !important;
-      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5), inset 0 1px rgba(255, 255, 255, 0.05) !important;
+      color: #f1f5f9 !important;
+      backdrop-filter: blur(16px) !important;
+      -webkit-backdrop-filter: blur(16px) !important;
+      background-color: rgba(20, 26, 36, 0.65) !important;
+      border-color: rgba(45, 55, 72, 0.75) !important;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
     }
     body.mode-night .glass-card {
-      color: #f1f5f9 !important; background-color: rgba(23, 30, 44, 0.98) !important; border-color: #334155 !important;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4) !important;
+      color: #f1f5f9 !important;
+      backdrop-filter: blur(12px) !important;
+      -webkit-backdrop-filter: blur(12px) !important;
+      background-color: rgba(20, 26, 36, 0.65) !important;
+      border-color: rgba(51, 65, 85, 0.75) !important;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
     }
-    body.mode-night .glass-card:hover { background-color: rgba(30, 41, 56, 0.98) !important; border-color: #e11d48 !important; }
+    body.mode-night .glass-card:hover {
+      background-color: rgba(30, 41, 56, 0.80) !important;
+      border-color: #e11d48 !important;
+    }
     body.mode-night h1, body.mode-night h2, body.mode-night h3, body.mode-night h4 { color: #f8fafc !important; }
     body.mode-night p { color: #cbd5e1 !important; }
     body.mode-night .text-figma-textPrimary { color: #f8fafc !important; }
@@ -241,12 +253,19 @@
     body.mode-night .text-emerald-700, body.mode-night .text-emerald-800 { color: #34d399 !important; }
     body.mode-night .text-amber-700, body.mode-night .text-amber-800, body.mode-night .text-amber-900 { color: #fbbf24 !important; }
     body.mode-night .text-rose-700, body.mode-night .text-rose-800, body.mode-night .text-rose-900 { color: #f43f5e !important; }
+    body.mode-night .text-cyan-950 { color: #bae6fd !important; }
+    body.mode-night .text-emerald-950 { color: #a7f3d0 !important; }
+    body.mode-night .text-rose-950 { color: #fecdd3 !important; }
     body.mode-night .bg-slate-300 { background-color: #334155 !important; }
     body.mode-night .text-slate-700 { color: #cbd5e1 !important; }
     body.mode-night .text-\[\#786C56\] { color: #94a3b8 !important; }
 
     .court-slot { transition: all .2s cubic-bezier(.16, 1, .3, 1); }
     .court-slot:hover { transform: translateY(-2px); }
+    body.mode-night .court-slot {
+      background-color: rgba(20, 26, 36, 0.55);
+      border-color: rgba(51, 65, 85, 0.6);
+    }
 
     /* GLOBAL BROADCAST MODAL: ADAPTIVE FIGMA CRAFT THEME */
     #global-broadcast-modal {
@@ -445,8 +464,8 @@
     <main id="content-scroller" class="flex-1 h-full overflow-y-auto overflow-x-hidden relative transition-opacity duration-300 pt-16">
       
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
-        <!-- Main Content Clean Artisan Paper Backdrop (Eliminates Canvas Collisions) -->
-        <div id="main-content-canvas" class="main-content-backdrop rounded-3xl p-6 sm:p-10 lg:p-12 shadow-2xl flex flex-col gap-16 transition-all border">
+        <!-- Main Content Area with Transparent Layout Layer for 3D/ASCII Background Visibility -->
+        <div id="main-content-canvas" class="main-content-backdrop flex flex-col gap-16 transition-all">
 
         <!-- SECTION 1: HERO VIEW & BENTO GRID -->
         <section id="section-hero" class="min-h-[75vh] flex flex-col justify-center items-start relative pt-2">
@@ -526,7 +545,9 @@
                       <span id="bell-btn-sub" class="text-[10px] text-sakura-100 font-mono">Sincronizado em todas as telas • 20s delay</span>
                     </div>
                   </div>
-                  <span class="text-white/80 font-mono text-xs">🔔</span>
+                  <span class="text-white/80 flex items-center justify-center">
+                    <svg class="w-4 h-4 text-white/90" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
+                  </span>
                 </button>
               </div>
             </div>
@@ -643,9 +664,9 @@
             <div class="flex items-center gap-2 overflow-x-auto pb-1 text-xs font-mono">
               <span class="text-[11px] text-figma-textMuted uppercase font-semibold mr-1">Filtrar:</span>
               <button class="court-period-tab active px-3.5 py-1.5 rounded-full border border-rose-500 bg-rose-500/15 text-rose-700 font-bold transition-all cursor-pointer" data-period="all">Todos (07h-21h)</button>
-              <button class="court-period-tab px-3.5 py-1.5 rounded-full border border-figma-border bg-[#D8CEB8] text-figma-textSecondary hover:text-figma-textPrimary font-semibold transition-all cursor-pointer" data-period="morning">Manhã (07h-11h)</button>
-              <button class="court-period-tab px-3.5 py-1.5 rounded-full border border-figma-border bg-[#D8CEB8] text-figma-textSecondary hover:text-figma-textPrimary font-semibold transition-all cursor-pointer" data-period="afternoon">Tarde (12h-17h)</button>
-              <button class="court-period-tab px-3.5 py-1.5 rounded-full border border-figma-border bg-[#D8CEB8] text-figma-textSecondary hover:text-figma-textPrimary font-semibold transition-all cursor-pointer" data-period="night">Noite (18h-21h)</button>
+              <button class="court-period-tab px-3.5 py-1.5 rounded-full border border-figma-border bg-[#D8CEB8]/60 hover:bg-[#D8CEB8] text-figma-textSecondary hover:text-figma-textPrimary font-semibold transition-all cursor-pointer" data-period="morning">Manhã (07h-11h)</button>
+              <button class="court-period-tab px-3.5 py-1.5 rounded-full border border-figma-border bg-[#D8CEB8]/60 hover:bg-[#D8CEB8] text-figma-textSecondary hover:text-figma-textPrimary font-semibold transition-all cursor-pointer" data-period="afternoon">Tarde (12h-17h)</button>
+              <button class="court-period-tab px-3.5 py-1.5 rounded-full border border-figma-border bg-[#D8CEB8]/60 hover:bg-[#D8CEB8] text-figma-textSecondary hover:text-figma-textPrimary font-semibold transition-all cursor-pointer" data-period="night">Noite (18h-21h)</button>
             </div>
 
             <!-- Grade de Horários da Aba Principal -->
@@ -4413,9 +4434,9 @@
         // Update active class on period tabs
         document.querySelectorAll('.court-period-tab').forEach(tab => {
           if (tab.getAttribute('data-period') === currentCourtPeriod) {
-            tab.className = "court-period-tab active px-3 py-1.5 rounded-lg border border-rose-500 bg-rose-500/15 text-rose-700 font-bold transition-all cursor-pointer";
+            tab.className = "court-period-tab active px-3.5 py-1.5 rounded-full border border-rose-500 bg-rose-500/15 text-rose-700 font-bold transition-all cursor-pointer";
           } else {
-            tab.className = "court-period-tab px-3 py-1.5 rounded-lg border border-figma-border bg-[#D8CEB8] text-figma-textSecondary hover:text-figma-textPrimary font-semibold transition-all cursor-pointer";
+            tab.className = "court-period-tab px-3.5 py-1.5 rounded-full border border-figma-border bg-[#D8CEB8]/60 hover:bg-[#D8CEB8] text-figma-textSecondary hover:text-figma-textPrimary font-semibold transition-all cursor-pointer";
           }
         });
 

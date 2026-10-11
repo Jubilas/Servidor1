@@ -185,7 +185,11 @@ async function runVisualTests() {
     await sleep(500);
     const p1b = path.join(SCREENSHOT_DIR, "01b_totem_public_hero_schedule.png");
     await totem.client.screenshot(p1b);
-    await totem.client.evaluate(`window.scrollTo(0, 0);`);
+    await totem.client.evaluate(`
+      window.scrollTo(0, 0);
+      const scroller = document.getElementById('content-scroller');
+      if (scroller) scroller.scrollTop = 0;
+    `);
     await sleep(300);
 
     // -------------------------------------------------------------

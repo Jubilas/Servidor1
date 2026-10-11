@@ -135,7 +135,8 @@ async function runTests() {
   }
 
   // 10. Check state.json on disk
-  const stateDisk = JSON.parse(fs.readFileSync('state.json', 'utf-8'));
+  const statePath = fs.existsSync('state.json') ? 'state.json' : (fs.existsSync('../Servidor1/state.json') ? '../Servidor1/state.json' : 'state.json');
+  const stateDisk = JSON.parse(fs.readFileSync(statePath, 'utf-8'));
   assert(stateDisk.weeklyActivities && stateDisk.weeklyActivities.length === 3, 'state.json persistido corretamente no disco');
 
   console.log(`\n=== RESULTADO: ${passed} PASSADOS, ${failed} FALHADOS ===\n`);
