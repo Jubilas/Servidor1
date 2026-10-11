@@ -1,7 +1,20 @@
 import http from 'node:http';
 import fs from 'node:fs';
 
-const PASS = 'PracaConecta#2026!Dev';
+// Senha do painel dev: a mesma do servidor, lida de senha_dev.txt (fora do git)
+const DEV_PASS = (() => {
+  try {
+    return fs.readFileSync(new URL('./senha_dev.txt', import.meta.url), 'utf-8')
+      .split(/\r?\n/).map(l => l.trim()).find(Boolean) || '';
+  } catch (e) {
+    return '';
+  }
+})();
+if (!DEV_PASS) {
+  console.error("Crie senha_dev.txt (a mesma senha do servidor) antes de rodar os testes.");
+  process.exit(1);
+}
+const PASS = DEV_PASS;
 
 function request(options, data = null) {
   return new Promise((resolve, reject) => {

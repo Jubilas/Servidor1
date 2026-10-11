@@ -4,3 +4,6 @@ screenshots/
 Thumbs.db
 dist/
 *.log
+
+# Senha do painel dev (fica só no servidor)
+senha_dev.txt

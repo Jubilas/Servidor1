@@ -4,6 +4,7 @@ import path from "node:path";
 import zlib from "node:zlib";
 import { fileURLToPath } from "node:url";
 import os from "node:os";
+import crypto from "node:crypto";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -11,29 +12,44 @@ const PORT = Number(process.env.PORT) || Number(process.argv[2]) || 8080;
 const HOST = process.env.HOST || "0.0.0.0";
 const PUBLIC_DIR = __dirname;
 const STATE_FILE = path.join(PUBLIC_DIR, "state.json");
-const DEV_PASSWORD_FILE = "C:\\Users\\goiab\\Desktop\\senha_painel_dev.txt";
-const DEFAULT_DEV_PASSWORD = "PracaConecta#2026!Dev";
+// Senha do painel dev: fica no arquivo senha_dev.txt, ao lado do server.js
+// (ignorado pelo git). Para trocar a senha: edite o arquivo e reinicie o
+// servidor (ex.: pm2 restart). Sem o arquivo, o painel /dev fica bloqueado.
+const DEV_PASSWORD_FILE = path.join(PUBLIC_DIR, "senha_dev.txt");
 
 // ==========================================
 // AUTENTICAÇÃO DO PAINEL DEV (/dev)
 // ==========================================
-function getDevPassword() {
+function loadDevPassword() {
   try {
-    if (fs.existsSync(DEV_PASSWORD_FILE)) {
-      const content = fs.readFileSync(DEV_PASSWORD_FILE, "utf-8");
-      const match = content.match(/Senha:\s*([^\r\n]+)/);
-      if (match && match[1].trim()) {
-        return match[1].trim();
-      }
-    }
+    // Usa a primeira linha não vazia do arquivo como senha
+    const firstLine = fs.readFileSync(DEV_PASSWORD_FILE, "utf-8")
+      .split(/\r?\n/)
+      .map(line => line.trim())
+      .find(line => line.length > 0);
+    return firstLine || "";
   } catch (err) {
-    console.error("[AUTH] Erro ao ler senha do arquivo na Área de Trabalho:", err.message);
+    if (err.code !== "ENOENT") {
+      console.error("[AUTH] Não foi possível ler senha_dev.txt:", err.message);
+    }
+    return "";
   }
-  return DEFAULT_DEV_PASSWORD;
+}
+
+// Lida uma vez na inicialização: alterou o arquivo, reinicie o servidor
+const DEV_PASSWORD = loadDevPassword();
+
+// Comparação em tempo constante (o tempo de resposta não revela partes da senha)
+function safeEqual(a, b) {
+  const ha = crypto.createHash("sha256").update(String(a)).digest();
+  const hb = crypto.createHash("sha256").update(String(b)).digest();
+  return crypto.timingSafeEqual(ha, hb);
 }
 
 function validateAuth(req, body) {
-  const expected = getDevPassword();
+  const expected = DEV_PASSWORD;
+  if (!expected) return false; // painel bloqueado: nenhuma senha configurada
+
   const authHeader = req.headers["authorization"] || "";
   let token = "";
   if (authHeader.startsWith("Bearer ")) {
@@ -44,17 +60,7 @@ function validateAuth(req, body) {
   }
   if (!token) return false;
 
-  // Aceita a senha do arquivo na Área de Trabalho, o padrão, ou atalhos práticos simples
-  const validTokens = new Set([
-    expected,
-    DEFAULT_DEV_PASSWORD,
-    "praca2026",
-    "Praca2026",
-    "dev123",
-    "Dev123"
-  ]);
-
-  return validTokens.has(token);
+  return safeEqual(token, expected);
 }
 
 // ==========================================
@@ -755,6 +761,12 @@ server.listen(PORT, HOST, () => {
   console.log(`  * Agendamento Mobile : http://localhost:${PORT}/agendar`);
   for (const ip of localIps) {
     console.log(`  * Na Rede Local/Celular : http://${ip}:${PORT}/ (Totem) | /dev (Painel) | /agendar`);
+  }
+  console.log("-".repeat(65));
+  if (DEV_PASSWORD) {
+    console.log("  Painel Dev        : ATIVO (senha lida de senha_dev.txt)");
+  } else {
+    console.log(`  Painel Dev        : BLOQUEADO -- crie ${DEV_PASSWORD_FILE} com a senha`);
   }
   console.log("-".repeat(65));
   console.log("  Pressione Ctrl + C para encerrar o servidor.\n");

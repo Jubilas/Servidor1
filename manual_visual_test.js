@@ -6,6 +6,19 @@ import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+// Senha do painel dev: a mesma do servidor, lida de senha_dev.txt (fora do git)
+const DEV_PASS = (() => {
+  try {
+    return fs.readFileSync(new URL('./senha_dev.txt', import.meta.url), 'utf-8')
+      .split(/\r?\n/).map(l => l.trim()).find(Boolean) || '';
+  } catch (e) {
+    return '';
+  }
+})();
+if (!DEV_PASS) {
+  console.error("Crie senha_dev.txt (a mesma senha do servidor) antes de rodar os testes.");
+  process.exit(1);
+}
 const SCREENSHOT_DIR = path.join(__dirname, 'screenshots');
 if (!fs.existsSync(SCREENSHOT_DIR)) {
   fs.mkdirSync(SCREENSHOT_DIR, { recursive: true });
@@ -147,13 +160,13 @@ async function runVisualTests() {
     // Garante que o clima está em Sol Radiante e a cerejeira em Florada Plena (Fase 3 - 88% Mankai)
     await fetch("http://localhost:8080/api/control", {
       method: "POST",
-      headers: { "Content-Type": "application/json", "Authorization": "Bearer PracaConecta#2026!Dev" },
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${DEV_PASS}` },
       body: JSON.stringify({ action: "set_weather", weather: "sun" })
     });
     await sleep(400);
     await fetch("http://localhost:8080/api/control", {
       method: "POST",
-      headers: { "Content-Type": "application/json", "Authorization": "Bearer PracaConecta#2026!Dev" },
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${DEV_PASS}` },
       body: JSON.stringify({ action: "set_phase", phase: 3 })
     });
     await sleep(800);
@@ -169,7 +182,7 @@ async function runVisualTests() {
 
     // Verifica atividades semanais renderizadas sem bug do dayTime
     const activitiesText = await totem.client.evaluate(`
-      Array.from(document.querySelectorAll('#weekly-activities-container > div')).map(d => d.innerText.replace(/\\n/g, ' | '))
+      Array.from(document.querySelectorAll('#weekly-activities-container > *')).map(d => d.innerText.replace(/\\n/g, ' | '))
     `);
     console.log(`- Atividades da semana renderizadas: ${JSON.stringify(activitiesText)}`);
 
@@ -179,7 +192,7 @@ async function runVisualTests() {
     // Captura Card de Horários e Calendário da Quadra na Aba Principal
     console.log("- Rolando até o Card de Horários da Quadra no Hero...");
     await totem.client.evaluate(`
-      const card = document.getElementById('main-court-schedule-card');
+      const card = document.getElementById('section-quadra');
       if (card) card.scrollIntoView({ behavior: 'instant', block: 'center' });
     `);
     await sleep(500);
@@ -248,7 +261,7 @@ async function runVisualTests() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": "Bearer PracaConecta#2026!Dev"
+        "Authorization": `Bearer ${DEV_PASS}`
       },
       body: JSON.stringify({
         action: "send_toast",
@@ -285,7 +298,7 @@ async function runVisualTests() {
     // Status Livre
     await fetch("http://localhost:8080/api/control", {
       method: "POST",
-      headers: { "Content-Type": "application/json", "Authorization": "Bearer PracaConecta#2026!Dev" },
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${DEV_PASS}` },
       body: JSON.stringify({ action: "set_court", status: "livre" })
     });
     await sleep(500);
@@ -297,7 +310,7 @@ async function runVisualTests() {
     // Status Manutenção
     await fetch("http://localhost:8080/api/control", {
       method: "POST",
-      headers: { "Content-Type": "application/json", "Authorization": "Bearer PracaConecta#2026!Dev" },
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${DEV_PASS}` },
       body: JSON.stringify({ action: "set_court", status: "manutencao" })
     });
     await sleep(500);
@@ -309,7 +322,7 @@ async function runVisualTests() {
     // Restaura para em_uso
     await fetch("http://localhost:8080/api/control", {
       method: "POST",
-      headers: { "Content-Type": "application/json", "Authorization": "Bearer PracaConecta#2026!Dev" },
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${DEV_PASS}` },
       body: JSON.stringify({ action: "set_court", status: "em_uso", remainingMinutes: 22 })
     });
 
@@ -324,7 +337,7 @@ async function runVisualTests() {
     // Garante modo Sol Radiante para capturar tema claro artesanal
     await fetch("http://localhost:8080/api/control", {
       method: "POST",
-      headers: { "Content-Type": "application/json", "Authorization": "Bearer PracaConecta#2026!Dev" },
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${DEV_PASS}` },
       body: JSON.stringify({ action: "set_weather", weather: "sun" })
     });
     await sleep(600);
@@ -333,7 +346,7 @@ async function runVisualTests() {
     console.log("- Transmitindo Aviso Global sob Sol Radiante (Tema Craft Paper Marfim)...");
     await fetch("http://localhost:8080/api/control", {
       method: "POST",
-      headers: { "Content-Type": "application/json", "Authorization": "Bearer PracaConecta#2026!Dev" },
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${DEV_PASS}` },
       body: JSON.stringify({
         action: "send_toast",
         title: "SOL RADIANTE NA PRAÇA // PALETA MARFIM & LACA",
@@ -349,7 +362,7 @@ async function runVisualTests() {
 
     await fetch("http://localhost:8080/api/control", {
       method: "POST",
-      headers: { "Content-Type": "application/json", "Authorization": "Bearer PracaConecta#2026!Dev" },
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${DEV_PASS}` },
       body: JSON.stringify({ action: "set_weather", weather: "night" })
     });
     await sleep(1000);
@@ -363,7 +376,7 @@ async function runVisualTests() {
     console.log("- Transmitindo Aviso Global em Modo Noite Yozakura (Midnight Obsidian)...");
     await fetch("http://localhost:8080/api/control", {
       method: "POST",
-      headers: { "Content-Type": "application/json", "Authorization": "Bearer PracaConecta#2026!Dev" },
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${DEV_PASS}` },
       body: JSON.stringify({
         action: "send_toast",
         title: "NOITE YOZAKURA // ILUMINAÇÃO CÊNICA NOTURNA",
@@ -380,7 +393,7 @@ async function runVisualTests() {
     // Retorna para sol
     await fetch("http://localhost:8080/api/control", {
       method: "POST",
-      headers: { "Content-Type": "application/json", "Authorization": "Bearer PracaConecta#2026!Dev" },
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${DEV_PASS}` },
       body: JSON.stringify({ action: "set_weather", weather: "sun" })
     });
     await sleep(600);
@@ -404,9 +417,9 @@ async function runVisualTests() {
     await devPage.client.screenshot(p7);
 
     // Digita a senha correta e autentica
-    console.log("- Autenticando com a senha de C:\\Users\\goiab\\Desktop\\senha_painel_dev.txt...");
+    console.log("- Autenticando com a senha de senha_dev.txt...");
     await devPage.client.evaluate(`
-      document.getElementById('input-dev-pass').value = 'PracaConecta#2026!Dev';
+      document.getElementById('input-dev-pass').value = ${JSON.stringify(DEV_PASS)};
       document.getElementById('btn-submit-auth').click();
     `);
     await sleep(1500);
@@ -474,7 +487,7 @@ async function runVisualTests() {
     if (foundBooking) {
       await fetch("http://localhost:8080/api/control", {
         method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": "Bearer PracaConecta#2026!Dev" },
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${DEV_PASS}` },
         body: JSON.stringify({ action: "cancel_booking", id: foundBooking.id })
       });
       console.log("- Reserva temporária de teste cancelada após validação.");
