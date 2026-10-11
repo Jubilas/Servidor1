@@ -251,21 +251,33 @@
     body.sidebar-collapsed #btn-sidebar-collapse svg { transform: scaleX(-1); }
 
     /* ---------- PALCO DA ARTE (ÁRVORE 3D / ASCII) ---------- */
+    /* Camada da árvore: ocupa o palco e continua por trás do painel translúcido */
+    #engine-background-container {
+      grid-column: stage-start / panel-end;
+      grid-row: stage-start / stage-end;
+      position: relative;
+      z-index: 0;
+      min-width: 0;
+      overflow: hidden;
+      background: transparent;
+      cursor: grab;
+    }
+    /* O palco só carrega os controles; cliques no vazio passam para a árvore */
     #stage {
       grid-area: stage;
       position: relative;
+      z-index: 1;
       overflow: hidden;
       min-width: 0;
-      background: var(--paper);
-      transition: background-color .5s var(--ease);
+      pointer-events: none;
     }
-    #engine-background-container { position: absolute; inset: 0; overflow: hidden; background: transparent; cursor: grab; }
+    .stage-bottom, .zen-exit { pointer-events: auto; }
     #engine-background-container:active { cursor: grabbing; }
     #engine-background-container canvas { position: absolute; inset: 0; display: block; transition: opacity .5s var(--ease); }
     #ascii-canvas { pointer-events: none; }
     #engine-overlay-vignette {
       position: absolute; inset: 0; pointer-events: none;
-      background: radial-gradient(ellipse at 50% 45%, transparent 55%, color-mix(in srgb, var(--paper) 70%, transparent) 100%);
+      background: radial-gradient(ellipse 130% 95% at 60% 45%, transparent 60%, color-mix(in srgb, var(--paper) 65%, transparent) 100%);
     }
     .mode-hybrid-blend { mix-blend-mode: multiply; }
     body.mode-night .mode-hybrid-blend { mix-blend-mode: screen; }
@@ -386,7 +398,12 @@
       overflow-y: auto;
       overflow-x: hidden;
       overscroll-behavior: contain;
-      background: var(--panel);
+      position: relative;
+      z-index: 2;
+      /* Vidro fosco: as pétalas aparecem suaves por trás; os cards continuam sólidos */
+      background: color-mix(in srgb, var(--panel) 60%, transparent);
+      backdrop-filter: blur(2px) saturate(1.1);
+      -webkit-backdrop-filter: blur(2px) saturate(1.1);
       border-left: 1px solid var(--line);
       transition: opacity .4s var(--ease), background-color .5s var(--ease);
       scrollbar-width: thin;
@@ -643,6 +660,9 @@
     .photo-card figcaption { position: absolute; inset: auto 0 0 0; padding: 28px 14px 12px; background: linear-gradient(transparent, rgba(0, 0, 0, .78)); color: #fff; font-size: 14px; font-weight: 700; }
     .photo-card figcaption span { display: block; font-size: 12px; font-weight: 600; opacity: .8; }
     .panel-foot { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding-top: 20px; border-top: 1px solid var(--line); font-size: 13px; color: var(--ink-3); font-weight: 600; }
+
+    /* Cards levemente translúcidos (sem blur, para não pesar no totem) */
+    .card, .event-card, .notice, .species, .btn-report-issue { background: color-mix(in srgb, var(--card) 88%, transparent); }
 
     /* ---------- FOLHAS / MODAIS ---------- */
     .sheet-backdrop { position: fixed; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(12, 10, 9, .45); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); transition: opacity .3s var(--ease); }
@@ -915,13 +935,15 @@
       </div>
     </aside>
 
-    <!-- ================= PALCO DA ARTE (ÁRVORE SAKURA 3D / ASCII) ================= -->
+    <!-- ================= ÁRVORE SAKURA 3D / ASCII (continua por trás do painel) ================= -->
+    <div id="engine-background-container">
+      <canvas id="webgl-canvas"></canvas>
+      <canvas id="ascii-canvas"></canvas>
+    </div>
+
+    <!-- ================= PALCO DA ARTE: CONTROLES SOBRE A ÁRVORE ================= -->
     <section id="stage" aria-label="Árvore Sakura viva">
-      <div id="engine-background-container">
-        <canvas id="webgl-canvas"></canvas>
-        <canvas id="ascii-canvas"></canvas>
-        <div id="engine-overlay-vignette"></div>
-      </div>
+      <div id="engine-overlay-vignette"></div>
 
       <div class="stage-top">
         <div class="stage-clock" aria-live="off">
@@ -1892,6 +1914,16 @@
         this.treeRoot.add(this.plinthRing);
       }
 
+      // Faixa horizontal onde as pétalas nascem. Com o painel translúcido, 1 em cada 3
+      // pétalas também cai por trás dele; as demais continuam em volta da árvore.
+      randomPetalX(i) {
+        const wideMax = this.petalWideMaxX || 18;
+        if (i % 3 === 0 && wideMax > 18) {
+          return -18 + Math.random() * (wideMax + 18);
+        }
+        return (Math.random() - 0.5) * 36;
+      }
+
       buildFallingPetals() {
         // Individual 3D falling petals with natural aerodynamic simulation
         this.petalCount = 380;
@@ -2015,14 +2047,42 @@
         const w = Math.max(1, Math.round(host ? host.clientWidth : window.innerWidth));
         const h = Math.max(1, Math.round(host ? host.clientHeight : window.innerHeight));
 
-        const aspect = w / h;
-        this.camera.aspect = aspect;
-        // Enquadramento: a copa (~42 de largura, ~36 de altura) cabe inteira no palco,
-        // com folga embaixo para a barra de controles. Palcos estreitos afastam a câmera.
+        // A arte se estende por trás do painel translúcido, mas a árvore fica
+        // centralizada na parte visível do palco (frustum deslocado via setViewOffset)
+        let visibleW = w;
+        let centerX = w / 2;
+        const stageEl = document.getElementById('stage');
+        if (host && stageEl) {
+          const hostRect = host.getBoundingClientRect();
+          const stageRect = stageEl.getBoundingClientRect();
+          const left = Math.max(0, Math.min(w, stageRect.left - hostRect.left));
+          visibleW = Math.max(1, Math.min(w - left, stageRect.width));
+          centerX = left + visibleW / 2;
+        }
+        const fullW = 2 * Math.max(centerX, w - centerX);
+        this.camera.aspect = fullW / h;
+        if (fullW - w > 1) {
+          this.camera.setViewOffset(fullW, h, fullW / 2 - centerX, 0, w, h);
+        } else {
+          this.camera.clearViewOffset();
+        }
+        const aspect = visibleW / h;
+
+        // Enquadramento: a copa ocupa bem o palco visível, com folga embaixo
+        // para a barra de controles. Palcos estreitos afastam a câmera.
         const halfFov = Math.tan(THREE.MathUtils.degToRad(this.camera.fov / 2));
-        const fitWidth = 22 / (halfFov * Math.max(0.4, aspect));
-        const fitHeight = 26 / halfFov;
+        const fitWidth = 18 / (halfFov * Math.max(0.4, aspect));
+        const fitHeight = 26 / halfFov; // faixas baixas (celular/alcance): copa e base inteiras
         this.targetCamPos.set(0, 17, Math.round(Math.max(fitWidth, fitHeight)));
+
+        // Largura do mundo visível à direita da árvore (atrás do painel), na
+        // profundidade da árvore: é até onde as pétalas podem cair
+        const worldPerPx = (2 * this.targetCamPos.z * halfFov) / h;
+        const prevWide = this.petalWideMaxX || 18;
+        this.petalWideMaxX = Math.max(18, (w - centerX) * worldPerPx - 2);
+        if (this.petalsData && Math.abs(this.petalWideMaxX - prevWide) > 1) {
+          this.petalsData.forEach((pd, i) => { if (i % 3 === 0) pd.baseX = this.randomPetalX(i); });
+        }
         this.targetLookAt.set(0, 14, 0);
         this.glyphSize = w < 480 ? 8 : (w < 640 ? 9 : 10);
         this.camera.updateProjectionMatrix();
@@ -2179,20 +2239,18 @@
         const shouldSpringBack = !window.isTreeDragging && (window.lastDragInteractionTime || 0) > 0 && timeSinceDrag >= 1500;
 
         if (shouldSpringBack) {
-          // Smooth magnetic return (spring-back) interpolation to default axis
-          const dy = this.defaultRotY - this.targetRotY;
+          // Retorno magnético só da inclinação (eixo X); o giro dado pela pessoa é mantido
           const dx = this.defaultRotX - this.targetRotX;
-          this.targetRotY += dy * 0.05;
           this.targetRotX += dx * 0.05;
 
-          // When close enough, snap to default viewing axis
-          if (Math.abs(dy) < 0.002 && Math.abs(dx) < 0.002) {
-            this.targetRotY = this.defaultRotY;
+          // When close enough, snap to default tilt
+          if (Math.abs(dx) < 0.002) {
             this.targetRotX = this.defaultRotX;
             window.lastDragInteractionTime = 0; // Settled back to rest
           }
-        } else if (this.autoRotate && !window.isTreeDragging) {
-          // Idle sway / auto-rotation around default axis when user is not actively interacting
+        }
+        if (this.autoRotate && !window.isTreeDragging) {
+          // Auto-rotation continues from wherever the user left the tree
           this.targetRotY += this.rotationSpeed;
         }
 
@@ -2274,7 +2332,7 @@
           // Recycle petals reaching ground level back up to canopy height
           if (mesh.position.y < 0.2) {
             mesh.position.y = 28 + Math.random() * 8;
-            p.baseX = (Math.random() - 0.5) * 36;
+            p.baseX = this.randomPetalX(i);
             p.baseZ = (Math.random() - 0.5) * 36;
             p.windDriftX = activeWind > 2 ? -10 : 0;
             p.phase = Math.random() * Math.PI * 2;
@@ -3398,7 +3456,9 @@
         });
       };
       if (stageEl && 'ResizeObserver' in window) {
-        new ResizeObserver(queueEngineResize).observe(stageEl);
+        const engineObserver = new ResizeObserver(queueEngineResize);
+        engineObserver.observe(stageEl);
+        engineObserver.observe(document.getElementById('engine-background-container'));
       }
       window.addEventListener('resize', queueEngineResize);
 
