@@ -70,21 +70,23 @@
 
     /* Refined Glassmorphism for Daytime Light Mode */
     .glass-panel {
+      border-radius: 8px !important;
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       background: rgba(253, 251, 247, 0.65);
-      border: 1px solid rgba(222, 214, 196, 0.75);
-      box-shadow: 0 10px 30px -5px rgba(50, 40, 30, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(200, 190, 168, 0.55);
+      box-shadow: 0 8px 24px -5px rgba(50, 40, 30, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.7);
       color: #1C1917;
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .glass-card {
+      border-radius: 8px !important;
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       background: rgba(255, 255, 255, 0.55);
-      border: 1px solid rgba(228, 220, 203, 0.70);
-      box-shadow: 0 4px 16px rgba(50, 40, 30, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+      border: 1px solid rgba(200, 190, 168, 0.45);
+      box-shadow: 0 4px 14px rgba(50, 40, 30, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.6);
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       color: #1C1917;
     }
@@ -92,7 +94,7 @@
     .glass-card:hover {
       background: rgba(255, 255, 255, 0.75);
       border-color: #BE123C;
-      box-shadow: 0 12px 28px rgba(190, 18, 60, 0.12), 0 2px 8px rgba(50, 40, 30, 0.06);
+      box-shadow: 0 8px 20px rgba(190, 18, 60, 0.08), 0 2px 6px rgba(50, 40, 30, 0.04);
       transform: translateY(-2px);
     }
 
@@ -344,11 +346,11 @@
     body.screensaver-active #engine-overlay-vignette { opacity: .15 !important; }
 
     /* YOZAKURA NIGHT MODE (HIGH CONTRAST & DARK OVERRIDES) */
-    body.mode-night { color: #f8fafc !important; background-color: #070a0f !important; }
-    body.mode-night #engine-background-container { background-color: #070a0f !important; }
-    body.mode-night #engine-viewport { background-color: #0b0e14 !important; }
-    body.mode-night #engine-overlay-vignette { background: radial-gradient(circle, rgba(7, 10, 15, 0.2) 0%, rgba(7, 10, 15, 0.95) 90%) !important; }
-    body.mode-night header { color: #f8fafc !important; background-color: rgba(14, 18, 26, 0.95) !important; border-color: rgba(255, 255, 255, 0.1) !important; }
+    body.mode-night { color: #f1f5f9 !important; background-color: #090c10 !important; }
+    body.mode-night #engine-background-container { background-color: #090c10 !important; }
+    body.mode-night #engine-viewport { background-color: #0d1117 !important; }
+    body.mode-night #engine-overlay-vignette { background: radial-gradient(circle, rgba(9, 12, 16, 0.2) 0%, rgba(9, 12, 16, 0.95) 90%) !important; }
+    body.mode-night header { color: #f1f5f9 !important; background-color: rgba(14, 18, 26, 0.95) !important; border-color: rgba(255, 255, 255, 0.08) !important; }
     body.mode-night .main-content-backdrop {
       background: transparent !important;
       border: none !important;
@@ -357,7 +359,7 @@
     }
     body.mode-night #floating-nav-dock {
       background: rgba(14, 18, 26, 0.90) !important;
-      border-color: rgba(255, 255, 255, 0.12) !important;
+      border-color: rgba(255, 255, 255, 0.1) !important;
       box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
     }
     body.mode-night #floating-nav-dock .nav-tab {
@@ -376,7 +378,7 @@
     }
     body.mode-night .nav-pill-dock {
       background: rgba(14, 18, 26, 0.9) !important;
-      border-color: rgba(255, 255, 255, 0.12) !important;
+      border-color: rgba(255, 255, 255, 0.1) !important;
     }
     body.mode-night .nav-tab {
       color: #94A3B8 !important;
@@ -393,21 +395,23 @@
       color: #f1f5f9 !important;
       backdrop-filter: blur(16px) !important;
       -webkit-backdrop-filter: blur(16px) !important;
-      background-color: rgba(14, 18, 26, 0.75) !important;
-      border-color: rgba(255, 255, 255, 0.1) !important;
-      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+      background-color: rgba(14, 18, 26, 0.78) !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      border-radius: 8px !important;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
     }
     body.mode-night .glass-card {
       color: #f1f5f9 !important;
       backdrop-filter: blur(14px) !important;
       -webkit-backdrop-filter: blur(14px) !important;
-      background-color: rgba(16, 21, 30, 0.7) !important;
-      border-color: rgba(255, 255, 255, 0.1) !important;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+      background-color: rgba(16, 21, 30, 0.72) !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      border-radius: 8px !important;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
     }
     body.mode-night .glass-card:hover {
-      background-color: rgba(22, 30, 44, 0.88) !important;
-      border-color: #e11d48 !important;
+      background-color: rgba(22, 28, 40, 0.88) !important;
+      border-color: rgba(225, 29, 72, 0.4) !important;
     }
     body.mode-night #custom-scroll-track {
       background: rgba(255, 255, 255, 0.1) !important;
@@ -422,7 +426,7 @@
     }
     body.mode-night #floating-dock {
       background-color: rgba(14, 18, 26, 0.9) !important;
-      border-color: rgba(255, 255, 255, 0.12) !important;
+      border-color: rgba(255, 255, 255, 0.1) !important;
       color: #cbd5e1 !important;
     }
     body.mode-night h1, body.mode-night h2, body.mode-night h3, body.mode-night h4 { color: #f8fafc !important; }
@@ -430,13 +434,83 @@
     body.mode-night .text-figma-textPrimary { color: #f8fafc !important; }
     body.mode-night .text-figma-textSecondary { color: #cbd5e1 !important; }
     body.mode-night .text-figma-textMuted { color: #94a3b8 !important; }
-    body.mode-night .border-figma-border { border-color: rgba(255, 255, 255, 0.1) !important; }
+    body.mode-night .border-figma-border { border-color: rgba(255, 255, 255, 0.08) !important; }
 
-    .court-slot { transition: all .2s cubic-bezier(.16, 1, .3, 1); }
+    /* ALL CRAFT BEIGE ELEMENTS DARKEN IN NIGHT MODE */
+    body.mode-night .bg-\[\#DCD2BE\],
+    body.mode-night .bg-\[\#D8CEB8\],
+    body.mode-night .bg-\[\#E1D8C4\],
+    body.mode-night .bg-\[\#DDD4BF\],
+    body.mode-night .bg-\[\#EFE8D8\]\/50,
+    body.mode-night .bg-\[\#E2D9C6\],
+    body.mode-night [class*="bg-[#DCD2BE]"],
+    body.mode-night [class*="bg-[#D8CEB8]"],
+    body.mode-night [class*="bg-[#E1D8C4]"],
+    body.mode-night [class*="bg-[#DDD4BF]"],
+    body.mode-night [class*="bg-[#EFE8D8]"],
+    body.mode-night [class*="bg-[#E2D9C6]"] {
+      background-color: rgba(18, 22, 30, 0.85) !important;
+      color: #f1f5f9 !important;
+      border-color: rgba(255, 255, 255, 0.09) !important;
+    }
+
+    body.mode-night details,
+    body.mode-night details summary,
+    body.mode-night input,
+    body.mode-night select,
+    body.mode-night textarea {
+      background-color: rgba(14, 18, 26, 0.85) !important;
+      color: #f8fafc !important;
+      border-color: rgba(255, 255, 255, 0.1) !important;
+    }
+
+    body.mode-night .court-period-tab:not(.active) {
+      background-color: rgba(18, 22, 30, 0.75) !important;
+      border-color: rgba(255, 255, 255, 0.1) !important;
+      color: #94a3b8 !important;
+    }
+    body.mode-night .court-period-tab:not(.active):hover {
+      background-color: rgba(26, 32, 44, 0.9) !important;
+      color: #f8fafc !important;
+    }
+    body.mode-night .court-period-tab.active {
+      background-color: rgba(225, 29, 72, 0.25) !important;
+      border-color: #e11d48 !important;
+      color: #fda4af !important;
+    }
+
+    .court-slot { transition: all .2s cubic-bezier(.16, 1, .3, 1); border-radius: 8px !important; }
     .court-slot:hover { transform: translateY(-2px); }
     body.mode-night .court-slot {
-      background-color: rgba(16, 21, 30, 0.65);
-      border-color: rgba(255, 255, 255, 0.1);
+      background-color: rgba(14, 18, 26, 0.75) !important;
+      border-color: rgba(255, 255, 255, 0.08) !important;
+    }
+    body.mode-night .court-slot:hover {
+      border-color: rgba(255, 255, 255, 0.2) !important;
+    }
+    body.mode-night .court-slot .text-emerald-950,
+    body.mode-night .court-slot .text-emerald-900,
+    body.mode-night .court-slot .text-emerald-800 {
+      color: #a7f3d0 !important;
+    }
+    body.mode-night .court-slot .text-emerald-700 {
+      color: #6ee7b7 !important;
+    }
+    body.mode-night .court-slot .text-rose-950,
+    body.mode-night .court-slot .text-rose-900,
+    body.mode-night .court-slot .text-rose-800 {
+      color: #fecdd3 !important;
+    }
+    body.mode-night .court-slot .text-rose-700 {
+      color: #fda4af !important;
+    }
+    body.mode-night .court-slot .text-cyan-950,
+    body.mode-night .court-slot .text-cyan-900,
+    body.mode-night .court-slot .text-cyan-800 {
+      color: #bae6fd !important;
+    }
+    body.mode-night .court-slot .text-cyan-700 {
+      color: #7dd3fc !important;
     }
 
     /* GLOBAL BROADCAST MODAL: ADAPTIVE FIGMA CRAFT THEME */
@@ -447,25 +521,29 @@
       background-color: rgba(5, 7, 10, 0.9) !important;
     }
     body:not(.mode-night) #global-broadcast-card {
+      border-radius: 8px !important;
       background-color: #FBF7EE !important;
-      border: 2px solid #B82048 !important;
+      border: 1px solid #B82048 !important;
       color: #1C1917 !important;
-      box-shadow: 0 25px 50px -12px rgba(60, 48, 36, 0.28) !important;
+      box-shadow: 0 20px 40px -12px rgba(60, 48, 36, 0.22) !important;
     }
     body:not(.mode-night) #global-broadcast-title {
       color: #1C1917 !important;
     }
     body:not(.mode-night) #global-broadcast-message {
+      border-radius: 6px !important;
       background-color: #EAE1CF !important;
       border-color: #C8BEA8 !important;
       color: #1C1917 !important;
     }
     body:not(.mode-night) #global-broadcast-timer-badge {
+      border-radius: 6px !important;
       background-color: #DDD4BF !important;
       border-color: #C8BEA8 !important;
       color: #44403C !important;
     }
     body:not(.mode-night) #btn-close-broadcast {
+      border-radius: 6px !important;
       background-color: #DDD4BF !important;
       border-color: #C8BEA8 !important;
       color: #44403C !important;
@@ -475,6 +553,7 @@
       color: #1C1917 !important;
     }
     body:not(.mode-night) #btn-dismiss-broadcast {
+      border-radius: 6px !important;
       background-color: #B82048 !important;
       color: #FFFFFF !important;
     }
@@ -489,8 +568,9 @@
     }
 
     body.mode-night #global-broadcast-card {
-      background-color: #141A24 !important;
-      border: 2px solid #E11D48 !important;
+      border-radius: 8px !important;
+      background-color: #12161f !important;
+      border: 1px solid #E11D48 !important;
       color: #F8FAFC !important;
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8) !important;
     }
@@ -498,16 +578,19 @@
       color: #F8FAFC !important;
     }
     body.mode-night #global-broadcast-message {
+      border-radius: 6px !important;
       background-color: #0B0E14 !important;
       border-color: #2D3748 !important;
       color: #F1F5F9 !important;
     }
     body.mode-night #global-broadcast-timer-badge {
+      border-radius: 6px !important;
       background-color: #1E293B !important;
       border-color: #334155 !important;
       color: #E2E8F0 !important;
     }
     body.mode-night #btn-close-broadcast {
+      border-radius: 6px !important;
       background-color: #1E293B !important;
       border-color: #334155 !important;
       color: #94A3B8 !important;
@@ -517,6 +600,7 @@
       color: #FFFFFF !important;
     }
     body.mode-night #btn-dismiss-broadcast {
+      border-radius: 6px !important;
       background-color: #E11D48 !important;
     }
     body.mode-night #btn-dismiss-broadcast:hover {
@@ -729,7 +813,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full mb-6">
             
             <!-- BENTO 1: ESTAÇÃO METEOROLÓGICA (CLIMA VIVO) -->
-            <div class="col-span-1 md:col-span-1 lg:col-span-2 glass-panel p-5 rounded-2xl border border-figma-border flex flex-col justify-between shadow-xs hover:border-amber-500/50 transition-all">
+            <div class="col-span-1 md:col-span-1 lg:col-span-2 glass-panel p-5 rounded-lg border border-figma-border flex flex-col justify-between shadow-xs hover:border-amber-500/50 transition-all">
               <div>
                 <div class="flex items-center justify-between mb-3">
                   <div class="flex items-center gap-2">
@@ -739,7 +823,7 @@
                   <span class="text-[10px] font-mono text-figma-textMuted uppercase">SENSOR VIVO</span>
                 </div>
                 <div class="flex items-center gap-4 my-2">
-                  <div id="hero-weather-icon-box" class="w-14 h-14 rounded-2xl bg-amber-500/15 text-amber-700 flex items-center justify-center shadow-inner flex-shrink-0">
+                  <div id="hero-weather-icon-box" class="w-14 h-14 rounded-lg bg-amber-500/15 text-amber-700 flex items-center justify-center shadow-inner flex-shrink-0">
                     <svg class="w-7 h-7 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41m14.14-14.14l-1.41 1.41"></path></svg>
                   </div>
                   <div>
@@ -757,7 +841,7 @@
             </div>
 
             <!-- BENTO 2: SINO DA PRAÇA (ZEN CHIME WIDGET COM MICRO-ANIMAÇÃO) -->
-            <div class="col-span-1 md:col-span-1 lg:col-span-2 glass-panel p-5 rounded-2xl border border-figma-border flex flex-col justify-between shadow-xs hover:border-sakura-500/50 transition-all relative overflow-hidden group">
+            <div class="col-span-1 md:col-span-1 lg:col-span-2 glass-panel p-5 rounded-lg border border-figma-border flex flex-col justify-between shadow-xs hover:border-sakura-500/50 transition-all relative overflow-hidden group">
               <div class="relative z-10">
                 <div class="flex items-center justify-between mb-3">
                   <div class="flex items-center gap-2">
@@ -769,9 +853,9 @@
                 <p class="text-xs text-figma-textSecondary mb-4 leading-relaxed">
                   Acione o sino da praça com harmônicos Furin. O badalo reverbera suavemente em todas as telas conectadas.
                 </p>
-                <button id="btn-community-bell" class="w-full relative group px-4 py-3 rounded-xl bg-gradient-to-r from-sakura-500 via-sakura-600 to-sakura-700 hover:from-sakura-600 hover:to-sakura-800 text-white font-bold text-xs sm:text-sm flex items-center justify-between shadow-lg shadow-sakura-500/20 transition-all active:scale-[0.98] border border-white/20 cursor-pointer">
+                <button id="btn-community-bell" class="w-full relative group px-4 py-3 rounded-lg bg-gradient-to-r from-sakura-500 via-sakura-600 to-sakura-700 hover:from-sakura-600 hover:to-sakura-800 text-white font-bold text-xs sm:text-sm flex items-center justify-between shadow-lg shadow-sakura-500/20 transition-all active:scale-[0.98] border border-white/20 cursor-pointer">
                   <div class="flex items-center gap-3">
-                    <span id="bell-icon" class="w-7 h-7 rounded-lg bg-white/15 flex items-center justify-center transition-transform group-hover:rotate-12 group-hover:scale-110 select-none">
+                    <span id="bell-icon" class="w-7 h-7 rounded-md bg-white/15 flex items-center justify-center transition-transform group-hover:rotate-12 group-hover:scale-110 select-none">
                       <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
                     </span>
                     <div class="flex flex-col text-left">
@@ -790,10 +874,10 @@
             </div>
 
             <!-- BENTO 3: QUADRA POLIESPORTIVA (HERO COURT OVERVIEW CARD) -->
-            <div data-scroll-to="section-quadra" class="col-span-1 md:col-span-2 lg:col-span-2 glass-card p-5 rounded-2xl border border-figma-border cursor-pointer flex flex-col justify-between group hover:border-sakura-500 transition-all shadow-xs">
+            <div data-scroll-to="section-quadra" class="col-span-1 md:col-span-2 lg:col-span-2 glass-card p-5 rounded-lg border border-figma-border cursor-pointer flex flex-col justify-between group hover:border-sakura-500 transition-all shadow-xs">
               <div>
                 <div class="flex items-center justify-between mb-2">
-                  <span id="badge-court-quick" class="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-rose-500/15 text-rose-700 flex items-center gap-1.5 animate-pulse border border-rose-500/30">
+                  <span id="badge-court-quick" class="px-2.5 py-1 rounded-md text-[10px] font-mono font-bold bg-rose-500/15 text-rose-700 flex items-center gap-1.5 animate-pulse border border-rose-500/30">
                     <span class="w-1.5 h-1.5 rounded-full bg-rose-600"></span> EM USO
                   </span>
                   <span class="text-[10px] font-mono text-figma-textMuted uppercase">STATUS AO VIVO</span>
@@ -814,10 +898,10 @@
             </div>
 
             <!-- BENTO 4: RADAR DA CEREJEIRA (ANEL DE FLORAÇÃO 88% MANKAI) -->
-            <div data-scroll-to="section-sakura-radar" class="col-span-1 md:col-span-1 lg:col-span-1 glass-card p-5 rounded-2xl border border-figma-border cursor-pointer flex flex-col justify-between group hover:border-sakura-500 transition-all shadow-xs">
+            <div data-scroll-to="section-sakura-radar" class="col-span-1 md:col-span-1 lg:col-span-1 glass-card p-5 rounded-lg border border-figma-border cursor-pointer flex flex-col justify-between group hover:border-sakura-500 transition-all shadow-xs">
               <div>
                 <div class="flex items-center justify-between mb-2">
-                  <span class="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-sakura-500/15 text-sakura-700 border border-sakura-500/30">88% MANKAI</span>
+                  <span class="px-2 py-0.5 rounded-md text-[9px] font-mono font-bold bg-sakura-500/15 text-sakura-700 border border-sakura-500/30">88% MANKAI</span>
                   <span class="text-[10px] font-mono text-figma-textMuted">BOTÂNICA</span>
                 </div>
                 <div class="flex items-center gap-3 my-2">
@@ -842,10 +926,10 @@
             </div>
 
             <!-- BENTO 5: MAQUETE 3D -->
-            <div data-scroll-to="section-praca3d" class="col-span-1 md:col-span-1 lg:col-span-1 glass-card p-5 rounded-2xl border border-figma-border cursor-pointer flex flex-col justify-between group hover:border-cyan-600 transition-all shadow-xs">
+            <div data-scroll-to="section-praca3d" class="col-span-1 md:col-span-1 lg:col-span-1 glass-card p-5 rounded-lg border border-figma-border cursor-pointer flex flex-col justify-between group hover:border-cyan-600 transition-all shadow-xs">
               <div>
                 <div class="flex items-center justify-between mb-2">
-                  <span class="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-cyan-500/15 text-cyan-800 border border-cyan-500/30">3D AO VIVO</span>
+                  <span class="px-2 py-0.5 rounded-md text-[9px] font-mono font-bold bg-cyan-500/15 text-cyan-800 border border-cyan-500/30">3D AO VIVO</span>
                   <span class="text-[10px] font-mono text-figma-textMuted">VOLUMETRIA</span>
                 </div>
                 <h3 class="text-xs font-bold text-figma-textPrimary group-hover:text-cyan-700 transition-colors mt-2">Maquete 3D da Praça</h3>
@@ -862,68 +946,66 @@
           </div>
 
           <!-- CALENDÁRIO & HORÁRIOS DA QUADRA (ABA PRINCIPAL / HERO) -->
-          <div id="main-court-schedule-card" class="w-full glass-panel rounded-2xl p-6 sm:p-7 border border-figma-border flex flex-col gap-5 mt-2 shadow-sm">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-figma-border/70">
-              <div class="flex items-center gap-3.5">
-                <div class="w-10 h-10 rounded-xl bg-rose-500/15 text-rose-700 border border-rose-500/30 flex items-center justify-center flex-shrink-0">
-                  <svg class="w-5 h-5 text-current" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="8" x2="8" y2="8"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                </div>
-                <div>
-                  <div class="flex items-center gap-2.5">
-                    <h3 class="font-extrabold text-sm sm:text-base text-figma-textPrimary tracking-wide">
-                      HORÁRIOS DE RESERVA DA QUADRA // CALENDÁRIO DE HOJE
-                    </h3>
-                    <span id="hero-court-status-pill" class="text-[9px] font-mono px-2 py-0.5 rounded-full bg-rose-500/15 text-rose-700 font-bold uppercase border border-rose-500/30 flex items-center gap-1">
-                      <span class="w-1.5 h-1.5 rounded-full bg-rose-600 animate-ping"></span> EM USO
-                    </span>
+          <section id="section-quadra" class="w-full">
+            <div id="main-court-schedule-card" class="w-full glass-panel rounded-lg p-5 sm:p-6 border border-figma-border flex flex-col gap-4 mt-2 shadow-sm">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-figma-border/70">
+                <div class="flex items-center gap-3.5">
+                  <div class="w-10 h-10 rounded-lg bg-rose-500/15 text-rose-700 border border-rose-500/30 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-5 h-5 text-current" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="8" x2="8" y2="8"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                   </div>
-                  <p class="text-xs text-figma-textSecondary mt-0.5">
-                    Acompanhe em tempo real as reservas da quadra. Toque em qualquer horário livre para agendar sua partida.
-                  </p>
+                  <div>
+                    <div class="flex items-center gap-2.5">
+                      <h3 class="font-extrabold text-sm sm:text-base text-figma-textPrimary tracking-wide">
+                        HORÁRIOS DE RESERVA DA QUADRA // CALENDÁRIO DE HOJE
+                      </h3>
+                      <span id="hero-court-status-pill" class="text-[9px] font-mono px-2 py-0.5 rounded-md bg-rose-500/15 text-rose-700 font-bold uppercase border border-rose-500/30 flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-rose-600 animate-ping"></span> EM USO
+                      </span>
+                    </div>
+                    <p class="text-xs text-figma-textSecondary mt-0.5">
+                      Acompanhe em tempo real as reservas da quadra. Toque em qualquer horário livre para agendar sua partida.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap flex-shrink-0">
+                  <a href="/agendar" target="_blank" class="px-3.5 py-1.5 rounded-lg bg-cyan-700/15 hover:bg-cyan-700/25 text-cyan-800 dark:text-cyan-200 border border-cyan-700/30 text-xs font-mono font-semibold flex items-center gap-1.5 transition-colors">
+                    <span class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 inline-block text-cyan-800 dark:text-cyan-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg><span>App Mobile (/agendar)</span></span>
+                  </a>
+                  <button id="btn-hero-quick-book" class="px-4 py-1.5 rounded-lg bg-sakura-500 hover:bg-sakura-600 text-white font-bold text-xs font-mono flex items-center gap-1.5 shadow-sm transition-all hover:scale-105 active:scale-95">
+                    <span>+ Reservar</span>
+                  </button>
                 </div>
               </div>
 
-              <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap flex-shrink-0">
-                <button data-scroll-to="section-quadra" class="px-3.5 py-1.5 rounded-xl bg-figma-hover hover:bg-figma-active text-figma-textSecondary hover:text-figma-textPrimary border border-figma-border text-xs font-mono flex items-center gap-1.5 transition-colors">
-                  <span>Ver Infraestrutura</span>
-                  <span>↓</span>
-                </button>
-                <a href="/agendar" target="_blank" class="px-3.5 py-1.5 rounded-xl bg-cyan-700/15 hover:bg-cyan-700/25 text-cyan-800 border border-cyan-700/30 text-xs font-mono font-semibold flex items-center gap-1.5 transition-colors">
-                  <span class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 inline-block text-cyan-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg><span>App Mobile (/agendar)</span></span>
-                </a>
-                <button id="btn-hero-quick-book" class="px-4 py-1.5 rounded-xl bg-sakura-500 hover:bg-sakura-600 text-white font-bold text-xs font-mono flex items-center gap-1.5 shadow-sm transition-all hover:scale-105 active:scale-95">
-                  <span>+ Reservar</span>
-                </button>
+              <!-- Seletor de Períodos da Quadra (Mobbin Reference: Timeline por Períodos) -->
+              <div class="flex items-center gap-2 overflow-x-auto pb-1 text-xs font-mono">
+                <span class="text-[11px] text-figma-textMuted uppercase font-semibold mr-1">Filtrar:</span>
+                <button class="court-period-tab active px-3.5 py-1.5 rounded-md border border-rose-500 bg-rose-500/15 text-rose-700 font-bold transition-all cursor-pointer" data-period="all">Todos (07h-21h)</button>
+                <button class="court-period-tab px-3.5 py-1.5 rounded-md border border-figma-border bg-[#D8CEB8]/60 hover:bg-[#D8CEB8] text-figma-textSecondary hover:text-figma-textPrimary font-semibold transition-all cursor-pointer" data-period="morning">Manhã (07h-11h)</button>
+                <button class="court-period-tab px-3.5 py-1.5 rounded-md border border-figma-border bg-[#D8CEB8]/60 hover:bg-[#D8CEB8] text-figma-textSecondary hover:text-figma-textPrimary font-semibold transition-all cursor-pointer" data-period="afternoon">Tarde (12h-17h)</button>
+                <button class="court-period-tab px-3.5 py-1.5 rounded-md border border-figma-border bg-[#D8CEB8]/60 hover:bg-[#D8CEB8] text-figma-textSecondary hover:text-figma-textPrimary font-semibold transition-all cursor-pointer" data-period="night">Noite (18h-21h)</button>
+              </div>
+
+              <!-- Grade de Horários da Aba Principal -->
+              <div id="hero-court-schedule-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                <!-- Populado via renderCourtScheduleGrid() -->
+              </div>
+
+              <!-- Legenda da Grade -->
+              <div class="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px] font-mono text-figma-textMuted border-t border-figma-border/50">
+                <div class="flex items-center gap-3 flex-wrap">
+                  <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-rose-600 animate-pulse"></span> Em Andamento</span>
+                  <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span> Disponível</span>
+                  <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-cyan-700"></span> Reservado</span>
+                  <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-gray-400"></span> Concluído</span>
+                </div>
+                <div class="text-[10px] text-figma-textSecondary">
+                  Sincronizado ao vivo via Conecta Hub • Prevenção de conflito 409 ativa
+                </div>
               </div>
             </div>
-
-            <!-- Seletor de Períodos da Quadra (Mobbin Reference: Timeline por Períodos) -->
-            <div class="flex items-center gap-2 overflow-x-auto pb-1 text-xs font-mono">
-              <span class="text-[11px] text-figma-textMuted uppercase font-semibold mr-1">Filtrar:</span>
-              <button class="court-period-tab active px-3.5 py-1.5 rounded-full border border-rose-500 bg-rose-500/15 text-rose-700 font-bold transition-all cursor-pointer" data-period="all">Todos (07h-21h)</button>
-              <button class="court-period-tab px-3.5 py-1.5 rounded-full border border-figma-border bg-[#D8CEB8]/60 hover:bg-[#D8CEB8] text-figma-textSecondary hover:text-figma-textPrimary font-semibold transition-all cursor-pointer" data-period="morning">Manhã (07h-11h)</button>
-              <button class="court-period-tab px-3.5 py-1.5 rounded-full border border-figma-border bg-[#D8CEB8]/60 hover:bg-[#D8CEB8] text-figma-textSecondary hover:text-figma-textPrimary font-semibold transition-all cursor-pointer" data-period="afternoon">Tarde (12h-17h)</button>
-              <button class="court-period-tab px-3.5 py-1.5 rounded-full border border-figma-border bg-[#D8CEB8]/60 hover:bg-[#D8CEB8] text-figma-textSecondary hover:text-figma-textPrimary font-semibold transition-all cursor-pointer" data-period="night">Noite (18h-21h)</button>
-            </div>
-
-            <!-- Grade de Horários da Aba Principal -->
-            <div id="hero-court-schedule-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-              <!-- Populado via renderCourtScheduleGrid() -->
-            </div>
-
-            <!-- Legenda da Grade -->
-            <div class="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px] font-mono text-figma-textMuted border-t border-figma-border/50">
-              <div class="flex items-center gap-3 flex-wrap">
-                <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-rose-600 animate-pulse"></span> Em Andamento</span>
-                <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span> Disponível</span>
-                <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-cyan-700"></span> Reservado</span>
-                <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-gray-400"></span> Concluído</span>
-              </div>
-              <div class="text-[10px] text-figma-textSecondary">
-                Sincronizado ao vivo via Conecta Hub • Prevenção de conflito 409 ativa
-              </div>
-            </div>
-          </div>
+          </section>
 
           <!-- Bottom Environmental Sensors Telemetry -->
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-8 w-full font-mono text-xs">
@@ -1023,7 +1105,7 @@
               </div>
 
               <!-- Stage 3 (ACTIVE) -->
-              <div id="card-phase-3" class="phase-card glass-card p-4 rounded-xl border-2 border-sakura-500 shadow-lg shadow-sakura-500/10 bg-sakura-500/5 relative transition-all flex flex-col justify-between active-phase" data-phase="3">
+              <div id="card-phase-3" class="phase-card glass-card p-4 rounded-lg border border-sakura-500 shadow-lg shadow-sakura-500/10 bg-sakura-500/5 relative transition-all flex flex-col justify-between active-phase" data-phase="3">
                 <span id="tag-current-season" class="absolute -top-2.5 right-3 bg-sakura-500 text-white text-[9px] font-mono font-bold px-2 py-0.5 rounded-md shadow-sm">● FASE ATUAL</span>
                 <div>
                   <div class="flex justify-between items-center text-xs font-mono text-sakura-600 mb-2 font-bold">
@@ -1042,7 +1124,7 @@
               </div>
 
               <!-- Stage 4 -->
-              <div id="card-phase-4" class="phase-card glass-card p-4 rounded-xl border border-figma-border transition-all flex flex-col justify-between" data-phase="4">
+              <div id="card-phase-4" class="phase-card glass-card p-4 rounded-lg border border-figma-border transition-all flex flex-col justify-between" data-phase="4">
                 <div>
                   <div class="flex justify-between items-center text-xs font-mono text-figma-textMuted mb-2">
                     <span class="font-bold">FASE 4 // FOLHAS</span>
@@ -1062,7 +1144,7 @@
             </div>
 
             <!-- Gardener's Advice Box -->
-            <div class="p-4 rounded-xl bg-[#DCD2BE] border border-figma-border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div class="p-4 rounded-lg bg-[#DCD2BE] border border-figma-border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div class="flex items-center gap-3">
 
                 <div class="text-xs">
@@ -1071,132 +1153,10 @@
                 </div>
               </div>
 
-              <button id="btn-sakura-chime" class="px-4 py-2 rounded-xl bg-sakura-500 hover:bg-sakura-600 text-white font-semibold text-xs transition-all flex items-center gap-1.5 shadow-sm active:scale-95 flex-shrink-0">
+              <button id="btn-sakura-chime" class="px-4 py-2 rounded-lg bg-sakura-500 hover:bg-sakura-600 text-white font-semibold text-xs transition-all flex items-center gap-1.5 shadow-sm active:scale-95 flex-shrink-0">
                 <svg class="w-3.5 h-3.5 text-current inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
                 <span>Tocar Sino Hanami</span>
               </button>
-            </div>
-          </div>
-        </section>
-
-        <!-- SECTION: QUADRA POLIESPORTIVA (AO VIVO & AGENDAMENTO) -->
-        <section id="section-quadra" class="pt-10">
-          <div class="glass-panel rounded-xl p-6 sm:p-10 border border-figma-border">
-            
-            <div class="flex items-center gap-2 text-rose-700 font-mono text-xs font-semibold mb-3">
-              <span> 02 // QUADRA POLIESPORTIVA COMUNITÁRIA</span>
-            </div>
-
-            <div class="flex flex-col lg:flex-row items-start lg:items-end justify-between gap-4 mb-8">
-              <div>
-                <h2 class="text-3xl sm:text-4xl font-bold text-figma-textPrimary mb-2" data-scramble="Ocupação em Tempo Real & Agendamento">
-                  Ocupação em Tempo Real & Agendamento
-                </h2>
-                <p class="text-sm text-figma-textSecondary max-w-xl">
-                  Consulte se a quadra está liberada antes de entrar, confira os horários reservados pela comunidade e agende sua partida no totem em 1 minuto.
-                </p>
-              </div>
-
-              <!-- Real-time Synchronized Court Badge -->
-              <div class="flex items-center gap-2 text-xs font-mono bg-[#D8CEB8]/80 px-3 py-1.5 rounded-lg border border-figma-border">
-                <span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
-                <span class="text-figma-textSecondary">Sincronizado via Conecta Cloud</span>
-              </div>
-            </div>
-
-            <!-- Big Live Status Display for Totem Screen -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-              
-              <!-- Status Hero Card -->
-              <div id="court-status-card" class="glass-card p-6 rounded-xl border-2 border-rose-500 bg-rose-500/10 flex flex-col justify-between">
-                <div>
-                  <div class="flex items-center justify-between mb-3">
-                    <span class="text-xs font-mono font-bold uppercase text-rose-800">STATUS DA QUADRA AGORA</span>
-                    <span id="court-status-dot" class="w-3 h-3 rounded-full bg-rose-600 animate-ping"></span>
-                  </div>
-                  <div id="court-status-title" class="text-2xl sm:text-3xl font-extrabold text-rose-900 mb-1 flex items-center gap-2">
-                    <span class="w-3 h-3 rounded-full bg-rose-600 inline-block animate-pulse"></span>
-                    <span>EM USO AGORA</span>
-                  </div>
-                  <p id="court-status-desc" class="text-xs text-rose-800 leading-relaxed">
-                    Partida amistosa de <strong>Basquete 3x3 Juvenil</strong>.
-                  </p>
-                </div>
-
-                <div class="mt-6 pt-4 border-t border-rose-300/40">
-                  <div class="flex justify-between items-baseline mb-1">
-                    <span class="text-xs font-mono text-rose-800">TEMPO RESTANTE:</span>
-                    <span id="court-countdown" class="text-xl font-mono font-extrabold text-rose-900">21:45</span>
-                  </div>
-                  <div class="w-full bg-rose-200 h-2 rounded-full overflow-hidden">
-                    <div id="court-progress-bar" class="bg-rose-600 h-full w-[65%] transition-all duration-1000"></div>
-                  </div>
-                  <span id="court-next-info" class="text-[11px] text-rose-800/90 font-mono mt-2 block">
-                    Próxima vaga: 14:30 às 15:30 (Treino de Vôlei)
-                  </span>
-                </div>
-              </div>
-
-              <!-- Court Specs & Features -->
-              <div class="glass-card p-6 rounded-xl border border-figma-border flex flex-col justify-between">
-                <div>
-                  <h3 class="text-base font-bold text-figma-textPrimary mb-3">Infraestrutura da Quadra</h3>
-                  <div class="space-y-2.5 text-xs text-figma-textSecondary">
-                    <div class="flex items-center gap-2">
-                      <svg class="w-3.5 h-3.5 text-emerald-700 flex-shrink-0 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                      <span>Piso esportivo ecológico amortecido em resina</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                      <svg class="w-3.5 h-3.5 text-emerald-700 flex-shrink-0 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                      <span>Tabelas profissionais de basquete em vidro temperado</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                      <svg class="w-3.5 h-3.5 text-emerald-700 flex-shrink-0 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                      <span>Refletores solares inteligentes LED automatizados até 22h</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                      <svg class="w-3.5 h-3.5 text-emerald-700 flex-shrink-0 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                      <span>Alambrado com isolamento acústico e bebedouro filtrado</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="mt-4 pt-4 border-t border-figma-border text-[11px] font-mono text-figma-textMuted">
-                  CAPACIDADE: ATÉ 24 ATLETAS EM REVEZAMENTO
-                </div>
-              </div>
-
-              <!-- Quick Kiosk Booking Call to Action -->
-              <div class="glass-card p-6 rounded-xl border border-figma-border flex flex-col justify-between bg-gradient-to-br from-sakura-500/10 to-transparent">
-                <div>
-                  <div class="text-xs font-mono text-sakura-600 font-bold uppercase mb-1">RESERVA DIRETA NO TOTEM</div>
-                  <h3 class="text-lg font-bold text-figma-textPrimary mb-2">Quer jogar hoje?</h3>
-                  <p class="text-xs text-figma-textSecondary leading-relaxed mb-4">
-                    Toque em qualquer horário livre na tabela abaixo. O totem exibirá um <strong>QR Code rápido</strong> para você confirmar com 1 toque no celular ou validar diretamente aqui!
-                  </p>
-                </div>
-
-                <button id="btn-open-quick-booking" class="w-full py-2.5 px-4 rounded-lg bg-sakura-500 hover:bg-sakura-600 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all hover:scale-[1.02] active:scale-98">
-                  <svg class="w-4 h-4 text-white inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                  <span>Agendar Horário na Quadra</span>
-                </button>
-              </div>
-
-            </div>
-
-            <!-- Daily Hourly Schedule Table -->
-            <div class="flex items-center justify-between mb-3 text-xs font-mono">
-              <span class="font-bold text-figma-textPrimary">GRADE DE HORÁRIOS // HOJE (05 DE OUTUBRO):</span>
-              <div class="flex items-center gap-3 text-[11px] text-figma-textMuted">
-                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded bg-gray-400"></span> Passado</span>
-                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded bg-rose-600"></span> Em Uso</span>
-                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded bg-cyan-700"></span> Reservado</span>
-                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded bg-emerald-600"></span> Livre</span>
-              </div>
-            </div>
-
-            <div id="court-schedule-grid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-2.5">
-              <!-- Rendered dynamically by JavaScript with slot status -->
             </div>
           </div>
         </section>
@@ -1906,7 +1866,7 @@
 
   <!-- FLOATING FIGMA BOTTOM DOCK (Controls Quick Orbit, Reset, Wind Gust) -->
   <div id="floating-dock" class="boot-reveal dock-reveal tools-dock-reveal fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-40" data-prevent-tree-drag="true">
-    <div class="glass-panel px-3 py-2 rounded-2xl border border-figma-border shadow-2xl flex items-center gap-1.5 sm:gap-2">
+    <div class="glass-panel px-3 py-2 rounded-lg border border-figma-border shadow-2xl flex items-center gap-1.5 sm:gap-2">
       
       <!-- Tool 1: Pointer Orbit -->
       <button id="dock-tool-orbit" class="dock-btn active p-2 rounded-xl bg-sakura-500 text-white flex items-center justify-center transition-all hover:scale-105" title="Orbitar Câmera 3D [Arraste com o Mouse]">
@@ -2027,7 +1987,7 @@
     </div>
 
     <!-- Pulsating Touch Prompt at bottom -->
-    <div class="flex flex-col items-center gap-1.5 text-center animate-bounce px-6 py-2.5 rounded-2xl glass-panel border border-figma-border/70 bg-[#E1D8C4]/80 dark:bg-slate-900/70 backdrop-blur-md shadow-lg max-w-md">
+    <div class="flex flex-col items-center gap-1.5 text-center animate-bounce px-6 py-2.5 rounded-lg glass-panel border border-figma-border/70 bg-[#E1D8C4]/80 dark:bg-slate-900/70 backdrop-blur-md shadow-lg max-w-md">
       <div class="w-8 h-8 rounded-full bg-sakura-500/20 text-sakura-700 flex items-center justify-center border border-sakura-500/40">
         <svg class="w-4 h-4 text-sakura-600 animate-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v3m0 14v3M2 12h3m14 0h3"></path></svg>
       </div>
@@ -2913,30 +2873,6 @@
                   darkG = Math.max(10, Math.min(200, Math.round(g * inkFactor)));
                   darkB = Math.max(10, Math.min(200, Math.round(b * inkFactor)));
                 }
-
-                // Sakura mode foliage & petal tint enhancement
-                if (this.currentTab === 'sakura' && (r > g + 15 || b > g + 10)) {
-                  if (this.weatherMode === 'night') {
-                    darkR = Math.min(255, Math.round(darkR * 1.25 + 20));
-                    darkG = Math.max(15, Math.round(darkG * 0.82));
-                    darkB = Math.min(255, Math.round(darkB * 1.12 + 25));
-                  } else {
-                    darkR = Math.min(220, Math.round(darkR * 1.2 + 25));
-                    darkG = Math.max(10, Math.round(darkG * 0.7));
-                    darkB = Math.max(10, Math.round(darkB * 0.7));
-                  }
-                } else if (this.currentTab === 'quadra') {
-                  // Clean architectural / structural blueprint highlights
-                  if (this.weatherMode === 'night') {
-                    darkR = Math.max(20, Math.round(darkR * 0.85));
-                    darkG = Math.min(240, Math.round(darkG * 1.05 + 10));
-                    darkB = Math.min(255, Math.round(darkB * 1.2 + 20));
-                  } else {
-                    darkR = Math.max(10, Math.round(darkR * 0.7));
-                    darkG = Math.min(180, Math.round(darkG * 0.95 + 15));
-                    darkB = Math.min(200, Math.round(darkB * 1.1 + 25));
-                  }
-                }
               }
 
               const posX = x * glyphSize + halfGlyph;
@@ -3113,80 +3049,6 @@
       setTabState(tabKey) {
         this.currentTab = tabKey;
         if (typeof sound !== 'undefined' && sound.playClick) sound.playClick();
-
-        if (tabKey === 'inicio') {
-          this.targetCamPos.set(0, 16, window.innerWidth < 768 ? 52 : 42);
-          this.targetLookAt.set(0, 10, 0);
-          this.charsetKey = 'classic';
-          this.targetPetalDensity = 380;
-          this.targetBloomIntensity = 2.0;
-          this.targetContrast = 1.0;
-          this.targetTreeScale.set(1.0, 1.0, 1.0);
-          this.defaultRotY = 0;
-          this.defaultRotX = 0;
-        } else if (tabKey === 'sakura') {
-          this.targetCamPos.set(0, 15, window.innerWidth < 768 ? 50 : 38);
-          this.targetLookAt.set(0, 12, 0);
-          this.charsetKey = 'sakura';
-          this.targetPetalDensity = 520;
-          this.targetBloomIntensity = 3.4;
-          this.targetContrast = 1.05;
-          this.targetTreeScale.set(1.08, 1.04, 1.08);
-          this.burstPetals();
-          this.defaultRotY = 0.15;
-          this.defaultRotX = 0.05;
-        } else if (tabKey === 'quadra') {
-          this.targetCamPos.set(12, 17, window.innerWidth < 768 ? 54 : 42);
-          this.targetLookAt.set(0, 9, 0);
-          this.charsetKey = 'architectural';
-          this.targetPetalDensity = 140;
-          this.targetBloomIntensity = 1.6;
-          this.targetContrast = 1.35;
-          this.targetTreeScale.set(0.92, 1.15, 0.92);
-          this.defaultRotY = 0.35;
-          this.defaultRotX = 0.1;
-        } else if (tabKey === 'maquete') {
-          // Isometric 3D mesh perspective transition
-          this.targetCamPos.set(24, 28, window.innerWidth < 768 ? 48 : 36);
-          this.targetLookAt.set(0, 8, 0);
-          this.charsetKey = 'architectural';
-          this.targetPetalDensity = 220;
-          this.targetBloomIntensity = 2.2;
-          this.targetContrast = 1.25;
-          this.targetTreeScale.set(0.96, 0.96, 0.96);
-          this.defaultRotY = -0.45;
-          this.defaultRotX = 0.25;
-        } else if (tabKey === 'memorial') {
-          this.targetCamPos.set(0, 14, window.innerWidth < 768 ? 52 : 40);
-          this.targetLookAt.set(0, 11, 0);
-          this.charsetKey = 'classic';
-          this.targetPetalDensity = 260;
-          this.targetBloomIntensity = 1.8;
-          this.targetContrast = 0.95;
-          this.targetTreeScale.set(1.0, 1.0, 1.0);
-          this.defaultRotY = -0.1;
-          this.defaultRotX = 0;
-        } else if (tabKey === 'mural') {
-          this.targetCamPos.set(-8, 16, window.innerWidth < 768 ? 52 : 40);
-          this.targetLookAt.set(0, 10, 0);
-          this.charsetKey = 'cyber';
-          this.targetPetalDensity = 420;
-          this.targetBloomIntensity = 2.8;
-          this.targetContrast = 1.15;
-          this.targetTreeScale.set(1.02, 1.02, 1.02);
-          this.defaultRotY = -0.25;
-          this.defaultRotX = 0.05;
-        } else if (tabKey === 'sos') {
-          this.targetCamPos.set(0, 16, window.innerWidth < 768 ? 56 : 44);
-          this.targetLookAt.set(0, 10, 0);
-          this.charsetKey = 'classic';
-          this.targetPetalDensity = 200;
-          this.targetBloomIntensity = 2.4;
-          this.targetContrast = 1.4;
-          this.targetTreeScale.set(0.95, 1.05, 0.95);
-          this.defaultRotY = 0;
-          this.defaultRotX = 0;
-        }
       }
 
       setWeather(mode) {
@@ -4710,14 +4572,14 @@
               courtStatusDesc.innerHTML = `Partida amistosa de <strong>${court.activity || 'Basquete 3x3'}</strong>.`;
             }
             if (courtStatusCard) {
-              courtStatusCard.className = "glass-card p-6 rounded-xl border-2 border-rose-500 bg-rose-500/10 flex flex-col justify-between";
+              courtStatusCard.className = "glass-card p-6 rounded-lg border border-rose-500 bg-rose-500/10 flex flex-col justify-between";
             }
             if (badgeCourtQuick) {
-              badgeCourtQuick.className = "px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-rose-500/15 text-rose-700 flex items-center gap-1.5 animate-pulse border border-rose-500/30";
+              badgeCourtQuick.className = "px-2.5 py-1 rounded-md text-[10px] font-mono font-bold bg-rose-500/15 text-rose-700 flex items-center gap-1.5 animate-pulse border border-rose-500/30";
               badgeCourtQuick.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-rose-600"></span> EM USO';
             }
             if (heroCourtStatusPill) {
-              heroCourtStatusPill.className = "text-[9px] font-mono px-2 py-0.5 rounded-full bg-rose-500/15 text-rose-700 font-bold uppercase border border-rose-500/30 flex items-center gap-1";
+              heroCourtStatusPill.className = "text-[9px] font-mono px-2 py-0.5 rounded-md bg-rose-500/15 text-rose-700 font-bold uppercase border border-rose-500/30 flex items-center gap-1";
               heroCourtStatusPill.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-rose-600 animate-ping"></span> EM USO';
             }
             if (quickCourtTimer) quickCourtTimer.innerText = `${court.remainingMinutes || 22} min restantes`;
@@ -4730,7 +4592,7 @@
 
             // Status da Quadra na tela AFK: Vermelho (EM USO)
             if (ssCourtDot) ssCourtDot.className = "w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping";
-            if (ssCourtContainer) ssCourtContainer.className = "glass-panel px-4 py-2 rounded-xl border border-rose-500/40 bg-rose-500/15 text-rose-700 dark:text-rose-300 font-mono text-xs flex items-center gap-2 font-bold";
+            if (ssCourtContainer) ssCourtContainer.className = "glass-panel px-4 py-2 rounded-lg border border-rose-500/40 bg-rose-500/15 text-rose-700 dark:text-rose-300 font-mono text-xs flex items-center gap-2 font-bold";
             if (ssCourtBadge) ssCourtBadge.innerText = `QUADRA: ● EM USO (${court.remainingMinutes || 22}m rest.)`;
           } else if (court.status === "livre") {
             this.courtIsBusy = false;
@@ -4742,14 +4604,14 @@
               courtStatusDesc.innerText = "Nenhuma partida agendada para o momento. Entre e aproveite!";
             }
             if (courtStatusCard) {
-              courtStatusCard.className = "glass-card p-6 rounded-xl border-2 border-emerald-500 bg-emerald-500/10 flex flex-col justify-between";
+              courtStatusCard.className = "glass-card p-6 rounded-lg border border-emerald-500 bg-emerald-500/10 flex flex-col justify-between";
             }
             if (badgeCourtQuick) {
-              badgeCourtQuick.className = "px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-emerald-500/15 text-emerald-700 flex items-center gap-1.5 border border-emerald-500/30";
+              badgeCourtQuick.className = "px-2.5 py-1 rounded-md text-[10px] font-mono font-bold bg-emerald-500/15 text-emerald-700 flex items-center gap-1.5 border border-emerald-500/30";
               badgeCourtQuick.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> LIVRE AGORA';
             }
             if (heroCourtStatusPill) {
-              heroCourtStatusPill.className = "text-[9px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 font-bold uppercase border border-emerald-500/30 flex items-center gap-1";
+              heroCourtStatusPill.className = "text-[9px] font-mono px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-700 font-bold uppercase border border-emerald-500/30 flex items-center gap-1";
               heroCourtStatusPill.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> LIVRE AGORA';
             }
             if (courtCountdown) courtCountdown.innerText = "LIBERADA";
@@ -4761,7 +4623,7 @@
 
             // Status da Quadra na tela AFK: Verde (LIVRE)
             if (ssCourtDot) ssCourtDot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500";
-            if (ssCourtContainer) ssCourtContainer.className = "glass-panel px-4 py-2 rounded-xl border border-emerald-500/40 bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 font-mono text-xs flex items-center gap-2 font-bold";
+            if (ssCourtContainer) ssCourtContainer.className = "glass-panel px-4 py-2 rounded-lg border border-emerald-500/40 bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 font-mono text-xs flex items-center gap-2 font-bold";
             if (ssCourtBadge) ssCourtBadge.innerText = "QUADRA: ● LIVRE PARA JOGAR";
           } else {
             this.courtIsBusy = false;
@@ -4773,14 +4635,14 @@
               courtStatusDesc.innerText = "Pintura e manutenção de tabelas pela prefeitura.";
             }
             if (courtStatusCard) {
-              courtStatusCard.className = "glass-card p-6 rounded-xl border-2 border-amber-500 bg-amber-500/10 flex flex-col justify-between";
+              courtStatusCard.className = "glass-card p-6 rounded-lg border border-amber-500 bg-amber-500/10 flex flex-col justify-between";
             }
             if (badgeCourtQuick) {
-              badgeCourtQuick.className = "px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-amber-500/15 text-amber-800 flex items-center gap-1.5 border border-amber-500/30";
+              badgeCourtQuick.className = "px-2.5 py-1 rounded-md text-[10px] font-mono font-bold bg-amber-500/15 text-amber-800 flex items-center gap-1.5 border border-amber-500/30";
               badgeCourtQuick.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span> MANUTENÇÃO';
             }
             if (heroCourtStatusPill) {
-              heroCourtStatusPill.className = "text-[9px] font-mono px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-800 font-bold uppercase border border-amber-500/30 flex items-center gap-1";
+              heroCourtStatusPill.className = "text-[9px] font-mono px-2 py-0.5 rounded-md bg-amber-500/15 text-amber-800 font-bold uppercase border border-amber-500/30 flex items-center gap-1";
               heroCourtStatusPill.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span> MANUTENÇÃO';
             }
             if (courtCountdown) courtCountdown.innerText = "MANUTENÇÃO";
@@ -5115,28 +4977,28 @@
           const slotBtn = document.createElement('div');
 
           if (h < currentHour) {
-            slotBtn.className = 'court-slot p-2.5 rounded-xl border border-figma-border/50 bg-black/[0.02] dark:bg-white/[0.02] text-figma-textMuted flex items-center justify-between text-xs font-mono select-none opacity-50';
+            slotBtn.className = 'court-slot p-2.5 rounded-lg border border-figma-border/50 bg-black/[0.02] dark:bg-white/[0.02] text-figma-textMuted flex items-center justify-between text-xs font-mono select-none opacity-50';
             slotBtn.innerHTML = `
-              <div class="flex items-center gap-2">
-                <span class="font-bold text-xs text-figma-textSecondary">${timeSlot}</span>
-                <span class="text-[10px] text-figma-textMuted">${fullSlotLabel}</span>
+              <div class="flex items-center gap-2 truncate">
+                <span class="font-bold text-xs text-figma-textSecondary truncate">${timeSlot}</span>
+                <span class="text-[10px] text-figma-textMuted truncate">${fullSlotLabel}</span>
               </div>
-              <span class="text-[9px] uppercase font-semibold px-2 py-0.5 rounded bg-black/5 dark:bg-white/5">Encerrado</span>
+              <span class="text-[9px] uppercase font-semibold px-2 py-0.5 rounded-md bg-black/5 dark:bg-white/5 flex-shrink-0">Encerrado</span>
             `;
           } else if (h === currentHour && court && court.status === 'em_uso') {
-            slotBtn.className = 'court-slot p-4 rounded-xl border border-rose-500 bg-rose-500/15 text-rose-950 shadow-sm flex flex-col justify-between text-xs font-mono cursor-pointer transition-all hover:scale-[1.01]';
+            slotBtn.className = 'court-slot p-3.5 sm:p-4 rounded-lg border border-rose-500/40 bg-rose-500/15 text-rose-950 dark:text-rose-200 shadow-sm flex flex-col justify-between text-xs font-mono cursor-pointer transition-all hover:scale-[1.01]';
             slotBtn.innerHTML = `
-              <div class="flex items-center justify-between mb-2">
-                <span class="font-bold text-sm text-rose-800 flex items-center gap-2">
-                  <span class="w-2 h-2 rounded-full bg-rose-600 animate-ping"></span>
+              <div class="flex items-center justify-between mb-1.5 gap-2">
+                <span class="font-bold text-xs sm:text-sm text-rose-800 dark:text-rose-300 flex items-center gap-1.5 truncate">
+                  <span class="w-1.5 h-1.5 rounded-full bg-rose-600 animate-ping flex-shrink-0"></span>
                   ${timeSlot}
                 </span>
-                <span class="text-[9px] uppercase font-bold bg-rose-500 text-white px-2 py-0.5 rounded-full shadow-xs">Em Jogo Agora</span>
+                <span class="text-[9px] uppercase font-bold bg-rose-600 text-white px-2 py-0.5 rounded-md shadow-xs flex-shrink-0">Em Jogo</span>
               </div>
-              <div class="text-xs font-bold text-rose-950 truncate">${court.activity || 'Basquete 3x3'}</div>
-              <div class="text-[11px] text-rose-700 font-mono mt-2 flex items-center justify-between pt-2 border-t border-rose-500/20">
-                <span>${court.remainingMinutes || 20}m restantes</span>
-                <span class="text-[10px] font-semibold text-rose-800">Partida ao vivo</span>
+              <div class="text-xs font-bold text-rose-950 dark:text-rose-100 truncate">${court.activity || 'Basquete 3x3'}</div>
+              <div class="text-[10px] text-rose-700 dark:text-rose-300 font-mono mt-2 flex items-center justify-between pt-1.5 border-t border-rose-500/20 gap-1">
+                <span class="truncate">${court.remainingMinutes || 20}m restantes</span>
+                <span class="text-[9px] font-semibold text-rose-800 dark:text-rose-300 whitespace-nowrap flex-shrink-0">Ao vivo</span>
               </div>
             `;
             slotBtn.addEventListener('click', () => {
@@ -5144,33 +5006,33 @@
               showToast(`Partida em andamento: ${court.activity || 'Basquete 3x3'} (${court.remainingMinutes || 20}m restantes)`);
             });
           } else if (booking) {
-            slotBtn.className = 'court-slot p-4 rounded-xl border border-cyan-700/30 bg-cyan-700/10 text-cyan-950 flex flex-col justify-between text-xs font-mono shadow-xs';
+            slotBtn.className = 'court-slot p-3.5 sm:p-4 rounded-lg border border-cyan-700/30 bg-cyan-700/10 text-cyan-950 dark:text-cyan-200 flex flex-col justify-between text-xs font-mono shadow-xs';
             slotBtn.innerHTML = `
-              <div class="flex items-center justify-between mb-2">
-                <span class="font-bold text-sm text-cyan-800">${timeSlot}</span>
-                <span class="text-[9px] uppercase font-bold text-cyan-800 bg-cyan-700/20 px-2 py-0.5 rounded-full">Reservado</span>
+              <div class="flex items-center justify-between mb-1.5 gap-2">
+                <span class="font-bold text-xs sm:text-sm text-cyan-800 dark:text-cyan-300 truncate">${timeSlot}</span>
+                <span class="text-[9px] uppercase font-bold text-cyan-800 dark:text-cyan-300 bg-cyan-700/20 px-2 py-0.5 rounded-md flex-shrink-0">Reservado</span>
               </div>
-              <div class="text-xs font-bold text-cyan-950 truncate" title="${booking.sport || 'Esporte'} - ${booking.bookedBy || 'Comunidade'}">
+              <div class="text-xs font-bold text-cyan-950 dark:text-cyan-100 truncate" title="${booking.sport || 'Esporte'} - ${booking.bookedBy || 'Comunidade'}">
                 ${booking.sport || 'Partida'}
               </div>
-              <div class="text-[11px] text-cyan-800/80 font-mono mt-2 truncate pt-2 border-t border-cyan-700/20">
-                Reserva: ${booking.bookedBy || booking.name || 'Comunidade'}
+              <div class="text-[10px] text-cyan-800/80 dark:text-cyan-300/80 font-mono mt-2 truncate pt-1.5 border-t border-cyan-700/20">
+                ${booking.bookedBy || booking.name || 'Comunidade'}
               </div>
             `;
           } else {
-            slotBtn.className = 'court-slot p-4 rounded-xl border border-emerald-500/40 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-950 hover:border-emerald-600 flex flex-col justify-between text-xs font-mono cursor-pointer transition-all hover:scale-[1.02] active:scale-98 shadow-xs';
+            slotBtn.className = 'court-slot p-3.5 sm:p-4 rounded-lg border border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/15 text-emerald-950 dark:text-emerald-200 hover:border-emerald-500/60 flex flex-col justify-between text-xs font-mono cursor-pointer transition-all hover:scale-[1.01] active:scale-98 shadow-xs';
             slotBtn.innerHTML = `
-              <div class="flex items-center justify-between mb-2">
-                <span class="font-bold text-sm text-emerald-800 flex items-center gap-1.5">
-                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+              <div class="flex items-center justify-between mb-1.5 gap-2">
+                <span class="font-bold text-xs sm:text-sm text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5 truncate">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 flex-shrink-0"></span>
                   ${timeSlot}
                 </span>
-                <span class="text-[9px] uppercase font-bold text-emerald-700 bg-emerald-500/20 px-2 py-0.5 rounded-full">+ Livre</span>
+                <span class="text-[9px] uppercase font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-500/15 px-2 py-0.5 rounded-md flex-shrink-0">+ Livre</span>
               </div>
-              <div class="text-[11px] text-emerald-800 truncate mb-2">Qualquer modalidade</div>
-              <div class="flex items-center justify-between pt-2 border-t border-emerald-500/20">
-                <span class="text-[10px] text-emerald-700 font-semibold">${fullSlotLabel}</span>
-                <span class="px-2.5 py-1 rounded-md bg-emerald-600 text-white font-bold text-[10px] shadow-xs hover:bg-emerald-700 transition-colors">Reservar →</span>
+              <div class="text-[11px] text-emerald-800/80 dark:text-emerald-300/80 truncate mb-2">Qualquer modalidade</div>
+              <div class="flex items-center justify-between pt-1.5 border-t border-emerald-500/20 gap-1.5">
+                <span class="text-[10px] text-emerald-700 dark:text-emerald-400 font-semibold truncate min-w-0">${fullSlotLabel}</span>
+                <span class="px-2.5 py-1 rounded-md bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[9px] shadow-xs whitespace-nowrap flex-shrink-0 transition-colors">Reservar →</span>
               </div>
             `;
             slotBtn.addEventListener('click', () => {
@@ -5201,7 +5063,7 @@
           // Se não houver horários ativos/futuros para este período, exibe card elegante de encerramento
           if (activeList.length === 0) {
             const closedNotice = document.createElement('div');
-            closedNotice.className = 'col-span-full p-5 rounded-2xl border border-figma-border/70 bg-[#EFE8D8]/50 text-center space-y-1 my-1';
+            closedNotice.className = 'col-span-full p-4 rounded-lg border border-figma-border/70 bg-[#EFE8D8]/50 text-center space-y-1 my-1';
             closedNotice.innerHTML = `
               <div class="text-xs font-bold text-figma-textPrimary flex items-center justify-center gap-2">
                 <svg class="w-4 h-4 text-figma-textMuted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -5220,7 +5082,7 @@
           // Se houver horários passados, agrupa em um acordeão discreto e limpo
           if (pastList.length > 0) {
             const details = document.createElement('details');
-            details.className = 'col-span-full group rounded-xl border border-figma-border/70 bg-[#EFE8D8]/50 p-3 text-xs font-mono transition-all mt-2';
+            details.className = 'col-span-full group rounded-lg border border-figma-border/70 bg-[#EFE8D8]/50 p-3 text-xs font-mono transition-all mt-2';
             const summary = document.createElement('summary');
             summary.className = 'cursor-pointer select-none text-figma-textMuted flex items-center justify-between font-semibold hover:text-figma-textPrimary';
             summary.innerHTML = `
@@ -5241,10 +5103,6 @@
             targetGrid.appendChild(details);
           }
         };
-
-        if (courtGrid) {
-          populateGridWithAccordion(courtGrid, 7, 21);
-        }
 
         if (heroCourtGrid) {
           populateGridWithAccordion(heroCourtGrid, heroStart, heroEnd);
