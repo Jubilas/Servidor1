@@ -1,0 +1,9 @@
+node_modules/
+screenshots/
+.DS_Store
+Thumbs.db
+dist/
+*.log
+
+# Senha do painel dev (fica só no servidor)
+senha_dev.txt

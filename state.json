@@ -1,0 +1,67 @@
+{
+  "weather": "wind",
+  "sakuraPhase": 3,
+  "windStrength": 1,
+  "court": {
+    "status": "em_uso",
+    "remainingMinutes": 22
+  },
+  "courtBookings": [
+    {
+      "id": "book-1",
+      "slot": "15:00",
+      "timeLabel": "15:00 às 16:00",
+      "name": "Turma do Vôlei",
+      "sport": "Vôlei",
+      "bookedBy": "Turma do Vôlei",
+      "timeSlot": "15:00 às 16:00",
+      "createdAt": 1791607000000
+    },
+    {
+      "id": "book-2",
+      "slot": "18:00",
+      "timeLabel": "18:00 às 19:00",
+      "name": "Amigos do Basquete",
+      "sport": "Basquete",
+      "bookedBy": "Amigos do Basquete",
+      "timeSlot": "18:00 às 19:00",
+      "createdAt": 1791607500000
+    },
+    {
+      "id": "book-3",
+      "slot": "19:00",
+      "timeLabel": "19:00 às 20:00",
+      "name": "Liga Noturna Futsal",
+      "sport": "Futsal",
+      "bookedBy": "Liga Noturna Futsal",
+      "timeSlot": "19:00 às 20:00",
+      "createdAt": 1791607800000
+    }
+  ],
+  "weeklyActivities": [
+    {
+      "icon": "zen",
+      "dayTime": "SÁBADO • 08:00",
+      "title": "Yoga & Meditação Matinal",
+      "desc": "Deck dos Mestres"
+    },
+    {
+      "icon": "organico",
+      "dayTime": "SÁBADO • 09:30",
+      "title": "Feirinha Agroecológica",
+      "desc": "Alameda das Cerejeiras"
+    },
+    {
+      "icon": "arte",
+      "dayTime": "DOMINGO • 16:00",
+      "title": "Oficina de Desenho Infantil",
+      "desc": "Espaço Conecta Kids"
+    }
+  ],
+  "bell": {
+    "enabled": true,
+    "cooldownSeconds": 20,
+    "lastRung": 1791699920365
+  },
+  "lastBroadcast": 1791701887008
+}

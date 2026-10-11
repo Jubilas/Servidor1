@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PRAÇA CONECTA — Painel Dev & Centro de Controle Global</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            studio: {
+              bg: '#0F131C',
+              surface: '#151B27',
+              card: '#1B2333',
+              border: '#242F45',
+              hover: '#222D42',
+              accent: '#B82048',
+              cyan: '#086375'
+            },
+            sakura: {
+              400: '#FB7185',
+              500: '#F43F5E',
+              600: '#E11D48',
+              700: '#BE123C',
+              800: '#9F1239'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #0F131C; }
+    ::-webkit-scrollbar-thumb { background: #242F45; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #E11D48; }
+
+    .glow-border-sakura {
+      box-shadow: 0 0 16px rgba(225, 29, 72, 0.25), inset 0 0 8px rgba(225, 29, 72, 0.15);
+    }
+    .glow-border-cyan {
+      box-shadow: 0 0 16px rgba(8, 99, 117, 0.35), inset 0 0 8px rgba(8, 99, 117, 0.2);
+    }
+    .switch-input:checked ~ .switch-dot {
+      transform: translateX(100%);
+      background-color: #10B981;
+    }
+    .switch-input:checked ~ .switch-bg {
+      background-color: rgba(16, 185, 129, 0.25);
+      border-color: #10B981;
+    }
+  </style>
+</head>
+
+<body class="bg-studio-bg text-slate-100 font-sans min-h-screen flex flex-col selection:bg-sakura-600 selection:text-white">
+
+  <!-- ========================================== -->
+  <!-- MODAL DE AUTENTICAÇÃO / SENHA DEV (GATE)    -->
+  <!-- ========================================== -->
+  <div id="auth-modal" class="fixed inset-0 z-50 bg-[#0B0E14]/95 backdrop-blur-2xl flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-studio-surface border border-studio-border rounded-xl p-6 sm:p-8 shadow-2xl relative text-center">
+      <div class="w-16 h-16 rounded-xl bg-sakura-500/20 text-sakura-400 border border-sakura-500/30 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-sakura-600/20">
+        <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+      </div>
+      
+      <h2 class="text-xl sm:text-2xl font-black text-white mb-1.5">Painel Dev Restrito</h2>
+      <p class="text-xs text-slate-400 leading-relaxed mb-6">
+        Este painel controla os totens públicos e o sistema central da praça. Digite a senha administrativa definida no servidor (<code class="text-sakura-300">senha_dev.txt</code>).
+      </p>
+
+      <form id="form-auth" class="space-y-4">
+        <div>
+          <label for="input-dev-pass" class="text-xs font-mono text-slate-300 block text-left mb-1.5">
+            Senha do Painel Dev:
+          </label>
+          <div class="relative">
+            <input id="input-dev-pass" type="password" required placeholder="Digite sua senha..." class="w-full bg-studio-card border border-studio-border rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-sakura-500 font-mono tracking-wider" />
+            <button type="button" id="btn-toggle-pass-visibility" class="absolute right-3 top-3.5 text-slate-400 hover:text-white transition-colors" title="Ver/Ocultar Senha">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div id="auth-error-msg" class="text-xs text-rose-400 font-mono hidden bg-rose-500/10 border border-rose-500/20 rounded-xl p-2.5">
+          Senha incorreta. Verifique o arquivo na Área de Trabalho.
+        </div>
+
+        <button type="submit" id="btn-submit-auth" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-sakura-600 to-sakura-700 hover:from-sakura-500 hover:to-sakura-600 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-sakura-600/30 transition-all active:scale-98">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 9.9-1"></path>
+          </svg>
+          <span>Desbloquear Painel de Controle</span>
+        </button>
+      </form>
+
+      <div class="mt-5 text-[11px] font-mono text-slate-500">
+        Praça Conecta • Sistema Operacional do Totem
+      </div>
+    </div>
+  </div>
+
+  <!-- TOP HEADER -->
+  <header class="h-16 border-b border-studio-border bg-studio-surface/90 backdrop-blur-xl px-4 sm:px-6 flex items-center justify-between sticky top-0 z-40">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-sakura-600 to-sakura-800 flex items-center justify-center text-white shadow-lg shadow-sakura-600/30">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="2.5"></circle>
+          <path d="M12 2a4 4 0 0 0-3 3.8c0 2.2 3 4.2 3 4.2s3-2 3-4.2A4 4 0 0 0 12 2z"></path>
+          <path d="M22 12a4 4 0 0 0-3.8-3c-2.2 0-4.2 3-4.2 3s2 3 4.2 3A4 4 0 0 0 22 12z"></path>
+          <path d="M12 22a4 4 0 0 0 3-3.8c0-2.2-3-4.2-3-4.2s-3 2-3 4.2a4 4 0 0 0 3 3.8z"></path>
+          <path d="M2 12a4 4 0 0 0 3.8 3c2.2 0 4.2-3 4.2-3s-2-3-4.2-3A4 4 0 0 0 2 12z"></path>
+        </svg>
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="font-extrabold text-sm sm:text-base tracking-wider text-white">PRAÇA CONECTA</span>
+          <span class="text-[10px] bg-sakura-500/20 text-sakura-400 border border-sakura-500/30 px-2 py-0.5 rounded-full font-mono font-bold">DEV STUDIO</span>
+        </div>
+        <p class="text-[10px] text-slate-400 font-mono hidden sm:block">Centro de Controle Global em Tempo Real (SSE Hub)</p>
+      </div>
+    </div>
+
+    <!-- Status Telemetry & Actions -->
+    <div class="flex items-center gap-3">
+      <!-- Live Screens Count Badge -->
+      <div class="flex items-center gap-2 bg-studio-card px-3 py-1.5 rounded-xl border border-studio-border font-mono text-xs shadow-inner">
+        <span id="sse-indicator" class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span class="text-slate-400 hidden md:inline">Telas Ativas:</span>
+        <span id="active-screens-count" class="font-bold text-emerald-400">1</span>
+      </div>
+
+      <!-- Button to open Public Totem -->
+      <a href="/" target="_blank" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-studio-border font-mono text-xs flex items-center gap-1.5 transition-all hover:border-slate-500 shadow-sm" title="Abrir Totem em nova aba">
+        <span>Abrir Totem</span>
+        <span class="text-sakura-400">↗</span>
+      </a>
+
+      <!-- Button to open Mobile Booking -->
+      <a href="/agendar" target="_blank" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-studio-border font-mono text-xs flex items-center gap-1.5 transition-all hover:border-slate-500 shadow-sm hidden sm:flex" title="Abrir Agendador Mobile">
+        <svg class="w-3.5 h-3.5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+          <line x1="12" y1="18" x2="12.01" y2="18"></line>
+        </svg>
+        <span>Agendar</span>
+      </a>
+
+      <!-- Lock/Logout Button -->
+      <button id="btn-lock-panel" class="px-2.5 py-1.5 rounded-xl bg-rose-950/40 hover:bg-rose-900/60 text-rose-300 border border-rose-800/60 font-mono text-xs flex items-center gap-1.5 transition-all" title="Bloquear Painel">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+        <span class="hidden md:inline">Bloquear</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN STUDIO CONTENT -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
+
+    <!-- HERO NOTIFICATION BAR -->
+    <div class="bg-gradient-to-r from-sakura-900/40 via-studio-surface to-studio-surface p-4 sm:p-5 rounded-xl border border-sakura-700/40 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-xl">
+      <div class="flex items-center gap-3.5">
+        <div class="w-11 h-11 rounded-xl bg-sakura-500/20 text-sakura-400 border border-sakura-500/40 flex items-center justify-center flex-shrink-0">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-sm sm:text-base font-bold text-white flex items-center gap-2">
+            Transmissão Instantânea Global
+            <span class="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-2 py-0.5 rounded font-mono font-bold">ONLINE</span>
+          </h1>
+          <p class="text-xs text-slate-300 mt-0.5">
+            Qualquer alteração feita neste estúdio será refletida <strong>imediatamente em todos os totens e telas abertas</strong> no mundo.
+          </p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 text-xs font-mono text-slate-400 self-end md:self-center">
+        <span>Última sincronização:</span>
+        <span id="last-sync-time" class="text-slate-200 font-bold">Agora</span>
+      </div>
+    </div>
+
+    <!-- CONTROL GRID (3 COLUMNS) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+      <!-- ========================================== -->
+      <!-- CARD 1: CLIMA GLOBAL DA PRAÇA              -->
+      <!-- ========================================== -->
+      <div class="bg-studio-surface border border-studio-border rounded-xl p-5 flex flex-col justify-between shadow-lg">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="4"></circle>
+                <path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41m14.14-14.14l-1.41 1.41"></path>
+              </svg>
+              <h2 class="font-bold text-sm text-white uppercase tracking-wider">Clima da Praça</h2>
+            </div>
+            <span id="badge-current-weather" class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold uppercase">
+              Sol (24°C)
+            </span>
+          </div>
+          <p class="text-xs text-slate-400 mb-4">
+            Altera a iluminação Three.js, o céu, o tom de tinta do ASCII e o som ambiente em todas as telas.
+          </p>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <!-- Sun -->
+            <button class="btn-weather p-3 rounded-xl border border-studio-border bg-studio-card hover:bg-studio-border text-left transition-all group flex flex-col justify-between" data-weather="sun">
+              <svg class="w-6 h-6 mb-2 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="4"></circle>
+                <path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41m14.14-14.14l-1.41 1.41"></path>
+              </svg>
+              <span class="text-xs font-bold text-white group-hover:text-amber-300">Sol Radiante</span>
+              <span class="text-[10px] text-slate-400">Dia ensolarado (24°C)</span>
+            </button>
+
+            <!-- Rain -->
+            <button class="btn-weather p-3 rounded-xl border border-studio-border bg-studio-card hover:bg-studio-border text-left transition-all group flex flex-col justify-between" data-weather="rain">
+              <svg class="w-6 h-6 mb-2 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"></path>
+                <line x1="8" y1="19" x2="8" y2="21"></line>
+                <line x1="16" y1="19" x2="16" y2="21"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+              </svg>
+              <span class="text-xs font-bold text-white group-hover:text-cyan-300">Chuva ASCII</span>
+              <span class="text-[10px] text-slate-400">Gotas de chuva em texto</span>
+            </button>
+
+            <!-- Wind -->
+            <button class="btn-weather p-3 rounded-xl border border-studio-border bg-studio-card hover:bg-studio-border text-left transition-all group flex flex-col justify-between" data-weather="wind">
+              <svg class="w-6 h-6 mb-2 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"></path>
+              </svg>
+              <span class="text-xs font-bold text-white group-hover:text-emerald-300">Ventania</span>
+              <span class="text-[10px] text-slate-400">Brisa forte & pétalas</span>
+            </button>
+
+            <!-- Night -->
+            <button class="btn-weather p-3 rounded-xl border border-studio-border bg-studio-card hover:bg-studio-border text-left transition-all group flex flex-col justify-between" data-weather="night">
+              <svg class="w-6 h-6 mb-2 text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+              </svg>
+              <span class="text-xs font-bold text-white group-hover:text-indigo-300">Noite Yozakura</span>
+              <span class="text-[10px] text-slate-400">Alto contraste escuro</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-studio-border/70 flex items-center justify-between text-[11px] font-mono text-slate-400">
+          <span>Persistência:</span>
+          <span class="text-emerald-400 flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> state.json OK
+          </span>
+        </div>
+      </div>
+
+      <!-- ========================================== -->
+      <!-- CARD 2: RADAR FENOLÓGICO DA CEREJEIRA     -->
+      <!-- ========================================== -->
+      <div class="bg-studio-surface border border-studio-border rounded-xl p-5 flex flex-col justify-between shadow-lg">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-sakura-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="2.5"></circle>
+                <path d="M12 2a4 4 0 0 0-3 3.8c0 2.2 3 4.2 3 4.2s3-2 3-4.2A4 4 0 0 0 12 2z"></path>
+                <path d="M22 12a4 4 0 0 0-3.8-3c-2.2 0-4.2 3-4.2 3s2 3 4.2 3A4 4 0 0 0 22 12z"></path>
+                <path d="M12 22a4 4 0 0 0 3-3.8c0-2.2-3-4.2-3-4.2s-3 2-3 4.2a4 4 0 0 0 3 3.8z"></path>
+                <path d="M2 12a4 4 0 0 0 3.8 3c2.2 0 4.2-3 4.2-3s-2-3-4.2-3A4 4 0 0 0 2 12z"></path>
+              </svg>
+              <h2 class="font-bold text-sm text-white uppercase tracking-wider">Fase da Cerejeira</h2>
+            </div>
+            <span id="badge-current-phase" class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-sakura-500/20 text-sakura-300 border border-sakura-500/30 font-bold uppercase">
+              Fase 3: Mankai
+            </span>
+          </div>
+          <p class="text-xs text-slate-400 mb-4">
+            Altera o estágio biológico da árvore 3D, quantidade de pétalas flutuantes e botões. Controlado exclusivamente pelo Dev.
+          </p>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <!-- Phase 1 -->
+            <button class="btn-phase p-3 rounded-xl border border-studio-border bg-studio-card hover:bg-studio-border text-left transition-all group flex flex-col justify-between" data-phase="1">
+              <span class="text-xs font-mono font-bold text-slate-400 mb-1">FASE 1</span>
+              <span class="text-xs font-bold text-white group-hover:text-sakura-300">Dormência (0%)</span>
+              <span class="text-[10px] text-slate-400">Inverno / Galhos nus</span>
+            </button>
+
+            <!-- Phase 2 -->
+            <button class="btn-phase p-3 rounded-xl border border-studio-border bg-studio-card hover:bg-studio-border text-left transition-all group flex flex-col justify-between" data-phase="2">
+              <span class="text-xs font-mono font-bold text-slate-400 mb-1">FASE 2</span>
+              <span class="text-xs font-bold text-white group-hover:text-sakura-300">Botões (25%)</span>
+              <span class="text-[10px] text-slate-400">Tsubomi / Brotos</span>
+            </button>
+
+            <!-- Phase 3 -->
+            <button class="btn-phase p-3 rounded-xl border border-studio-border bg-studio-card hover:bg-studio-border text-left transition-all group flex flex-col justify-between" data-phase="3">
+              <span class="text-xs font-mono font-bold text-sakura-400 mb-1">FASE 3 ●</span>
+              <span class="text-xs font-bold text-white group-hover:text-sakura-300">Plena Florada (88%)</span>
+              <span class="text-[10px] text-slate-400">Mankai / Floração</span>
+            </button>
+
+            <!-- Phase 4 -->
+            <button class="btn-phase p-3 rounded-xl border border-studio-border bg-studio-card hover:bg-studio-border text-left transition-all group flex flex-col justify-between" data-phase="4">
+              <span class="text-xs font-mono font-bold text-slate-400 mb-1">FASE 4</span>
+              <span class="text-xs font-bold text-white group-hover:text-emerald-300">Folhas Verdes (100%)</span>
+              <span class="text-[10px] text-slate-400">Hazakura / Verão</span>
+            </button>
+          </div>
+
+          <!-- Gust of Wind Button -->
+          <div class="mt-4">
+            <button id="btn-gust-wind" class="w-full py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-mono text-xs font-bold border border-studio-border flex items-center justify-center gap-2 transition-all active:scale-95 hover:border-sakura-500">
+              <svg class="w-4 h-4 text-sakura-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"></path>
+              </svg>
+              <span>Disparar Rajada de Vento & Pétalas</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-studio-border/70 flex items-center justify-between text-[11px] font-mono text-slate-400">
+          <span>Controle Exclusivo:</span>
+          <span class="text-sakura-400 flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-sakura-400"></span> Painel Dev OK
+          </span>
+        </div>
+      </div>
+
+      <!-- ========================================== -->
+      <!-- CARD 3: SINO COMUNITÁRIO FURIN & SEGURANÇA -->
+      <!-- ========================================== -->
+      <div class="bg-studio-surface border border-studio-border rounded-xl p-5 flex flex-col justify-between shadow-lg">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-sakura-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
+                <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
+              </svg>
+              <h2 class="font-bold text-sm text-white uppercase tracking-wider">Sino da Praça</h2>
+            </div>
+            <span id="badge-bell-status" class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold uppercase">
+              ATIVO NA PRAÇA
+            </span>
+          </div>
+          <p class="text-xs text-slate-400 mb-4">
+            O sino toca harmônicos Furin em todos os dispositivos abertos simultaneamente.
+          </p>
+
+          <!-- Master Kill Switch -->
+          <div class="bg-studio-card p-4 rounded-xl border border-studio-border mb-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="text-xs font-bold text-white block">Chave Geral do Sino</span>
+                <span class="text-[11px] text-slate-400">Permitir que o público toque</span>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input id="toggle-bell-enabled" type="checkbox" checked class="sr-only switch-input">
+                <div class="w-11 h-6 bg-slate-700 border border-slate-600 rounded-full switch-bg transition-colors"></div>
+                <div class="switch-dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform"></div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Cooldown & Abuse Protection Info -->
+          <div class="bg-studio-card/60 p-3 rounded-xl border border-studio-border/70 text-xs font-mono space-y-1 mb-4 text-slate-300">
+            <div class="flex justify-between">
+              <span class="text-slate-400">Cooldown por clique:</span>
+              <span class="text-amber-400 font-bold">20 segundos</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-400">Último toque:</span>
+              <span id="bell-last-time" class="text-slate-200">Pronto para tocar</span>
+            </div>
+          </div>
+
+          <!-- Admin Force Bell Ring Button -->
+          <button id="btn-ring-bell-admin" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-sakura-600 to-sakura-700 hover:from-sakura-500 hover:to-sakura-600 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-sakura-600/30 transition-all active:scale-95">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
+              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
+            </svg>
+            <span>Tocar Sino Forçado (Admin Global)</span>
+          </button>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-studio-border/70 flex items-center justify-between text-[11px] font-mono text-slate-400">
+          <span>Anti-Spam:</span>
+          <span class="text-emerald-400 flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Proteção Ativa OK
+          </span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ROW 2: COURT MANAGEMENT & BROADCAST TOAST -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+      <!-- ========================================== -->
+      <!-- CARD 4: GESTÃO DA QUADRA POLIESPORTIVA     -->
+      <!-- ========================================== -->
+      <div class="bg-studio-surface border border-studio-border rounded-xl p-5 shadow-lg flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9"></circle>
+                <path d="M12 3a14 14 0 0 0 0 18M3 12h18"></path>
+              </svg>
+              <h2 class="font-bold text-sm text-white uppercase tracking-wider">Status da Quadra Poliesportiva</h2>
+            </div>
+            <span id="badge-court-status" class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-rose-500/20 text-rose-300 border border-rose-500/30 font-bold uppercase">
+              EM USO
+            </span>
+          </div>
+
+          <p class="text-xs text-slate-400 mb-4">
+            Atualize o painel de ocupação em tempo real exibido aos frequentadores do totem e agendamento mobile.
+          </p>
+
+          <form id="form-court" class="space-y-4">
+            <!-- Status Buttons Selector -->
+            <div>
+              <label class="text-xs font-mono text-slate-300 block mb-1.5">Estado da Quadra:</label>
+              <div class="grid grid-cols-3 gap-2">
+                <button type="button" class="btn-court-status p-2 rounded-xl border border-rose-500 bg-rose-500/20 text-rose-300 font-mono text-xs font-bold flex items-center justify-center gap-1.5" data-status="em_uso">
+                  <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+                  <span>Em Uso</span>
+                </button>
+                <button type="button" class="btn-court-status p-2 rounded-xl border border-studio-border bg-studio-card text-slate-400 font-mono text-xs font-bold hover:text-white flex items-center justify-center gap-1.5" data-status="livre">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                  <span>Livre</span>
+                </button>
+                <button type="button" class="btn-court-status p-2 rounded-xl border border-studio-border bg-studio-card text-slate-400 font-mono text-xs font-bold hover:text-white flex items-center justify-center gap-1.5" data-status="manutencao">
+                  <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                  <span>Manutenção</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Activity Name -->
+            <div>
+              <label for="court-activity" class="text-xs font-mono text-slate-300 block mb-1.5">Nome da Atividade / Partida:</label>
+              <input id="court-activity" type="text" value="Basquete 3x3 Juvenil" class="w-full bg-studio-card/90 border border-studio-border rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-sakura-500 focus:ring-1 focus:ring-sakura-500/40 font-sans transition-all" />
+            </div>
+
+            <!-- Remaining Minutes & Next Slot -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <div>
+                <label for="court-minutes" class="text-xs font-mono text-slate-300 block mb-1.5">Minutos Restantes:</label>
+                <input id="court-minutes" type="number" min="0" max="180" value="22" class="w-full bg-studio-card/90 border border-studio-border rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-sakura-500 focus:ring-1 focus:ring-sakura-500/40 font-mono transition-all" />
+              </div>
+              <div>
+                <label for="court-next" class="text-xs font-mono text-slate-300 block mb-1.5">Próximo Horário / Vaga:</label>
+                <input id="court-next" type="text" value="15:00 às 16:00 (Treino de Vôlei)" class="w-full bg-studio-card/90 border border-studio-border rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-sakura-500 focus:ring-1 focus:ring-sakura-500/40 font-sans transition-all" />
+              </div>
+            </div>
+
+            <button type="submit" class="w-full py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-mono text-xs font-bold border border-studio-border flex items-center justify-center gap-2 transition-all hover:border-slate-500 shadow-sm cursor-pointer">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                <polyline points="7 3 7 8 15 8"></polyline>
+              </svg>
+              <span>Salvar e Transmitir Status da Quadra</span>
+            </button>
+          </form>
+
+          <!-- Court Bookings Management Subsection -->
+          <div class="mt-5 pt-4 border-t border-studio-border/70">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-mono font-bold text-slate-300">Horários Reservados na Grade:</span>
+              <span id="bookings-count" class="text-[10px] font-mono bg-cyan-500/20 text-cyan-300 px-2 py-0.5 rounded-full">3 agendamentos</span>
+            </div>
+            <div id="dev-bookings-list" class="space-y-1.5 max-h-36 overflow-y-auto pr-1 text-xs font-mono">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================== -->
+      <!-- CARD 5: TRANSMISSÃO DE AVISOS GLOBAIS      -->
+      <!-- ========================================== -->
+      <div class="bg-studio-surface border border-studio-border rounded-xl p-5 shadow-lg flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 5L6 9H2v6h4l5 4V5z"></path>
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+              </svg>
+              <h2 class="font-bold text-sm text-white uppercase tracking-wider">Aviso Global no Totem</h2>
+            </div>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-bold uppercase">
+              DESTAQUE AFK / NORMAL
+            </span>
+          </div>
+
+          <p class="text-xs text-slate-400 mb-4">
+            Envia um comunicado em destaque central gigante legível à distância, visível tanto na tela normal quanto na tela de descanso (screensaver).
+          </p>
+
+          <form id="form-toast" class="space-y-3.5">
+            <div>
+              <label for="toast-title" class="text-xs font-mono text-slate-300 block mb-1.5">Título do Comunicado:</label>
+              <input id="toast-title" type="text" value="Aviso da Zeladoria Municipal" class="w-full bg-studio-card/90 border border-studio-border rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/40 font-sans transition-all" />
+            </div>
+
+            <div>
+              <label for="toast-msg" class="text-xs font-mono text-slate-300 block mb-1.5">Mensagem em Destaque:</label>
+              <textarea id="toast-msg" rows="2" class="w-full bg-studio-card/90 border border-studio-border rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/40 font-sans resize-none transition-all" placeholder="Digite a mensagem que aparecerá em destaque nas telas..."></textarea>
+            </div>
+
+            <!-- Duration Selector -->
+            <div>
+              <label for="toast-duration" class="text-xs font-mono text-slate-300 block mb-1.5">Duração da Exibição na Tela:</label>
+              <select id="toast-duration" class="w-full bg-studio-card/90 border border-studio-border rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/40 font-mono transition-all">
+                <option value="10">10 segundos (Rápido)</option>
+                <option value="30" selected>30 segundos (Padrão)</option>
+                <option value="60">60 segundos (Longo / 1 minuto)</option>
+                <option value="fixo">Fixo / Permanente (Até usuário dispensar)</option>
+              </select>
+            </div>
+
+            <!-- Quick Template Pills -->
+            <div class="flex flex-wrap gap-1.5">
+              <button type="button" class="btn-quick-toast text-[10px] font-mono px-2.5 py-1 rounded-lg bg-studio-card border border-studio-border text-slate-300 hover:border-slate-500" data-msg="Atenção: Previsão de chuva passageira nos próximos 15 minutos na praça.">
+                Alerta Chuva
+              </button>
+              <button type="button" class="btn-quick-toast text-[10px] font-mono px-2.5 py-1 rounded-lg bg-studio-card border border-studio-border text-slate-300 hover:border-slate-500" data-msg="Partida amistosa iniciando agora na quadra poliesportiva. Venha prestigiar!">
+                Partida na Quadra
+              </button>
+              <button type="button" class="btn-quick-toast text-[10px] font-mono px-2.5 py-1 rounded-lg bg-studio-card border border-studio-border text-slate-300 hover:border-slate-500" data-msg="Ápice da floração das cerejeiras neste final de semana. Horário nobre para fotos: 16h30!">
+                Floração Sakura
+              </button>
+            </div>
+
+            <button type="submit" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-cyan-600 to-cyan-700 hover:from-cyan-500 hover:to-cyan-600 text-white font-mono text-xs font-bold flex items-center justify-center gap-2 shadow-lg shadow-cyan-600/30 transition-all active:scale-95">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 5L6 9H2v6h4l5 4V5z"></path>
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+              </svg>
+              <span>Transmitir Aviso para Todas as Telas</span>
+            </button>
+          </form>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ROW 3: ATIVIDADES DA SEMANA & TELEMETRIA DE TELAS ATIVAS -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+      <!-- ========================================== -->
+      <!-- CARD 6: PRÓXIMAS ATIVIDADES DA SEMANA      -->
+      <!-- ========================================== -->
+      <div class="bg-studio-surface border border-studio-border rounded-xl p-5 shadow-lg flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              <h2 class="font-bold text-sm text-white uppercase tracking-wider">Atividades da Semana (Calendário)</h2>
+            </div>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold uppercase">
+              SINCRONIZADO AO VIVO
+            </span>
+          </div>
+
+          <p class="text-xs text-slate-400 mb-4">
+            Gerencie os eventos e atividades comunitárias exibidas no mural de vida coletiva do totem público.
+          </p>
+
+          <!-- Current Activities List -->
+          <div id="dev-activities-list" class="space-y-2 mb-4 max-h-48 overflow-y-auto pr-1">
+            <!-- Rendered via JS -->
+          </div>
+
+          <!-- Add New Activity Form -->
+          <div class="bg-studio-card/80 p-3.5 rounded-xl border border-studio-border space-y-2.5">
+            <span class="text-xs font-bold text-white block">+ Adicionar Nova Atividade:</span>
+            <div class="grid grid-cols-3 gap-2">
+              <input id="new-act-icon" list="act-category-options" type="text" placeholder="Categoria (zen, organico, esporte, arte)" value="zen" class="bg-studio-bg border border-studio-border rounded-lg px-2.5 py-1.5 text-xs text-white font-mono" />
+              <datalist id="act-category-options">
+                <option value="zen">Zen & Yoga</option>
+                <option value="organico">Feira Orgânica</option>
+                <option value="esporte">Esportes & Quadra</option>
+                <option value="arte">Oficinas de Arte</option>
+              </datalist>
+              <input id="new-act-day" type="text" placeholder="Dia/Horário (ex: SÁB • 08h)" value="SÁBADO • 10:00" class="col-span-2 bg-studio-bg border border-studio-border rounded-lg px-2.5 py-1.5 text-xs text-white font-mono" />
+            </div>
+            <input id="new-act-title" type="text" placeholder="Título (ex: Oficina de Jardinagem)" value="" class="w-full bg-studio-bg border border-studio-border rounded-lg px-2.5 py-1.5 text-xs text-white font-sans" />
+            <input id="new-act-desc" type="text" placeholder="Descrição/Local (ex: Alameda Central)" value="" class="w-full bg-studio-bg border border-studio-border rounded-lg px-2.5 py-1.5 text-xs text-white font-sans" />
+            
+            <button type="button" id="btn-add-activity" class="w-full py-1.5 px-3 rounded-lg bg-emerald-700 hover:bg-emerald-600 text-white font-mono text-xs font-bold transition-all">
+              + Inserir na Lista
+            </button>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-studio-border/70 flex items-center justify-between">
+          <span class="text-[11px] font-mono text-slate-400">Total programado:</span>
+          <button id="btn-save-activities" class="py-2 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-600 text-white font-mono text-xs font-bold shadow-md flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+              <polyline points="17 21 17 13 7 13 7 21"></polyline>
+            </svg>
+            <span>Transmitir Atividades ao Totem</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ========================================== -->
+      <!-- CARD 7: TELEMETRIA DE TELAS CONECTADAS    -->
+      <!-- ========================================== -->
+      <div class="bg-studio-surface border border-studio-border rounded-xl p-5 shadow-lg flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+              </svg>
+              <h2 class="font-bold text-sm text-white uppercase tracking-wider">Telas & Dispositivos Ativos</h2>
+            </div>
+            <span id="badge-screens-active" class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold uppercase">
+              1 CONECTADA
+            </span>
+          </div>
+
+          <p class="text-xs text-slate-400 mb-4">
+            Rastreamento em tempo real de cada totem e smartphone conectado via SSE.
+          </p>
+
+          <div id="dev-screens-list" class="space-y-2 max-h-56 overflow-y-auto pr-1">
+            <!-- Rendered via JS -->
+            <div class="p-3 rounded-xl bg-studio-card border border-studio-border text-xs font-mono text-slate-400">
+              Aguardando telemetria de telas...
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-studio-border/70 flex items-center justify-between text-[11px] font-mono text-slate-400">
+          <span>Identificação:</span>
+          <span class="text-emerald-400 flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> IDs Amigáveis Ativos OK
+          </span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- CARD 8: CONSOLE DE EVENTOS EM TEMPO REAL   -->
+    <!-- ========================================== -->
+    <div class="bg-studio-surface border border-studio-border rounded-xl p-5 shadow-lg">
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center gap-2">
+          <svg class="w-4 h-4 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="4 17 10 11 4 5"></polyline>
+            <line x1="12" y1="19" x2="20" y2="19"></line>
+          </svg>
+          <h2 class="font-bold text-sm text-white uppercase tracking-wider font-mono">Console de Telemetria SSE</h2>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="btn-clear-logs" class="text-[11px] font-mono text-slate-400 hover:text-white px-2 py-0.5 rounded bg-studio-card border border-studio-border">
+            Limpar
+          </button>
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        </div>
+      </div>
+
+      <div id="event-logs" class="h-36 overflow-y-auto bg-studio-bg rounded-xl p-3 border border-studio-border font-mono text-[11px] space-y-1.5 text-slate-300">
+        <div class="text-slate-500">// Aguardando eventos de streaming em tempo real...</div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- NOTIFICATION TOAST -->
+  <div id="studio-toast" class="fixed bottom-6 right-6 z-50 bg-studio-card border border-studio-border shadow-2xl rounded-xl p-4 flex items-center gap-3 transition-all duration-300 opacity-0 pointer-events-none translate-y-4">
+    <div id="studio-toast-icon" class="w-8 h-8 rounded-xl bg-sakura-600/20 text-sakura-400 flex items-center justify-center font-bold text-sm">
+      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+    </div>
+    <div>
+      <div id="studio-toast-title" class="text-xs font-bold text-white">Comando Enviado</div>
+      <div id="studio-toast-desc" class="text-[11px] text-slate-300">Estado atualizado no servidor.</div>
+    </div>
+  </div>
+
+  <script>
+    // ESTADO LOCAL DE CONTROLE
+    let currentCourtStatus = "em_uso";
+    let eventSource = null;
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlToken = urlParams.get('token') || urlParams.get('pass');
+    if (urlToken) {
+      sessionStorage.setItem('dev_auth_token', urlToken);
+    }
+    let devPassword = sessionStorage.getItem('dev_auth_token') || '';
+    let currentActivities = [];
+    let currentBookings = [];
+    let activeScreens = [];
+
+    // Ícones Vetoriais SVG Reutilizáveis
+    const DEV_ICONS = {
+      mobile: `<svg class="w-4 h-4 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>`,
+      dev: `<svg class="w-4 h-4 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>`,
+      totem: `<svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>`,
+      zen: `<svg class="w-4 h-4 text-sakura-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="5" r="2"></circle><path d="M12 9v4m-5 4 5-2 5 2m-8-2-2-4 5-2 5 2-2 4"></path></svg>`,
+      organico: `<svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.5 10-10 10Z"></path></svg>`,
+      esporte: `<svg class="w-4 h-4 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"></circle><path d="M12 3a14 14 0 0 0 0 18M3 12h18"></path></svg>`,
+      arte: `<svg class="w-4 h-4 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12c0 3.5 2 6.5 5 8 1 .5 1.5-.5 1.5-1.5v-1c0-1.5 1-2.5 2.5-2.5h2c4 0 7-3 7-7 0-4.5-3.5-6-8-6Z"></path></svg>`,
+      geral: `<svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="12" y1="17" x2="12" y2="22"></line><path d="M5 17h14v-2l-3-3V5h1V3H7v2h1v7l-3 3v2z"></path></svg>`
+    };
+
+    function getDevActivityIcon(iconKey) {
+      if (!iconKey) return DEV_ICONS.geral;
+      const k = iconKey.toLowerCase();
+      if (k.includes('zen') || k.includes('yoga') || iconKey === '\u{1F9D8}') return DEV_ICONS.zen;
+      if (k.includes('organico') || k.includes('feira') || iconKey === '\u{1F955}') return DEV_ICONS.organico;
+      if (k.includes('esporte') || k.includes('basquete') || iconKey === '\u{1F3C0}') return DEV_ICONS.esporte;
+      if (k.includes('arte') || k.includes('desenho') || iconKey === '\u{1F3A8}') return DEV_ICONS.arte;
+      return DEV_ICONS.geral;
+    }
+
+    // Helper de Toast
+    function showStudioToast(title, desc, isError = false) {
+      const toast = document.getElementById('studio-toast');
+      const toastTitle = document.getElementById('studio-toast-title');
+      const toastDesc = document.getElementById('studio-toast-desc');
+      const toastIcon = document.getElementById('studio-toast-icon');
+
+      toastTitle.innerText = title;
+      toastDesc.innerText = desc;
+
+      if (isError) {
+        toastIcon.className = "w-8 h-8 rounded-xl bg-rose-600/20 text-rose-400 flex items-center justify-center font-bold text-sm";
+        toastIcon.innerHTML = `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
+      } else {
+        toastIcon.className = "w-8 h-8 rounded-xl bg-emerald-600/20 text-emerald-400 flex items-center justify-center font-bold text-sm";
+        toastIcon.innerHTML = `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+      }
+
+      toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+      }, 3500);
+    }
+
+    // Helper de Log no Console Visual
+    function logEvent(tag, details, colorClass = "text-slate-300") {
+      const logContainer = document.getElementById('event-logs');
+      const timeStr = new Date().toLocaleTimeString();
+      const div = document.createElement('div');
+      div.className = "flex items-start gap-2 leading-relaxed";
+      div.innerHTML = `
+        <span class="text-slate-500 select-none">[${timeStr}]</span>
+        <span class="px-1.5 py-0.2 rounded bg-studio-card border border-studio-border text-[10px] font-bold ${colorClass}">${tag}</span>
+        <span class="text-slate-300 flex-1">${details}</span>
+      `;
+      logContainer.appendChild(div);
+      logContainer.scrollTop = logContainer.scrollHeight;
+    }
+
+    document.getElementById('btn-clear-logs').addEventListener('click', () => {
+      document.getElementById('event-logs').innerHTML = '';
+      logEvent("SISTEMA", "Logs limpos pelo operador.", "text-slate-400");
+    });
+
+    // ==========================================
+    // AUTENTICAÇÃO COM O SERVIDOR
+    // ==========================================
+    async function verifyPassword(pass) {
+      try {
+        const res = await fetch('/api/auth/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: pass })
+        });
+        const data = await res.json();
+        return { ok: res.ok && data.success, error: data.error || null };
+      } catch (err) {
+        return { ok: false, error: "Servidor inacessível ou reiniciando. Tente novamente." };
+      }
+    }
+
+    function checkAuthOnLoad() {
+      const modal = document.getElementById('auth-modal');
+      if (devPassword) {
+        verifyPassword(devPassword).then(res => {
+          if (res.ok) {
+            modal.classList.add('hidden');
+          } else {
+            sessionStorage.removeItem('dev_auth_token');
+            devPassword = '';
+            modal.classList.remove('hidden');
+          }
+        });
+      } else {
+        modal.classList.remove('hidden');
+      }
+    }
+
+    // Enviar Ação para a API POST /api/control
+    async function sendControlAction(actionData) {
+      if (!devPassword) {
+        document.getElementById('auth-modal').classList.remove('hidden');
+        showStudioToast("Bloqueado", "Autentique com a senha do painel dev.", true);
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/control', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${devPassword}`
+          },
+          body: JSON.stringify({ ...actionData, password: devPassword })
+        });
+
+        const json = await res.json();
+        if (res.ok && json.success) {
+          showStudioToast("Transmitido!", `Ação '${actionData.action}' aplicada globalmente.`);
+          document.getElementById('last-sync-time').innerText = new Date().toLocaleTimeString();
+          return json;
+        } else if (res.status === 401) {
+          sessionStorage.removeItem('dev_auth_token');
+          devPassword = '';
+          document.getElementById('auth-modal').classList.remove('hidden');
+          showStudioToast("Sessão Expirada", "Senha inválida ou alterada.", true);
+        } else {
+          showStudioToast("Erro", json.error || "Falha ao enviar ação.", true);
+        }
+      } catch (err) {
+        showStudioToast("Falha de Conexão", err.message, true);
+      }
+    }
+
+    // ==========================================
+    // RENDERIZADORES DE UI
+    // ==========================================
+    function renderScreensList(screens) {
+      activeScreens = screens || [];
+      const container = document.getElementById('dev-screens-list');
+      const countBadge = document.getElementById('badge-screens-active');
+      const headerCount = document.getElementById('active-screens-count');
+
+      if (countBadge) countBadge.innerText = `${activeScreens.length} CONECTADA${activeScreens.length > 1 ? 'S' : ''}`;
+      if (headerCount) headerCount.innerText = activeScreens.length;
+
+      if (!container) return;
+      container.innerHTML = '';
+
+      if (activeScreens.length === 0) {
+        container.innerHTML = '<div class="p-3 rounded-xl bg-studio-card border border-studio-border text-xs font-mono text-slate-400">Nenhuma tela conectada no momento.</div>';
+        return;
+      }
+
+      activeScreens.forEach(s => {
+        const div = document.createElement('div');
+        const iconSvg = s.type === 'mobile' ? DEV_ICONS.mobile : (s.type === 'dev' ? DEV_ICONS.dev : DEV_ICONS.totem);
+        const typeBadge = s.type === 'mobile' ? 'Mobile' : (s.type === 'dev' ? 'Admin' : 'Totem Público');
+        div.className = "p-3 rounded-xl bg-studio-card border border-studio-border flex items-center justify-between text-xs font-mono";
+        div.innerHTML = `
+          <div class="flex items-center gap-2.5">
+            <span class="p-1 rounded-lg bg-studio-bg flex items-center justify-center">${iconSvg}</span>
+            <div>
+              <span class="font-bold text-white block">${s.name || s.id}</span>
+              <span class="text-[10px] text-slate-400">${typeBadge} • IP: ${s.ip}</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="text-[10px] text-emerald-400 font-bold">ONLINE</span>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function renderBookingsList(bookings) {
+      currentBookings = bookings || [];
+      const listEl = document.getElementById('dev-bookings-list');
+      const badge = document.getElementById('bookings-count');
+      if (badge) badge.innerText = `${currentBookings.length} reserva${currentBookings.length !== 1 ? 's' : ''}`;
+      if (!listEl) return;
+
+      listEl.innerHTML = '';
+      if (currentBookings.length === 0) {
+        listEl.innerHTML = '<div class="text-slate-500 p-2 text-[11px]">Nenhum horário reservado para hoje.</div>';
+        return;
+      }
+
+      currentBookings.forEach(b => {
+        const item = document.createElement('div');
+        item.className = "flex items-center justify-between p-2 rounded-lg bg-studio-bg border border-studio-border text-[11px]";
+        item.innerHTML = `
+          <div>
+            <span class="text-cyan-400 font-bold">${b.slot}</span>
+            <span class="text-slate-300 ml-1.5">${b.name} (${b.sport})</span>
+          </div>
+          <button class="btn-cancel-slot text-rose-400 hover:text-rose-300 px-2 py-0.5 rounded bg-rose-500/10 hover:bg-rose-500/20 text-[10px]" data-id="${b.id}" data-slot="${b.slot}">
+            Cancelar
+          </button>
+        `;
+        listEl.appendChild(item);
+      });
+
+      listEl.querySelectorAll('.btn-cancel-slot').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-id');
+          const slot = btn.getAttribute('data-slot');
+          if (confirm(`Cancelar reserva das ${slot}?`)) {
+            sendControlAction({ action: 'cancel_booking', id: id, slot: slot });
+          }
+        });
+      });
+    }
+
+    function renderActivitiesList(acts) {
+      currentActivities = acts || [];
+      const container = document.getElementById('dev-activities-list');
+      if (!container) return;
+      container.innerHTML = '';
+
+      if (currentActivities.length === 0) {
+        container.innerHTML = '<div class="text-slate-500 p-2 text-xs font-mono">Nenhuma atividade cadastrada.</div>';
+        return;
+      }
+
+      currentActivities.forEach((act, idx) => {
+        const div = document.createElement('div');
+        const iconSvg = getDevActivityIcon(act.icon);
+        div.className = "flex items-start justify-between p-2.5 rounded-xl bg-studio-card border border-studio-border text-xs";
+        div.innerHTML = `
+          <div class="flex items-start gap-2.5">
+            <span class="p-1.5 rounded-lg bg-studio-bg flex items-center justify-center">${iconSvg}</span>
+            <div>
+              <span class="text-[10px] font-mono text-sakura-400 font-bold block">${act.dayTime}</span>
+              <span class="font-bold text-white text-xs block">${act.title}</span>
+              <span class="text-[11px] text-slate-400 block">${act.desc}</span>
+            </div>
+          </div>
+          <button class="btn-del-act text-rose-400 hover:text-rose-300 p-1 rounded hover:bg-rose-500/20 text-xs" data-idx="${idx}" title="Excluir atividade">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        `;
+        container.appendChild(div);
+      });
+
+      container.querySelectorAll('.btn-del-act').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const i = parseInt(btn.getAttribute('data-idx'));
+          currentActivities.splice(i, 1);
+          renderActivitiesList(currentActivities);
+          showStudioToast("Removido", "Clique em 'Transmitir Atividades' para aplicar.");
+        });
+      });
+    }
+
+    // ==========================================
+    // STREAMING SSE
+    // ==========================================
+    function setupSSE() {
+      if (eventSource) eventSource.close();
+      const devScreenId = `Dev Studio #${Math.floor(100 + Math.random() * 900)}`;
+      eventSource = new EventSource(`/api/events?screenId=${encodeURIComponent(devScreenId)}&screenType=dev&screenName=${encodeURIComponent(devScreenId)}`);
+
+      eventSource.addEventListener('init', (e) => {
+        const state = JSON.parse(e.data);
+        logEvent("INIT", `Estado global recebido. Telas conectadas: ${state.activeScreens}`, "text-cyan-400");
+        updateUIWithState(state);
+      });
+
+      eventSource.addEventListener('weather_change', (e) => {
+        const data = JSON.parse(e.data);
+        logEvent("WEATHER", `Clima atualizado para: ${data.weather.toUpperCase()}`, "text-amber-400");
+        updateWeatherUI(data.weather);
+      });
+
+      eventSource.addEventListener('phase_change', (e) => {
+        const data = JSON.parse(e.data);
+        logEvent("PHASE", `Cerejeira alterada para: Fase ${data.sakuraPhase}`, "text-sakura-400");
+        updatePhaseUI(data.sakuraPhase);
+      });
+
+      eventSource.addEventListener('wind_gust', (e) => {
+        logEvent("GUST", `Rajada de vento disparada na praça!`, "text-emerald-400");
+      });
+
+      eventSource.addEventListener('court_change', (e) => {
+        const data = JSON.parse(e.data);
+        logEvent("COURT", `Quadra atualizada: ${data.court.status.toUpperCase()} (${data.court.activity})`, "text-cyan-400");
+        updateCourtUI(data.court);
+      });
+
+      eventSource.addEventListener('court_booking_update', (e) => {
+        const data = JSON.parse(e.data);
+        logEvent("BOOKING", `Grade de reservas atualizada no backend.`, "text-emerald-400");
+        if (data.bookings) renderBookingsList(data.bookings);
+        if (data.court) updateCourtUI(data.court);
+      });
+
+      eventSource.addEventListener('activities_change', (e) => {
+        const data = JSON.parse(e.data);
+        logEvent("ACTIVITIES", `Atividades da semana atualizadas.`, "text-emerald-400");
+        if (data.activities) renderActivitiesList(data.activities);
+      });
+
+      eventSource.addEventListener('bell_config', (e) => {
+        const data = JSON.parse(e.data);
+        logEvent("BELL_CFG", `Sino ${data.bell.enabled ? 'ATIVADO' : 'DESATIVADO'}`, "text-amber-400");
+        updateBellConfigUI(data.bell);
+      });
+
+      eventSource.addEventListener('bell_ring', (e) => {
+        const data = JSON.parse(e.data);
+        logEvent("BELL_RING", `[SINO] SINO TOCADO NA PRAÇA! (Origem: ${data.source})`, "text-rose-400");
+        document.getElementById('bell-last-time').innerText = `Tocado às ${new Date(data.lastRung).toLocaleTimeString()}`;
+      });
+
+      eventSource.addEventListener('toast_broadcast', (e) => {
+        const data = JSON.parse(e.data);
+        logEvent("BROADCAST", `"${data.title}" (${data.duration || 30}s): ${data.message}`, "text-cyan-400");
+      });
+
+      eventSource.addEventListener('screens_count', (e) => {
+        const data = JSON.parse(e.data);
+        renderScreensList(data.screens || []);
+      });
+
+      eventSource.onopen = () => {
+        document.getElementById('sse-indicator').className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse";
+        logEvent("CONEXÃO", "Canal SSE conectado com sucesso.", "text-emerald-400");
+      };
+
+      eventSource.onerror = () => {
+        document.getElementById('sse-indicator').className = "w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse";
+      };
+    }
+
+    // Atualização de UI conforme o estado do servidor
+    function updateUIWithState(state) {
+      if (state.screens) renderScreensList(state.screens);
+      if (state.weather) updateWeatherUI(state.weather);
+      if (state.sakuraPhase) updatePhaseUI(state.sakuraPhase);
+      if (state.court) updateCourtUI(state.court);
+      if (state.courtBookings) renderBookingsList(state.courtBookings);
+      if (state.weeklyActivities) renderActivitiesList(state.weeklyActivities);
+      if (state.bell) updateBellConfigUI(state.bell);
+    }
+
+    function updateWeatherUI(weather) {
+      const weatherLabels = {
+        sun: "Sol (24°C)",
+        rain: "Chuva ASCII (20°C)",
+        wind: "Ventania (22°C)",
+        night: "Noite Yozakura (18°C)"
+      };
+      document.getElementById('badge-current-weather').innerText = weatherLabels[weather] || weather;
+
+      document.querySelectorAll('.btn-weather').forEach(b => {
+        if (b.getAttribute('data-weather') === weather) {
+          b.classList.add('border-sakura-500', 'bg-sakura-500/15', 'glow-border-sakura');
+        } else {
+          b.classList.remove('border-sakura-500', 'bg-sakura-500/15', 'glow-border-sakura');
+        }
+      });
+    }
+
+    function updatePhaseUI(phase) {
+      const phaseLabels = {
+        1: "Fase 1: Dormência",
+        2: "Fase 2: Botões",
+        3: "Fase 3: Mankai",
+        4: "Fase 4: Folhas Verdes"
+      };
+      document.getElementById('badge-current-phase').innerText = phaseLabels[phase] || `Fase ${phase}`;
+
+      document.querySelectorAll('.btn-phase').forEach(b => {
+        if (parseInt(b.getAttribute('data-phase')) === phase) {
+          b.classList.add('border-sakura-500', 'bg-sakura-500/15', 'glow-border-sakura');
+        } else {
+          b.classList.remove('border-sakura-500', 'bg-sakura-500/15', 'glow-border-sakura');
+        }
+      });
+    }
+
+    function updateCourtUI(court) {
+      currentCourtStatus = court.status || "em_uso";
+      const statusBadge = document.getElementById('badge-court-status');
+
+      if (currentCourtStatus === "em_uso") {
+        statusBadge.className = "text-[10px] font-mono px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30 font-bold uppercase";
+        statusBadge.innerText = "EM USO";
+      } else if (currentCourtStatus === "livre") {
+        statusBadge.className = "text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold uppercase";
+        statusBadge.innerText = "LIVRE";
+      } else {
+        statusBadge.className = "text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold uppercase";
+        statusBadge.innerText = "MANUTENÇÃO";
+      }
+
+      document.querySelectorAll('.btn-court-status').forEach(b => {
+        const s = b.getAttribute('data-status');
+        if (s === currentCourtStatus) {
+          const colorClass = s === 'livre' ? 'border-emerald-500 bg-emerald-500/20 text-emerald-300' :
+                             s === 'manutencao' ? 'border-amber-500 bg-amber-500/20 text-amber-300' :
+                             'border-rose-500 bg-rose-500/20 text-rose-300';
+          b.className = `btn-court-status p-2 rounded-xl border ${colorClass} font-mono text-xs font-bold flex items-center justify-center gap-1.5`;
+        } else {
+          b.className = "btn-court-status p-2 rounded-xl border border-studio-border bg-studio-card text-slate-400 font-mono text-xs font-bold hover:text-white flex items-center justify-center gap-1.5";
+        }
+      });
+
+      if (court.activity) document.getElementById('court-activity').value = court.activity;
+      if (court.remainingMinutes !== undefined) document.getElementById('court-minutes').value = court.remainingMinutes;
+      if (court.nextSlot) document.getElementById('court-next').value = court.nextSlot;
+    }
+
+    function updateBellConfigUI(bell) {
+      const toggle = document.getElementById('toggle-bell-enabled');
+      const badge = document.getElementById('badge-bell-status');
+
+      toggle.checked = bell.enabled;
+      if (bell.enabled) {
+        badge.className = "text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold uppercase";
+        badge.innerText = "ATIVO NA PRAÇA";
+      } else {
+        badge.className = "text-[10px] font-mono px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30 font-bold uppercase";
+        badge.innerText = "BLOQUEADO PELA ADMIN";
+      }
+
+      if (bell.lastRung) {
+        document.getElementById('bell-last-time').innerText = `Tocado às ${new Date(bell.lastRung).toLocaleTimeString()}`;
+      }
+    }
+
+    // LISTENERS DE INTERAÇÃO
+    document.addEventListener('DOMContentLoaded', () => {
+      checkAuthOnLoad();
+      setupSSE();
+
+      // Form Auth Submit
+      document.getElementById('form-auth').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const pass = document.getElementById('input-dev-pass').value.trim();
+        const errEl = document.getElementById('auth-error-msg');
+        errEl.classList.add('hidden');
+
+        const res = await verifyPassword(pass);
+        if (res.ok) {
+          devPassword = pass;
+          sessionStorage.setItem('dev_auth_token', pass);
+          document.getElementById('auth-modal').classList.add('hidden');
+          showStudioToast("Autenticado!", "Painel de controle liberado com sucesso.");
+        } else {
+          errEl.innerText = res.error || "Senha incorreta ou painel bloqueado (senha_dev.txt ausente no servidor).";
+          errEl.classList.remove('hidden');
+        }
+      });
+
+      // Toggle pass visibility
+      document.getElementById('btn-toggle-pass-visibility').addEventListener('click', () => {
+        const input = document.getElementById('input-dev-pass');
+        input.type = input.type === 'password' ? 'text' : 'password';
+      });
+
+      // Lock panel button
+      document.getElementById('btn-lock-panel').addEventListener('click', () => {
+        sessionStorage.removeItem('dev_auth_token');
+        devPassword = '';
+        document.getElementById('input-dev-pass').value = '';
+        document.getElementById('auth-modal').classList.remove('hidden');
+        showStudioToast("Painel Bloqueado", "Autentique novamente para acessar.");
+      });
+
+      // Weather buttons
+      document.querySelectorAll('.btn-weather').forEach(b => {
+        b.addEventListener('click', () => {
+          const w = b.getAttribute('data-weather');
+          sendControlAction({ action: 'set_weather', value: w });
+        });
+      });
+
+      // Phase buttons
+      document.querySelectorAll('.btn-phase').forEach(b => {
+        b.addEventListener('click', () => {
+          const p = parseInt(b.getAttribute('data-phase'));
+          sendControlAction({ action: 'set_phase', value: p });
+        });
+      });
+
+      // Wind gust
+      document.getElementById('btn-gust-wind').addEventListener('click', () => {
+        sendControlAction({ action: 'gust_wind' });
+      });
+
+      // Bell switch toggle
+      document.getElementById('toggle-bell-enabled').addEventListener('change', (e) => {
+        sendControlAction({ action: 'set_bell_enabled', enabled: e.target.checked });
+      });
+
+      // Admin ring bell force
+      document.getElementById('btn-ring-bell-admin').addEventListener('click', () => {
+        sendControlAction({ action: 'ring_bell_admin' });
+      });
+
+      // Court status selectors
+      document.querySelectorAll('.btn-court-status').forEach(b => {
+        b.addEventListener('click', () => {
+          currentCourtStatus = b.getAttribute('data-status');
+          document.querySelectorAll('.btn-court-status').forEach(other => {
+            if (other === b) {
+              other.className = "btn-court-status p-2 rounded-xl border border-rose-500 bg-rose-500/20 text-rose-300 font-mono text-xs font-bold flex items-center justify-center gap-1.5";
+            } else {
+              other.className = "btn-court-status p-2 rounded-xl border border-studio-border bg-studio-card text-slate-400 font-mono text-xs font-bold hover:text-white flex items-center justify-center gap-1.5";
+            }
+          });
+        });
+      });
+
+      // Court form submit
+      document.getElementById('form-court').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const courtData = {
+          status: currentCourtStatus,
+          activity: document.getElementById('court-activity').value,
+          remainingMinutes: parseInt(document.getElementById('court-minutes').value) || 0,
+          nextSlot: document.getElementById('court-next').value
+        };
+        sendControlAction({ action: 'set_court', court: courtData });
+      });
+
+      // Toast Broadcast form submit
+      document.getElementById('form-toast').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const title = document.getElementById('toast-title').value.trim();
+        const msg = document.getElementById('toast-msg').value.trim();
+        const durVal = document.getElementById('toast-duration').value;
+        const duration = durVal === 'fixo' ? 'fixo' : (parseInt(durVal) || 30);
+
+        if (!msg) {
+          showStudioToast("Campo Vazio", "Digite uma mensagem antes de transmitir.", true);
+          return;
+        }
+        sendControlAction({ action: 'send_toast', title: title, message: msg, duration: duration });
+        document.getElementById('toast-msg').value = '';
+      });
+
+      // Toast quick pills
+      document.querySelectorAll('.btn-quick-toast').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.getElementById('toast-msg').value = btn.getAttribute('data-msg');
+        });
+      });
+
+      // Add Activity to list
+      document.getElementById('btn-add-activity').addEventListener('click', () => {
+        const icon = document.getElementById('new-act-icon').value.trim() || 'geral';
+        const day = document.getElementById('new-act-day').value.trim();
+        const title = document.getElementById('new-act-title').value.trim();
+        const desc = document.getElementById('new-act-desc').value.trim();
+
+        if (!title || !day) {
+          showStudioToast("Preencha os Campos", "Título e dia/horário são obrigatórios.", true);
+          return;
+        }
+
+        currentActivities.push({
+          id: 'act-' + Date.now(),
+          icon: icon,
+          dayTime: day,
+          title: title,
+          desc: desc || 'Atividade na praça'
+        });
+
+        renderActivitiesList(currentActivities);
+        document.getElementById('new-act-title').value = '';
+        document.getElementById('new-act-desc').value = '';
+        showStudioToast("Adicionado à lista", "Clique em 'Transmitir Atividades' para salvar globalmente.");
+      });
+
+      // Save and Broadcast Activities
+      document.getElementById('btn-save-activities').addEventListener('click', () => {
+        sendControlAction({ action: 'set_activities', activities: currentActivities });
+      });
+    });
+  </script>
+</body>
+</html>
