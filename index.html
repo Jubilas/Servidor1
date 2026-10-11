@@ -644,7 +644,12 @@
     #radar-phase-name { margin: 4px 0; font-size: 20px; font-weight: 800; }
     #radar-phase-desc { font-size: 14px; color: var(--ink-2); }
     .phase-steps { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
-    .phase-card { padding: 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--card-2); }
+    .phase-card {
+      padding: 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--card-2);
+      cursor: pointer; transition: transform .15s var(--ease), border-color .2s var(--ease), background-color .2s var(--ease);
+    }
+    .phase-card:hover:not(.is-active) { border-color: var(--line-strong); transform: translateY(-1px); }
+    .phase-card:active { transform: scale(.97); }
     .phase-card b { display: block; font-size: 14px; }
     .phase-card span { display: block; font-size: 12px; color: var(--ink-3); font-weight: 600; margin-top: 2px; }
     .phase-card.is-active { background: var(--accent-soft); border-color: var(--accent); }
@@ -979,7 +984,7 @@
         </button>
         <button id="dock-tool-gust" class="stage-btn">
           <svg class="i" viewBox="0 0 24 24"><path d="M12 7.5a4.5 4.5 0 1 1 4.5 4.5M12 7.5A4.5 4.5 0 1 0 7.5 12M12 7.5V9m-4.5 3a4.5 4.5 0 1 0 4.5 4.5M7.5 12H9m7.5 0a4.5 4.5 0 1 1-4.5 4.5m4.5-4.5H15m-3 4.5V15"/><circle cx="12" cy="12" r="3"/></svg>
-          <span class="stage-btn-text">Pétalas<small id="stage-phase-label">Mankai · 88%</small></span>
+          <span class="stage-btn-text"><span id="stage-phase-title">Pétalas</span><small id="stage-phase-label">Mankai · 88%</small></span>
         </button>
         <button id="dock-tool-reset" class="stage-btn" aria-label="Recentrar a árvore">
           <svg class="i" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
@@ -1970,6 +1975,41 @@
           })
         ];
 
+        // 4 tonal shades of fresh summer foliage leaves (Phase 4: Hazakura)
+        const leafMaterials = [
+          new THREE.MeshStandardMaterial({
+            color: 0x16a34a, // Fresh emerald green
+            roughness: 0.38,
+            side: THREE.DoubleSide,
+            emissive: 0x14532d,
+            emissiveIntensity: 0.20
+          }),
+          new THREE.MeshStandardMaterial({
+            color: 0x22c55e, // Bright young leaf
+            roughness: 0.34,
+            side: THREE.DoubleSide,
+            emissive: 0x15803d,
+            emissiveIntensity: 0.22
+          }),
+          new THREE.MeshStandardMaterial({
+            color: 0x15803d, // Lush forest green
+            roughness: 0.42,
+            side: THREE.DoubleSide,
+            emissive: 0x0f4024,
+            emissiveIntensity: 0.16
+          }),
+          new THREE.MeshStandardMaterial({
+            color: 0x4ade80, // Tender spring leaf
+            roughness: 0.32,
+            side: THREE.DoubleSide,
+            emissive: 0x16a34a,
+            emissiveIntensity: 0.25
+          })
+        ];
+
+        this.fallingPetalMaterials = petalMaterials;
+        this.fallingLeafMaterials = leafMaterials;
+
         this.petalsGroup = new THREE.Group();
         this.scene.add(this.petalsGroup);
 
@@ -2281,7 +2321,7 @@
         if (this.bloomLight && this.targetBloomIntensity) {
           this.bloomLight.intensity += (this.targetBloomIntensity - this.bloomLight.intensity) * 0.05;
         }
-        if (this.targetPetalDensity && this.activePetalsCount !== this.targetPetalDensity) {
+        if (typeof this.targetPetalDensity === 'number' && this.activePetalsCount !== this.targetPetalDensity) {
           this.activePetalsCount += Math.round((this.targetPetalDensity - this.activePetalsCount) * 0.08);
         }
 
@@ -2493,11 +2533,12 @@
       setSakuraPhase(phaseNum) {
         this.sakuraPhase = parseInt(phaseNum);
 
-        // Update 3D Canopy and Falling Petals
+        // Update 3D Canopy and Falling Petals / Leaves
         if (this.sakuraPhase === 1) {
           // Fase 1: Dormência de Inverno (Galhos Nus / Fuyu-gomori)
           this.canopyBlossoms.forEach(m => m.visible = false);
           this.petalsGroup.visible = false;
+          this.targetPetalDensity = 0;
           this.activePetalsCount = 0;
         } else if (this.sakuraPhase === 2) {
           // Fase 2: Botões Florais (Tsubomi / Brotos Jovens)
@@ -2506,7 +2547,14 @@
             m.material = m.userData.budMat;
             m.scale.setScalar(m.userData.originalScale * 0.35);
           });
+          if (this.petalsData && this.fallingPetalMaterials) {
+            this.petalsData.forEach((pd, i) => {
+              pd.mesh.material = this.fallingPetalMaterials[i % this.fallingPetalMaterials.length];
+              pd.mesh.scale.set(0.75, 0.75, 0.75);
+            });
+          }
           this.petalsGroup.visible = true;
+          this.targetPetalDensity = 35;
           this.activePetalsCount = 35;
         } else if (this.sakuraPhase === 3) {
           // Fase 3: Mankai (Plena Floração / Ápice)
@@ -2515,7 +2563,14 @@
             m.material = m.userData.originalMat;
             m.scale.setScalar(m.userData.originalScale);
           });
+          if (this.petalsData && this.fallingPetalMaterials) {
+            this.petalsData.forEach((pd, i) => {
+              pd.mesh.material = this.fallingPetalMaterials[i % this.fallingPetalMaterials.length];
+              pd.mesh.scale.set(1.0, 1.0, 1.0);
+            });
+          }
           this.petalsGroup.visible = true;
+          this.targetPetalDensity = 380;
           this.activePetalsCount = 380;
         } else if (this.sakuraPhase === 4) {
           // Fase 4: Hazakura (Folhas Verdes / Folhagem de Verão)
@@ -2524,7 +2579,15 @@
             m.material = m.userData.leafMat;
             m.scale.setScalar(m.userData.originalScale * 0.95);
           });
+          // Aplica materiais de folhas verdes e formato ovalado para as partículas caindo
+          if (this.petalsData && this.fallingLeafMaterials) {
+            this.petalsData.forEach((pd, i) => {
+              pd.mesh.material = this.fallingLeafMaterials[i % this.fallingLeafMaterials.length];
+              pd.mesh.scale.set(0.8, 1.45, 0.85);
+            });
+          }
           this.petalsGroup.visible = true;
+          this.targetPetalDensity = 20; // Poucas folhas verdes caindo suavemente
           this.activePetalsCount = 20;
         }
 
@@ -2575,6 +2638,10 @@
         if (stagePhase) {
           const shortNames = { 1: 'Dormência', 2: 'Botões · 25%', 3: 'Mankai · 88%', 4: 'Folhas verdes' };
           stagePhase.innerText = shortNames[phaseNum] || shortNames[3];
+        }
+        const stagePhaseTitle = document.getElementById('stage-phase-title');
+        if (stagePhaseTitle) {
+          stagePhaseTitle.innerText = phaseNum === 4 ? 'Folhas' : 'Pétalas';
         }
 
         // Update inspector buttons
@@ -4832,15 +4899,28 @@
         if (labelWind) labelWind.innerText = val < 0.8 ? "Brisa Leve" : (val > 2.0 ? "Ventania Forte" : "Vento Médio");
       });
 
-      // Petal Storm Triggers
+      // Petal / Foliage Storm Triggers
       const triggerStormAction = () => {
         sound.playClick();
         engine.burstPetals();
-        showToast("Tempestade de pétalas 3D liberada!");
+        showToast(engine.sakuraPhase === 4 ? "Rajada de folhas verdes na praça!" : (engine.sakuraPhase === 1 ? "Brisa de inverno nos galhos da cerejeira!" : "Tempestade de pétalas 3D liberada!"));
       };
       document.getElementById('btn-hero-storm')?.addEventListener('click', triggerStormAction);
       document.getElementById('btn-inspector-storm')?.addEventListener('click', triggerStormAction);
       document.getElementById('dock-tool-gust')?.addEventListener('click', triggerStormAction);
+
+      // Phase cards interactive exploration on Totem
+      document.querySelectorAll('.phase-card').forEach(card => {
+        card.style.cursor = 'pointer';
+        card.addEventListener('click', () => {
+          const ph = parseInt(card.getAttribute('data-phase'));
+          if (ph && engine) {
+            sound.playClick();
+            engine.setSakuraPhase(ph);
+            showToast(`Fase da Cerejeira: ${ph === 4 ? "Folhas Verdes de Verão" : (ph === 1 ? "Dormência de Inverno" : (ph === 2 ? "Botões Florais" : "Floração Mankai"))}`);
+          }
+        });
+      });
 
       // Copy ASCII Frame to Clipboard
       document.getElementById('btn-copy-ascii')?.addEventListener('click', () => {
