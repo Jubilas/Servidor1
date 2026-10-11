@@ -12,34 +12,32 @@ const PORT = Number(process.env.PORT) || Number(process.argv[2]) || 8080;
 const HOST = process.env.HOST || "0.0.0.0";
 const PUBLIC_DIR = __dirname;
 const STATE_FILE = path.join(PUBLIC_DIR, "state.json");
-// Senha do painel dev: NUNCA fica no código. Vem do ambiente da máquina do totem.
-//   PRACA_DEV_PASSWORD       -> a senha em si
-//   PRACA_DEV_PASSWORD_FILE  -> (opcional) caminho de um arquivo com a senha
-//                               (aceita só a senha ou uma linha "Senha: ...")
-// Sem nenhuma das duas, o painel /dev fica bloqueado.
-const DEV_PASSWORD_ENV = "PRACA_DEV_PASSWORD";
-const DEV_PASSWORD_FILE_ENV = "PRACA_DEV_PASSWORD_FILE";
+// Senha do painel dev: fica no arquivo senha_dev.txt, ao lado do server.js
+// (ignorado pelo git). Para trocar a senha: edite o arquivo e reinicie o
+// servidor (ex.: pm2 restart). Sem o arquivo, o painel /dev fica bloqueado.
+const DEV_PASSWORD_FILE = path.join(PUBLIC_DIR, "senha_dev.txt");
 
 // ==========================================
 // AUTENTICAÇÃO DO PAINEL DEV (/dev)
 // ==========================================
-function getDevPassword() {
-  const fromEnv = (process.env[DEV_PASSWORD_ENV] || "").trim();
-  if (fromEnv) return fromEnv;
-
-  const filePath = (process.env[DEV_PASSWORD_FILE_ENV] || "").trim();
-  if (filePath) {
-    try {
-      const content = fs.readFileSync(filePath, "utf-8");
-      const match = content.match(/Senha:\s*([^\r\n]+)/);
-      const value = (match ? match[1] : content.split(/\r?\n/)[0] || "").trim();
-      if (value) return value;
-    } catch (err) {
-      console.error(`[AUTH] Não foi possível ler ${DEV_PASSWORD_FILE_ENV}:`, err.message);
+function loadDevPassword() {
+  try {
+    // Usa a primeira linha não vazia do arquivo como senha
+    const firstLine = fs.readFileSync(DEV_PASSWORD_FILE, "utf-8")
+      .split(/\r?\n/)
+      .map(line => line.trim())
+      .find(line => line.length > 0);
+    return firstLine || "";
+  } catch (err) {
+    if (err.code !== "ENOENT") {
+      console.error("[AUTH] Não foi possível ler senha_dev.txt:", err.message);
     }
+    return "";
   }
-  return "";
 }
+
+// Lida uma vez na inicialização: alterou o arquivo, reinicie o servidor
+const DEV_PASSWORD = loadDevPassword();
 
 // Comparação em tempo constante (o tempo de resposta não revela partes da senha)
 function safeEqual(a, b) {
@@ -49,7 +47,7 @@ function safeEqual(a, b) {
 }
 
 function validateAuth(req, body) {
-  const expected = getDevPassword();
+  const expected = DEV_PASSWORD;
   if (!expected) return false; // painel bloqueado: nenhuma senha configurada
 
   const authHeader = req.headers["authorization"] || "";
@@ -765,10 +763,10 @@ server.listen(PORT, HOST, () => {
     console.log(`  * Na Rede Local/Celular : http://${ip}:${PORT}/ (Totem) | /dev (Painel) | /agendar`);
   }
   console.log("-".repeat(65));
-  if (getDevPassword()) {
-    console.log("  Painel Dev        : ATIVO (senha via variável de ambiente)");
+  if (DEV_PASSWORD) {
+    console.log("  Painel Dev        : ATIVO (senha lida de senha_dev.txt)");
   } else {
-    console.log(`  Painel Dev        : BLOQUEADO -- defina ${DEV_PASSWORD_ENV} para liberar`);
+    console.log(`  Painel Dev        : BLOQUEADO -- crie ${DEV_PASSWORD_FILE} com a senha`);
   }
   console.log("-".repeat(65));
   console.log("  Pressione Ctrl + C para encerrar o servidor.\n");

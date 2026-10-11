@@ -6,10 +6,17 @@ import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-// Senha do painel dev vem do ambiente (a mesma usada pelo server.js)
-const DEV_PASS = process.env.PRACA_DEV_PASSWORD;
+// Senha do painel dev: a mesma do servidor, lida de senha_dev.txt (fora do git)
+const DEV_PASS = (() => {
+  try {
+    return fs.readFileSync(new URL('./senha_dev.txt', import.meta.url), 'utf-8')
+      .split(/\r?\n/).map(l => l.trim()).find(Boolean) || '';
+  } catch (e) {
+    return '';
+  }
+})();
 if (!DEV_PASS) {
-  console.error("Defina PRACA_DEV_PASSWORD (a mesma senha do servidor) antes de rodar os testes.");
+  console.error("Crie senha_dev.txt (a mesma senha do servidor) antes de rodar os testes.");
   process.exit(1);
 }
 const SCREENSHOT_DIR = path.join(__dirname, 'screenshots');
@@ -410,7 +417,7 @@ async function runVisualTests() {
     await devPage.client.screenshot(p7);
 
     // Digita a senha correta e autentica
-    console.log("- Autenticando com a senha de PRACA_DEV_PASSWORD...");
+    console.log("- Autenticando com a senha de senha_dev.txt...");
     await devPage.client.evaluate(`
       document.getElementById('input-dev-pass').value = ${JSON.stringify(DEV_PASS)};
       document.getElementById('btn-submit-auth').click();

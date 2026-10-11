@@ -1,10 +1,17 @@
 import http from 'node:http';
 import fs from 'node:fs';
 
-// Senha do painel dev vem do ambiente (a mesma usada pelo server.js)
-const DEV_PASS = process.env.PRACA_DEV_PASSWORD;
+// Senha do painel dev: a mesma do servidor, lida de senha_dev.txt (fora do git)
+const DEV_PASS = (() => {
+  try {
+    return fs.readFileSync(new URL('./senha_dev.txt', import.meta.url), 'utf-8')
+      .split(/\r?\n/).map(l => l.trim()).find(Boolean) || '';
+  } catch (e) {
+    return '';
+  }
+})();
 if (!DEV_PASS) {
-  console.error("Defina PRACA_DEV_PASSWORD (a mesma senha do servidor) antes de rodar os testes.");
+  console.error("Crie senha_dev.txt (a mesma senha do servidor) antes de rodar os testes.");
   process.exit(1);
 }
 const PASS = DEV_PASS;
