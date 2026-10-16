@@ -6,7 +6,7 @@
   <title>PRAÇA CONECTA — Painel Dev & Centro de Controle Global</title>
 
   <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/assets/tailwindcss-3.4.17.js"></script>
 
   <!-- Google Fonts: Inter & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -393,7 +393,7 @@
           <div class="bg-studio-card/60 p-3 rounded-xl border border-studio-border/70 text-xs font-mono space-y-1 mb-4 text-slate-300">
             <div class="flex justify-between">
               <span class="text-slate-400">Cooldown por clique:</span>
-              <span class="text-amber-400 font-bold">20 segundos</span>
+              <span class="text-amber-400 font-bold">40 segundos</span>
             </div>
             <div class="flex justify-between">
               <span class="text-slate-400">Último toque:</span>
@@ -729,16 +729,25 @@
     let currentCourtStatus = "em_uso";
     let eventSource = null;
     const urlParams = new URLSearchParams(window.location.search);
-    const urlToken = urlParams.get('token') || urlParams.get('pass');
-    if (urlToken) {
-      sessionStorage.setItem('dev_auth_token', urlToken);
+    // Senha passada no link (?token= ou ?pass=): usada só para o login, em memória
+    const urlPassword = urlParams.get('token') || urlParams.get('pass');
+    if (urlPassword) {
       // Tira a senha da barra de endereço/histórico do navegador
       urlParams.delete('token');
       urlParams.delete('pass');
       const rest = urlParams.toString();
       history.replaceState(null, '', window.location.pathname + (rest ? `?${rest}` : '') + window.location.hash);
     }
-    let devPassword = sessionStorage.getItem('dev_auth_token') || '';
+    // O navegador guarda só um token de sessão temporário, nunca a senha.
+    // (Versões antigas guardavam a senha em 'dev_auth_token': apaga.)
+    sessionStorage.removeItem('dev_auth_token');
+    let devToken = sessionStorage.getItem('dev_session') || '';
+
+    function setDevSession(token) {
+      devToken = token || '';
+      if (devToken) sessionStorage.setItem('dev_session', devToken);
+      else sessionStorage.removeItem('dev_session');
+    }
     let currentActivities = [];
     let currentBookings = [];
     let activeScreens = [];
@@ -815,15 +824,18 @@
     // ==========================================
     // AUTENTICAÇÃO COM O SERVIDOR
     // ==========================================
-    async function verifyPassword(pass) {
+    // Com senha: faz login e recebe um token. Sem senha: confere o token atual.
+    async function verifyAuth(pass) {
       try {
+        const headers = { 'Content-Type': 'application/json' };
+        if (!pass && devToken) headers['Authorization'] = `Bearer ${devToken}`;
         const res = await fetch('/api/auth/verify', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ password: pass })
+          headers,
+          body: JSON.stringify(pass ? { password: pass } : {})
         });
         const data = await res.json();
-        return { ok: res.ok && data.success, error: data.error || null };
+        return { ok: res.ok && data.success, token: data.token || null, error: data.error || null };
       } catch (err) {
         return { ok: false, error: "Servidor inacessível ou reiniciando. Tente novamente." };
       }
@@ -831,24 +843,24 @@
 
     function checkAuthOnLoad() {
       const modal = document.getElementById('auth-modal');
-      if (devPassword) {
-        verifyPassword(devPassword).then(res => {
-          if (res.ok) {
-            modal.classList.add('hidden');
-          } else {
-            sessionStorage.removeItem('dev_auth_token');
-            devPassword = '';
-            modal.classList.remove('hidden');
-          }
-        });
-      } else {
+      if (!urlPassword && !devToken) {
         modal.classList.remove('hidden');
+        return;
       }
+      verifyAuth(urlPassword).then(res => {
+        if (res.ok) {
+          if (res.token) setDevSession(res.token);
+          modal.classList.add('hidden');
+        } else {
+          setDevSession('');
+          modal.classList.remove('hidden');
+        }
+      });
     }
 
     // Enviar Ação para a API POST /api/control
     async function sendControlAction(actionData) {
-      if (!devPassword) {
+      if (!devToken) {
         document.getElementById('auth-modal').classList.remove('hidden');
         showStudioToast("Bloqueado", "Autentique com a senha do painel dev.", true);
         return;
@@ -859,9 +871,9 @@
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${devPassword}`
+            'Authorization': `Bearer ${devToken}`
           },
-          body: JSON.stringify({ ...actionData, password: devPassword })
+          body: JSON.stringify(actionData)
         });
 
         const json = await res.json();
@@ -870,10 +882,9 @@
           document.getElementById('last-sync-time').innerText = new Date().toLocaleTimeString();
           return json;
         } else if (res.status === 401) {
-          sessionStorage.removeItem('dev_auth_token');
-          devPassword = '';
+          setDevSession('');
           document.getElementById('auth-modal').classList.remove('hidden');
-          showStudioToast("Sessão Expirada", "Senha inválida ou alterada.", true);
+          showStudioToast("Sessão Expirada", "Digite a senha novamente.", true);
         } else {
           showStudioToast("Erro", json.error || "Falha ao enviar ação.", true);
         }
@@ -1194,10 +1205,10 @@
         const errEl = document.getElementById('auth-error-msg');
         errEl.classList.add('hidden');
 
-        const res = await verifyPassword(pass);
-        if (res.ok) {
-          devPassword = pass;
-          sessionStorage.setItem('dev_auth_token', pass);
+        const res = pass ? await verifyAuth(pass) : { ok: false, error: "Digite a senha." };
+        if (res.ok && res.token) {
+          setDevSession(res.token);
+          document.getElementById('input-dev-pass').value = '';
           document.getElementById('auth-modal').classList.add('hidden');
           showStudioToast("Autenticado!", "Painel de controle liberado com sucesso.");
         } else {
@@ -1214,8 +1225,11 @@
 
       // Lock panel button
       document.getElementById('btn-lock-panel').addEventListener('click', () => {
-        sessionStorage.removeItem('dev_auth_token');
-        devPassword = '';
+        // Revoga o token no servidor (se falhar, ele expira sozinho)
+        if (devToken) {
+          fetch('/api/auth/logout', { method: 'POST', headers: { 'Authorization': `Bearer ${devToken}` } }).catch(() => {});
+        }
+        setDevSession('');
         document.getElementById('input-dev-pass').value = '';
         document.getElementById('auth-modal').classList.remove('hidden');
         showStudioToast("Painel Bloqueado", "Autentique novamente para acessar.");

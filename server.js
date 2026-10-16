@@ -46,21 +46,49 @@ function safeEqual(a, b) {
   return crypto.timingSafeEqual(ha, hb);
 }
 
-function validateAuth(req, body) {
+function checkPassword(candidate) {
   const expected = DEV_PASSWORD;
-  if (!expected) return false; // painel bloqueado: nenhuma senha configurada
+  if (!expected || !candidate) return false; // painel bloqueado ou senha ausente
+  return safeEqual(String(candidate).trim(), expected);
+}
 
+function getBearerToken(req) {
   const authHeader = req.headers["authorization"] || "";
-  let token = "";
-  if (authHeader.startsWith("Bearer ")) {
-    token = authHeader.slice(7).trim();
-  }
-  if (!token && body && body.password) {
-    token = String(body.password).trim();
-  }
-  if (!token) return false;
+  return authHeader.startsWith("Bearer ") ? authHeader.slice(7).trim() : "";
+}
 
-  return safeEqual(token, expected);
+// Sessões do painel dev: depois do login o navegador guarda só um token
+// aleatório que expira (não a senha). Ficam em memória: reiniciar o
+// servidor desconecta todo mundo.
+const DEV_SESSION_TTL_MS = 8 * 60 * 60 * 1000;
+const DEV_SESSION_MAX = 50;
+const devSessions = new Map(); // token -> expiresAt
+
+function createDevSession() {
+  if (devSessions.size >= DEV_SESSION_MAX) {
+    // Descarta a sessão mais antiga (Map mantém a ordem de inserção)
+    devSessions.delete(devSessions.keys().next().value);
+  }
+  const token = crypto.randomBytes(32).toString("hex");
+  devSessions.set(token, Date.now() + DEV_SESSION_TTL_MS);
+  return token;
+}
+
+function isValidDevSession(token) {
+  const expiresAt = token ? devSessions.get(token) : undefined;
+  if (!expiresAt) return false;
+  if (expiresAt <= Date.now()) {
+    devSessions.delete(token);
+    return false;
+  }
+  return true;
+}
+
+// Aceita um token de sessão ou a própria senha (scripts e testes)
+function validateAuth(req, body) {
+  const bearer = getBearerToken(req);
+  if (isValidDevSession(bearer)) return true;
+  return checkPassword(bearer || (body && body.password));
 }
 
 // ==========================================
@@ -103,6 +131,9 @@ setInterval(() => {
   for (const [key, bucket] of rateBuckets) {
     if (bucket.resetAt <= now) rateBuckets.delete(key);
   }
+  for (const [token, expiresAt] of devSessions) {
+    if (expiresAt <= now) devSessions.delete(token);
+  }
 }, 60000).unref();
 
 // Senha errada: 5 tentativas a cada 15 minutos por IP
@@ -119,6 +150,8 @@ const COURT_FIRST_HOUR = 7;
 const COURT_LAST_HOUR = 21;
 const SCREEN_TYPES = new Set(["totem", "mobile", "dev"]);
 const COURT_STATUSES = new Set(["livre", "em_uso", "manutencao"]);
+// Intervalo mínimo entre dois toques do sino público
+const BELL_COOLDOWN_SECONDS = 40;
 
 // Texto livre vindo de fora: remove caracteres de controle e < > (impede HTML),
 // junta espaços e limita o tamanho. As páginas também escapam ao renderizar.
@@ -134,6 +167,22 @@ function clampNumber(value, min, max, fallback) {
   const n = Number(value);
   if (!Number.isFinite(n)) return fallback;
   return Math.min(max, Math.max(min, Math.round(n)));
+}
+
+// Data e hora no fuso da praça (o servidor Ubuntu pode estar em UTC)
+const COURT_TIME_ZONE = "America/Sao_Paulo";
+const courtClockFormat = new Intl.DateTimeFormat("en-CA", {
+  timeZone: COURT_TIME_ZONE,
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  hourCycle: "h23"
+});
+
+function getCourtClock() {
+  const parts = Object.fromEntries(courtClockFormat.formatToParts(new Date()).map(p => [p.type, p.value]));
+  return { date: `${parts.year}-${parts.month}-${parts.day}`, hour: Number(parts.hour) };
 }
 
 // Aceita "16:00" ou "16:00 às 17:00"; devolve a hora cheia (7..21) ou null
@@ -197,7 +246,8 @@ const SECURITY_HEADERS = {
   "Permissions-Policy": "camera=(), microphone=(), geolocation=(), payment=()",
   "Content-Security-Policy": [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com",
+    // Bibliotecas (Tailwind, three.js, qrcode) ficam em assets/: nada de scripts de terceiros
+    "script-src 'self' 'unsafe-inline'",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com data:",
     "img-src 'self' data: blob:",
@@ -275,9 +325,11 @@ const DEFAULT_STATE = {
       tagColor: "cyan"
     }
   ],
+  // Dia (fuso da praça) a que as reservas pertencem
+  bookingsDate: getCourtClock().date,
   bell: {
     enabled: true,
-    cooldownSeconds: 20,
+    cooldownSeconds: BELL_COOLDOWN_SECONDS,
     lastRung: 0
   },
   lastBroadcast: Date.now()
@@ -296,7 +348,8 @@ function loadState() {
         court: { ...DEFAULT_STATE.court, ...(data.court || {}) },
         courtBookings: Array.isArray(data.courtBookings) ? data.courtBookings : DEFAULT_STATE.courtBookings,
         weeklyActivities: Array.isArray(data.weeklyActivities) ? data.weeklyActivities : DEFAULT_STATE.weeklyActivities,
-        bell: { ...DEFAULT_STATE.bell, ...(data.bell || {}) }
+        // O intervalo do sino vem sempre do código (ignora o valor salvo)
+        bell: { ...DEFAULT_STATE.bell, ...(data.bell || {}), cooldownSeconds: BELL_COOLDOWN_SECONDS }
       };
       console.log("[STATE] Estado global carregado com sucesso de state.json");
     }
@@ -315,6 +368,21 @@ function saveState() {
 }
 
 loadState();
+
+// As reservas valem só para o dia: na virada a grade volta a ficar livre,
+// então reservas falsas ou esquecidas não bloqueiam a quadra para sempre.
+function resetBookingsIfNewDay() {
+  const { date } = getCourtClock();
+  if (globalState.bookingsDate === date) return;
+  const hadBookings = globalState.courtBookings.length > 0;
+  globalState.courtBookings = [];
+  globalState.bookingsDate = date;
+  saveState();
+  console.log(`[STATE] Novo dia (${date}): reservas da quadra zeradas`);
+  if (hadBookings) {
+    broadcastEvent("court_booking_update", { bookings: [], court: globalState.court });
+  }
+}
 
 // ==========================================
 // HUB DE TRANSMISSÃO EM TEMPO REAL (SSE) & TELEMETRIA
@@ -363,6 +431,10 @@ setInterval(() => {
     }
   }
 }, 25000);
+
+// Confere a virada do dia na inicialização e a cada minuto (avisa as telas)
+resetBookingsIfNewDay();
+setInterval(resetBookingsIfNewDay, 60000).unref();
 
 // ==========================================
 // MIME TYPES & COMPRESSÃO
@@ -456,6 +528,10 @@ const server = http.createServer(async (req, res) => {
     res.writeHead(400, { "Content-Type": "text/plain; charset=utf-8" });
     res.end("Bad Request");
     return;
+  }
+
+  if (pathname.startsWith("/api/")) {
+    resetBookingsIfNewDay();
   }
 
   if (method === "OPTIONS") {
@@ -557,16 +633,40 @@ const server = http.createServer(async (req, res) => {
     if (authLockedResponse(res, clientIp)) return;
     try {
       const body = await readRequestBody(req);
-      const isAuthValid = validateAuth(req, body);
-      if (!isAuthValid) {
-        registerAuthFailure(clientIp);
-        sendJson(res, 401, { success: false, error: "Senha incorreta do Painel Dev." });
+
+      // Login com senha: devolve um token de sessão novo
+      if (body.password) {
+        if (!checkPassword(body.password)) {
+          registerAuthFailure(clientIp);
+          sendJson(res, 401, { success: false, error: "Senha incorreta do Painel Dev." });
+          return;
+        }
+        sendJson(res, 200, {
+          success: true,
+          message: "Autenticação realizada com sucesso.",
+          token: createDevSession(),
+          expiresInSeconds: DEV_SESSION_TTL_MS / 1000
+        });
         return;
       }
-      sendJson(res, 200, { success: true, message: "Autenticação realizada com sucesso." });
+
+      // Sem senha: só confere se o token de sessão ainda vale
+      if (!isValidDevSession(getBearerToken(req))) {
+        registerAuthFailure(clientIp);
+        sendJson(res, 401, { success: false, error: "Sessão expirada. Digite a senha novamente." });
+        return;
+      }
+      sendJson(res, 200, { success: true, message: "Sessão válida." });
     } catch (err) {
       sendJson(res, 400, { error: err.message });
     }
+    return;
+  }
+
+  // Encerra a sessão do painel dev (botão de bloquear)
+  if (pathname === "/api/auth/logout" && method === "POST") {
+    devSessions.delete(getBearerToken(req));
+    sendJson(res, 200, { success: true });
     return;
   }
 
@@ -605,6 +705,10 @@ const server = http.createServer(async (req, res) => {
         sendJson(res, 400, {
           error: `Horário inválido. Escolha uma hora cheia entre ${COURT_FIRST_HOUR}:00 e ${COURT_LAST_HOUR}:00.`
         });
+        return;
+      }
+      if (hour < getCourtClock().hour) {
+        sendJson(res, 400, { error: "Esse horário já passou. Escolha um horário a partir de agora." });
         return;
       }
       if (!trimmedName || !trimmedSport) {
