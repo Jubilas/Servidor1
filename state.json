@@ -1,10 +1,12 @@
 {
-  "weather": "wind",
+  "weather": "sun",
   "sakuraPhase": 3,
   "windStrength": 1,
   "court": {
-    "status": "em_uso",
-    "remainingMinutes": 22
+    "status": "livre",
+    "activity": "Basquete 3x3 Juvenil",
+    "remainingMinutes": 22,
+    "nextSlot": "15:00 às 16:00 (Treino de Vôlei)"
   },
   "courtBookings": [
     {
@@ -16,6 +18,16 @@
       "bookedBy": "Turma do Vôlei",
       "timeSlot": "15:00 às 16:00",
       "createdAt": 1791607000000
+    },
+    {
+      "id": "book-1792097665354",
+      "slot": "17:00",
+      "timeLabel": "17:00 às 18:00",
+      "name": "aaaaaaaaa",
+      "sport": "Basquete",
+      "bookedBy": "aaaaaaaaa",
+      "timeSlot": "17:00 às 18:00",
+      "createdAt": 1792097665354
     },
     {
       "id": "book-2",
@@ -61,7 +73,7 @@
   "bell": {
     "enabled": true,
     "cooldownSeconds": 20,
-    "lastRung": 1791699920365
+    "lastRung": 1792098042083
   },
-  "lastBroadcast": 1791701887008
+  "lastBroadcast": 1792097945935
 }
