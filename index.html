@@ -3745,7 +3745,7 @@
           this.engine = engine;
           this.sound = sound;
           this.eventSource = null;
-          this.bellCooldownSeconds = 20;
+          this.bellCooldownSeconds = 40;
           this.bellRemaining = 0;
           this.bellInterval = null;
           this.bellEnabled = true;
@@ -4021,7 +4021,7 @@
 
         updateBellConfig(bell) {
           this.bellEnabled = bell.enabled;
-          this.bellCooldownSeconds = bell.cooldownSeconds || 20;
+          this.bellCooldownSeconds = bell.cooldownSeconds || 40;
           const btn = document.getElementById('btn-community-bell');
           const sub = document.getElementById('bell-btn-sub');
           const tag = document.getElementById('bell-badge-tag');
@@ -4061,7 +4061,7 @@
           }
 
           showToast("O Sino da Praça foi tocado! Harmônicos de Furin na praça.");
-          const cd = data.cooldownSeconds || 20;
+          const cd = data.cooldownSeconds || 40;
           this.startCooldown(cd);
         }
 
@@ -4113,7 +4113,7 @@
               const json = await res.json();
               if (res.status === 429) {
                 showToast(`Aguarde o cooldown (${json.remainingSeconds}s)...`);
-                this.startCooldown(json.remainingSeconds || 20);
+                this.startCooldown(json.remainingSeconds || 40);
               } else if (res.status === 403) {
                 showToast(json.error || "Sino temporariamente desativado.");
               }

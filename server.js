@@ -150,6 +150,8 @@ const COURT_FIRST_HOUR = 7;
 const COURT_LAST_HOUR = 21;
 const SCREEN_TYPES = new Set(["totem", "mobile", "dev"]);
 const COURT_STATUSES = new Set(["livre", "em_uso", "manutencao"]);
+// Intervalo mínimo entre dois toques do sino público
+const BELL_COOLDOWN_SECONDS = 40;
 
 // Texto livre vindo de fora: remove caracteres de controle e < > (impede HTML),
 // junta espaços e limita o tamanho. As páginas também escapam ao renderizar.
@@ -327,7 +329,7 @@ const DEFAULT_STATE = {
   bookingsDate: getCourtClock().date,
   bell: {
     enabled: true,
-    cooldownSeconds: 20,
+    cooldownSeconds: BELL_COOLDOWN_SECONDS,
     lastRung: 0
   },
   lastBroadcast: Date.now()
@@ -346,7 +348,8 @@ function loadState() {
         court: { ...DEFAULT_STATE.court, ...(data.court || {}) },
         courtBookings: Array.isArray(data.courtBookings) ? data.courtBookings : DEFAULT_STATE.courtBookings,
         weeklyActivities: Array.isArray(data.weeklyActivities) ? data.weeklyActivities : DEFAULT_STATE.weeklyActivities,
-        bell: { ...DEFAULT_STATE.bell, ...(data.bell || {}) }
+        // O intervalo do sino vem sempre do código (ignora o valor salvo)
+        bell: { ...DEFAULT_STATE.bell, ...(data.bell || {}), cooldownSeconds: BELL_COOLDOWN_SECONDS }
       };
       console.log("[STATE] Estado global carregado com sucesso de state.json");
     }
