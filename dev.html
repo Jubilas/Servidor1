@@ -732,6 +732,11 @@
     const urlToken = urlParams.get('token') || urlParams.get('pass');
     if (urlToken) {
       sessionStorage.setItem('dev_auth_token', urlToken);
+      // Tira a senha da barra de endereço/histórico do navegador
+      urlParams.delete('token');
+      urlParams.delete('pass');
+      const rest = urlParams.toString();
+      history.replaceState(null, '', window.location.pathname + (rest ? `?${rest}` : '') + window.location.hash);
     }
     let devPassword = sessionStorage.getItem('dev_auth_token') || '';
     let currentActivities = [];
@@ -784,6 +789,9 @@
       }, 3500);
     }
 
+    // Escapa texto vindo do servidor antes de montar HTML (evita XSS)
+    const escapeHtml = (v) => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
     // Helper de Log no Console Visual
     function logEvent(tag, details, colorClass = "text-slate-300") {
       const logContainer = document.getElementById('event-logs');
@@ -792,8 +800,8 @@
       div.className = "flex items-start gap-2 leading-relaxed";
       div.innerHTML = `
         <span class="text-slate-500 select-none">[${timeStr}]</span>
-        <span class="px-1.5 py-0.2 rounded bg-studio-card border border-studio-border text-[10px] font-bold ${colorClass}">${tag}</span>
-        <span class="text-slate-300 flex-1">${details}</span>
+        <span class="px-1.5 py-0.2 rounded bg-studio-card border border-studio-border text-[10px] font-bold ${colorClass}">${escapeHtml(tag)}</span>
+        <span class="text-slate-300 flex-1">${escapeHtml(details)}</span>
       `;
       logContainer.appendChild(div);
       logContainer.scrollTop = logContainer.scrollHeight;
@@ -903,8 +911,8 @@
           <div class="flex items-center gap-2.5">
             <span class="p-1 rounded-lg bg-studio-bg flex items-center justify-center">${iconSvg}</span>
             <div>
-              <span class="font-bold text-white block">${s.name || s.id}</span>
-              <span class="text-[10px] text-slate-400">${typeBadge} • IP: ${s.ip}</span>
+              <span class="font-bold text-white block">${escapeHtml(s.name || s.id)}</span>
+              <span class="text-[10px] text-slate-400">${typeBadge}</span>
             </div>
           </div>
           <div class="flex items-center gap-2">
@@ -934,10 +942,10 @@
         item.className = "flex items-center justify-between p-2 rounded-lg bg-studio-bg border border-studio-border text-[11px]";
         item.innerHTML = `
           <div>
-            <span class="text-cyan-400 font-bold">${b.slot}</span>
-            <span class="text-slate-300 ml-1.5">${b.name} (${b.sport})</span>
+            <span class="text-cyan-400 font-bold">${escapeHtml(b.slot)}</span>
+            <span class="text-slate-300 ml-1.5">${escapeHtml(b.name)} (${escapeHtml(b.sport)})</span>
           </div>
-          <button class="btn-cancel-slot text-rose-400 hover:text-rose-300 px-2 py-0.5 rounded bg-rose-500/10 hover:bg-rose-500/20 text-[10px]" data-id="${b.id}" data-slot="${b.slot}">
+          <button class="btn-cancel-slot text-rose-400 hover:text-rose-300 px-2 py-0.5 rounded bg-rose-500/10 hover:bg-rose-500/20 text-[10px]" data-id="${escapeHtml(b.id)}" data-slot="${escapeHtml(b.slot)}">
             Cancelar
           </button>
         `;
@@ -974,9 +982,9 @@
           <div class="flex items-start gap-2.5">
             <span class="p-1.5 rounded-lg bg-studio-bg flex items-center justify-center">${iconSvg}</span>
             <div>
-              <span class="text-[10px] font-mono text-sakura-400 font-bold block">${act.dayTime}</span>
-              <span class="font-bold text-white text-xs block">${act.title}</span>
-              <span class="text-[11px] text-slate-400 block">${act.desc}</span>
+              <span class="text-[10px] font-mono text-sakura-400 font-bold block">${escapeHtml(act.dayTime)}</span>
+              <span class="font-bold text-white text-xs block">${escapeHtml(act.title)}</span>
+              <span class="text-[11px] text-slate-400 block">${escapeHtml(act.desc)}</span>
             </div>
           </div>
           <button class="btn-del-act text-rose-400 hover:text-rose-300 p-1 rounded hover:bg-rose-500/20 text-xs" data-idx="${idx}" title="Excluir atividade">

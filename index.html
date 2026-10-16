@@ -3923,7 +3923,10 @@
               courtStatusTitle.className = "text-2xl sm:text-3xl font-extrabold text-rose-900 mb-1 flex items-center";
             }
             if (courtStatusDesc) {
-              courtStatusDesc.innerHTML = `Partida amistosa de <strong>${court.activity || 'Basquete 3x3'}</strong>.`;
+              // Monta pelo DOM: o nome da atividade nunca é interpretado como HTML
+              const strongEl = document.createElement('strong');
+              strongEl.textContent = court.activity || 'Basquete 3x3';
+              courtStatusDesc.replaceChildren('Partida amistosa de ', strongEl, '.');
             }
             if (courtStatusCard) {
               courtStatusCard.className = "glass-card p-6 rounded-lg border border-rose-500 bg-rose-500/10 flex flex-col justify-between";

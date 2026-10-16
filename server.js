@@ -64,6 +64,153 @@ function validateAuth(req, body) {
 }
 
 // ==========================================
+// SEGURANÇA: IP DO CLIENTE, RATE LIMIT E SANITIZAÇÃO
+// ==========================================
+// Atrás do Cloudflare Tunnel o IP real vem em CF-Connecting-IP. Sem o túnel
+// (acesso direto pela rede local) usamos o IP do socket.
+function getClientIp(req) {
+  const cfIp = req.headers["cf-connecting-ip"];
+  const ip = (typeof cfIp === "string" && cfIp) || req.socket.remoteAddress || "desconhecido";
+  return ip.replace(/^::ffff:/, "");
+}
+
+// Contadores em memória por chave (ex.: "book:1.2.3.4"), em janela fixa
+const rateBuckets = new Map(); // key -> { count, resetAt }
+
+function hitRateLimit(key, limit, windowMs) {
+  const now = Date.now();
+  let bucket = rateBuckets.get(key);
+  if (!bucket || bucket.resetAt <= now) {
+    bucket = { count: 0, resetAt: now + windowMs };
+    rateBuckets.set(key, bucket);
+  }
+  bucket.count++;
+  return bucket.count > limit;
+}
+
+function isRateLimited(key, limit) {
+  const bucket = rateBuckets.get(key);
+  return Boolean(bucket && bucket.resetAt > Date.now() && bucket.count >= limit);
+}
+
+function retryAfterSeconds(key) {
+  const bucket = rateBuckets.get(key);
+  return bucket ? Math.max(1, Math.ceil((bucket.resetAt - Date.now()) / 1000)) : 60;
+}
+
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, bucket] of rateBuckets) {
+    if (bucket.resetAt <= now) rateBuckets.delete(key);
+  }
+}, 60000).unref();
+
+// Senha errada: 5 tentativas a cada 15 minutos por IP
+const AUTH_MAX_FAILURES = 5;
+const AUTH_WINDOW_MS = 15 * 60 * 1000;
+// Agendamento público: 5 reservas a cada 10 minutos por IP
+const BOOK_MAX_PER_WINDOW = 5;
+const BOOK_WINDOW_MS = 10 * 60 * 1000;
+// Conexões SSE simultâneas
+const SSE_MAX_PER_IP = 20;
+const SSE_MAX_TOTAL = 300;
+// Quadra funciona das 07:00 às 22:00 (último horário reservável: 21:00)
+const COURT_FIRST_HOUR = 7;
+const COURT_LAST_HOUR = 21;
+const SCREEN_TYPES = new Set(["totem", "mobile", "dev"]);
+const COURT_STATUSES = new Set(["livre", "em_uso", "manutencao"]);
+
+// Texto livre vindo de fora: remove caracteres de controle e < > (impede HTML),
+// junta espaços e limita o tamanho. As páginas também escapam ao renderizar.
+function cleanText(value, maxLength) {
+  return String(value ?? "")
+    .replace(/[\u0000-\u001F\u007F<>]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, maxLength);
+}
+
+function clampNumber(value, min, max, fallback) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return fallback;
+  return Math.min(max, Math.max(min, Math.round(n)));
+}
+
+// Aceita "16:00" ou "16:00 às 17:00"; devolve a hora cheia (7..21) ou null
+function parseCourtHour(rawSlot) {
+  const match = String(rawSlot ?? "").trim().match(/^(\d{1,2}):00\b/);
+  if (!match) return null;
+  const hour = Number(match[1]);
+  return hour >= COURT_FIRST_HOUR && hour <= COURT_LAST_HOUR ? hour : null;
+}
+
+function sendJson(res, status, data, extraHeaders = {}) {
+  const payload = JSON.stringify(data);
+  res.writeHead(status, {
+    "Content-Type": "application/json; charset=utf-8",
+    "Content-Length": Buffer.byteLength(payload),
+    "Cache-Control": "no-cache",
+    ...extraHeaders
+  });
+  res.end(payload);
+}
+
+// Bloqueia o IP depois de várias senhas erradas (força bruta)
+function authLockedResponse(res, ip) {
+  const key = `auth-fail:${ip}`;
+  if (!isRateLimited(key, AUTH_MAX_FAILURES)) return false;
+  const wait = retryAfterSeconds(key);
+  sendJson(res, 429, {
+    success: false,
+    error: `Muitas tentativas de senha. Tente novamente em ${Math.ceil(wait / 60)} minuto(s).`
+  }, { "Retry-After": String(wait) });
+  return true;
+}
+
+function registerAuthFailure(ip) {
+  hitRateLimit(`auth-fail:${ip}`, AUTH_MAX_FAILURES, AUTH_WINDOW_MS);
+  console.warn(`[AUTH] Senha incorreta vinda de ${ip}`);
+}
+
+// Arquivos que o site pode servir. Todo o resto (senha_dev.txt, .git/,
+// server.js, state.json, testes...) responde 404.
+const PUBLIC_FILES = new Set([
+  "index.html",
+  "agendar.html",
+  "dev.html",
+  "studio.html",
+  "favicon.svg",
+  "icons.svg",
+  "logo.jpg",
+  "praca_antiga.jpg"
+]);
+const PUBLIC_ASSET_PATTERN = /^assets\/[A-Za-z0-9_-][A-Za-z0-9._-]*\.(?:jpg|jpeg|png|webp|gif|svg|ico|css|js|woff2?|ttf|otf)$/;
+
+function isPublicFile(cleanPath) {
+  return PUBLIC_FILES.has(cleanPath) || PUBLIC_ASSET_PATTERN.test(cleanPath);
+}
+
+const SECURITY_HEADERS = {
+  "X-Content-Type-Options": "nosniff",
+  "X-Frame-Options": "SAMEORIGIN",
+  "Referrer-Policy": "strict-origin-when-cross-origin",
+  "Permissions-Policy": "camera=(), microphone=(), geolocation=(), payment=()",
+  "Content-Security-Policy": [
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+    "font-src 'self' https://fonts.gstatic.com data:",
+    "img-src 'self' data: blob:",
+    "media-src 'self' data: blob:",
+    "connect-src 'self'",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "frame-ancestors 'self'"
+  ].join("; ")
+};
+
+// ==========================================
 // ESTADO GLOBAL COMPARTILHADO DA PRAÇA
 // ==========================================
 const DEFAULT_STATE = {
@@ -174,13 +321,13 @@ loadState();
 // ==========================================
 const sseClients = new Map(); // res -> { id, name, type, ip, connectedAt }
 
+// O IP fica só no servidor (limite de conexões); a lista pública não o expõe
 function getActiveScreensList() {
   const now = Date.now();
   return Array.from(sseClients.values()).map(c => ({
     id: c.id,
     name: c.name,
     type: c.type,
-    ip: c.ip,
     connectedAt: c.connectedAt,
     onlineSeconds: Math.floor((now - c.connectedAt) / 1000)
   }));
@@ -272,14 +419,15 @@ function readRequestBody(req) {
       body += chunk;
       if (body.length > 1024 * 64) {
         req.destroy();
-        reject(new Error("Payload Too Large"));
+        reject(new Error("Requisição grande demais."));
       }
     });
     req.on("end", () => {
       try {
-        resolve(body ? JSON.parse(body) : {});
-      } catch (err) {
-        reject(err);
+        const parsed = body ? JSON.parse(body) : {};
+        resolve(parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {});
+      } catch {
+        reject(new Error("JSON inválido."));
       }
     });
     req.on("error", reject);
@@ -293,12 +441,22 @@ const server = http.createServer(async (req, res) => {
   const startTime = Date.now();
   const method = req.method || "GET";
   const rawUrl = req.url || "/";
-  const pathname = decodeURIComponent(rawUrl.split("?")[0]);
+  const clientIp = getClientIp(req);
 
-  // Headers globais de CORS
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  // Cabeçalhos de segurança em todas as respostas. Sem CORS: as páginas são
+  // servidas pelo mesmo domínio, então outros sites não podem chamar a API.
+  for (const [name, value] of Object.entries(SECURITY_HEADERS)) {
+    res.setHeader(name, value);
+  }
+
+  let pathname;
+  try {
+    pathname = decodeURIComponent(rawUrl.split("?")[0]);
+  } catch {
+    res.writeHead(400, { "Content-Type": "text/plain; charset=utf-8" });
+    res.end("Bad Request");
+    return;
+  }
 
   if (method === "OPTIONS") {
     res.writeHead(204);
@@ -342,6 +500,16 @@ const server = http.createServer(async (req, res) => {
 
   // 3. STREAMING EM TEMPO REAL (GET /api/events) - Server-Sent Events
   if (pathname === "/api/events") {
+    // Limita conexões abertas por IP e no total (evita esgotar o servidor)
+    let connectionsFromIp = 0;
+    for (const c of sseClients.values()) {
+      if (c.ip === clientIp) connectionsFromIp++;
+    }
+    if (connectionsFromIp >= SSE_MAX_PER_IP || sseClients.size >= SSE_MAX_TOTAL) {
+      sendJson(res, 429, { error: "Muitas conexões abertas. Tente novamente mais tarde." }, { "Retry-After": "30" });
+      return;
+    }
+
     res.writeHead(200, {
       "Content-Type": "text/event-stream; charset=utf-8",
       "Cache-Control": "no-cache, no-transform",
@@ -349,10 +517,11 @@ const server = http.createServer(async (req, res) => {
       "X-Accel-Buffering": "no"
     });
 
-    const parsedUrl = new URL(rawUrl, `http://${req.headers.host || "localhost"}`);
-    let screenId = parsedUrl.searchParams.get("screenId");
-    let screenType = parsedUrl.searchParams.get("screenType") || "totem";
-    let screenName = parsedUrl.searchParams.get("screenName") || "";
+    const parsedUrl = new URL(rawUrl, "http://localhost");
+    const requestedType = parsedUrl.searchParams.get("screenType");
+    const screenType = SCREEN_TYPES.has(requestedType) ? requestedType : "totem";
+    let screenId = cleanText(parsedUrl.searchParams.get("screenId"), 40);
+    let screenName = cleanText(parsedUrl.searchParams.get("screenName"), 40);
 
     if (!screenId) {
       const randNum = Math.floor(1000 + Math.random() * 9000);
@@ -362,7 +531,6 @@ const server = http.createServer(async (req, res) => {
       screenName = screenId;
     }
 
-    const clientIp = (req.headers["x-forwarded-for"] || req.socket.remoteAddress || "127.0.0.1").replace(/^::ffff:/, '');
     const clientMeta = {
       id: screenId,
       name: screenName,
@@ -386,19 +554,18 @@ const server = http.createServer(async (req, res) => {
 
   // 4. VERIFICAÇÃO DE SENHA DO DEV ADMIN (POST /api/auth/verify)
   if (pathname === "/api/auth/verify" && method === "POST") {
+    if (authLockedResponse(res, clientIp)) return;
     try {
       const body = await readRequestBody(req);
       const isAuthValid = validateAuth(req, body);
       if (!isAuthValid) {
-        res.writeHead(401, { "Content-Type": "application/json; charset=utf-8" });
-        res.end(JSON.stringify({ success: false, error: "Senha incorreta do Painel Dev." }));
+        registerAuthFailure(clientIp);
+        sendJson(res, 401, { success: false, error: "Senha incorreta do Painel Dev." });
         return;
       }
-      res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
-      res.end(JSON.stringify({ success: true, message: "Autenticação realizada com sucesso." }));
+      sendJson(res, 200, { success: true, message: "Autenticação realizada com sucesso." });
     } catch (err) {
-      res.writeHead(400, { "Content-Type": "application/json; charset=utf-8" });
-      res.end(JSON.stringify({ error: err.message }));
+      sendJson(res, 400, { error: err.message });
     }
     return;
   }
@@ -419,37 +586,45 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (pathname === "/api/court/book" && method === "POST") {
+    const bookKey = `book:${clientIp}`;
+    if (isRateLimited(bookKey, BOOK_MAX_PER_WINDOW)) {
+      const wait = retryAfterSeconds(bookKey);
+      sendJson(res, 429, {
+        success: false,
+        error: `Muitas reservas seguidas. Tente novamente em ${Math.ceil(wait / 60)} minuto(s).`
+      }, { "Retry-After": String(wait) });
+      return;
+    }
     try {
       const body = await readRequestBody(req);
-      const rawSlot = body.slot || body.timeSlot;
-      const rawName = body.name || body.bookedBy;
-      const rawSport = body.sport;
+      const hour = parseCourtHour(body.slot || body.timeSlot);
+      const trimmedName = cleanText(body.name || body.bookedBy, 50);
+      const trimmedSport = cleanText(body.sport, 40);
 
-      if (!rawSlot || !rawName || !rawSport) {
-        res.writeHead(400, { "Content-Type": "application/json; charset=utf-8" });
-        res.end(JSON.stringify({ error: "Horário, nome do responsável e modalidade são obrigatórios." }));
+      if (hour === null) {
+        sendJson(res, 400, {
+          error: `Horário inválido. Escolha uma hora cheia entre ${COURT_FIRST_HOUR}:00 e ${COURT_LAST_HOUR}:00.`
+        });
+        return;
+      }
+      if (!trimmedName || !trimmedSport) {
+        sendJson(res, 400, { error: "Horário, nome do responsável e modalidade são obrigatórios." });
         return;
       }
 
-      const trimmedSlot = String(rawSlot).trim();
-      const cleanSlot = trimmedSlot.split(" ")[0]; // "16:00" if "16:00 às 17:00"
-      const trimmedName = String(rawName).trim().slice(0, 50);
-      const trimmedSport = String(rawSport).trim().slice(0, 40);
+      const cleanSlot = `${String(hour).padStart(2, "0")}:00`;
+      const timeLabel = `${cleanSlot} às ${String(hour + 1).padStart(2, "0")}:00`;
 
       // Verifica se o horário já está reservado
-      const alreadyBooked = globalState.courtBookings.some(b => 
-        b.slot === cleanSlot || b.slot === trimmedSlot || b.timeLabel === trimmedSlot
+      const alreadyBooked = globalState.courtBookings.some(b =>
+        b.slot === cleanSlot || b.timeLabel === timeLabel
       );
       if (alreadyBooked) {
-        res.writeHead(409, { "Content-Type": "application/json; charset=utf-8" });
-        res.end(JSON.stringify({ success: false, error: `O horário ${trimmedSlot} já está reservado por outra pessoa.` }));
+        sendJson(res, 409, { success: false, error: `O horário ${timeLabel} já está reservado por outra pessoa.` });
         return;
       }
 
-      const hourMatch = cleanSlot.match(/^(\d{1,2}):\d{2}/);
-      const hour = hourMatch ? parseInt(hourMatch[1]) : 0;
-      const nextHourStr = `${String(hour + 1).padStart(2, "0")}:00`;
-      const timeLabel = trimmedSlot.includes("às") ? trimmedSlot : `${cleanSlot} às ${nextHourStr}`;
+      hitRateLimit(bookKey, BOOK_MAX_PER_WINDOW, BOOK_WINDOW_MS);
 
       const newBooking = {
         id: "book-" + Date.now(),
@@ -481,8 +656,7 @@ const server = http.createServer(async (req, res) => {
         bookings: globalState.courtBookings
       }));
     } catch (err) {
-      res.writeHead(500, { "Content-Type": "application/json; charset=utf-8" });
-      res.end(JSON.stringify({ error: err.message }));
+      sendJson(res, 400, { error: err.message });
     }
     return;
   }
@@ -534,15 +708,16 @@ const server = http.createServer(async (req, res) => {
 
   // 7. PAINEL DE CONTROLE / DEV ADMIN (POST /api/control) — PROTEGIDO COM SENHA
   if (pathname === "/api/control" && method === "POST") {
+    if (authLockedResponse(res, clientIp)) return;
     try {
       const body = await readRequestBody(req);
 
       // Validação de senha obrigatória para todos os comandos dev
       if (!validateAuth(req, body)) {
-        res.writeHead(401, { "Content-Type": "application/json; charset=utf-8" });
-        res.end(JSON.stringify({
+        registerAuthFailure(clientIp);
+        sendJson(res, 401, {
           error: "Acesso não autorizado ao painel dev. Senha incorreta ou ausente."
-        }));
+        });
         return;
       }
 
@@ -565,15 +740,16 @@ const server = http.createServer(async (req, res) => {
       } else if (action === "gust_wind") {
         broadcastEvent("wind_gust", { timestamp: Date.now() });
       } else if (action === "set_court") {
-        const courtData = body.court || {
-          status: body.status,
-          remainingMinutes: body.remainingMinutes,
-          activity: body.activity,
-          nextSlot: body.nextSlot
-        };
+        const courtData = (body.court && typeof body.court === "object") ? body.court : body;
+        // Só aceita os campos conhecidos, já validados
+        const current = globalState.court;
         globalState.court = {
-          ...globalState.court,
-          ...courtData
+          status: COURT_STATUSES.has(courtData.status) ? courtData.status : current.status,
+          remainingMinutes: courtData.remainingMinutes !== undefined
+            ? clampNumber(courtData.remainingMinutes, 0, 600, current.remainingMinutes)
+            : current.remainingMinutes,
+          activity: courtData.activity !== undefined ? cleanText(courtData.activity, 60) : current.activity,
+          nextSlot: courtData.nextSlot !== undefined ? cleanText(courtData.nextSlot, 80) : current.nextSlot
         };
         saveState();
         broadcastEvent("court_change", { court: globalState.court });
@@ -591,24 +767,32 @@ const server = http.createServer(async (req, res) => {
           source: "admin"
         });
       } else if (action === "send_toast" || action === "toast") {
-        if (body.message) {
-          const duration = body.duration !== undefined ? body.duration : 30;
+        const message = cleanText(body.message, 300);
+        if (message) {
           broadcastEvent("toast_broadcast", {
             id: Date.now(),
-            message: String(body.message),
-            title: body.title || "Aviso da Praça",
-            duration: duration
+            message: message,
+            title: cleanText(body.title, 80) || "Aviso da Praça",
+            duration: clampNumber(body.duration, 1, 3600, 30)
           });
         }
       } else if (action === "set_activities") {
         if (Array.isArray(body.activities)) {
-          globalState.weeklyActivities = body.activities.map(act => {
+          globalState.weeklyActivities = body.activities.slice(0, 30).map((rawAct, idx) => {
+            const act = rawAct && typeof rawAct === "object" ? rawAct : {};
             let icon = String(act.icon || 'geral').trim();
             if (icon === '\u{1F9D8}') icon = 'zen';
             else if (icon === '\u{1F955}') icon = 'organico';
             else if (icon === '\u{1F3C0}' || icon === '\u{26BD}' || icon === '\u{1F3D0}' || icon === '\u{1F3BE}') icon = 'esporte';
             else if (icon === '\u{1F3A8}') icon = 'arte';
-            return { ...act, icon };
+            return {
+              id: cleanText(act.id, 40) || `act-${Date.now()}-${idx}`,
+              icon: cleanText(icon, 20).replace(/[^a-z0-9_-]/gi, "") || "geral",
+              dayTime: cleanText(act.dayTime, 40),
+              title: cleanText(act.title, 80),
+              desc: cleanText(act.desc, 200),
+              tagColor: cleanText(act.tagColor, 20).replace(/[^a-z0-9_-]/gi, "") || "sakura"
+            };
           });
           saveState();
           broadcastEvent("activities_change", { activities: globalState.weeklyActivities });
@@ -658,22 +842,28 @@ const server = http.createServer(async (req, res) => {
     cleanPath = "index.html";
   }
 
-  const filePath = path.join(PUBLIC_DIR, cleanPath);
-  if (!filePath.startsWith(PUBLIC_DIR)) {
-    res.writeHead(403, { "Content-Type": "text/plain; charset=utf-8" });
-    res.end("Forbidden");
+  if (method !== "GET" && method !== "HEAD") {
+    res.writeHead(405, { "Content-Type": "text/plain; charset=utf-8", "Allow": "GET, HEAD" });
+    res.end("Method Not Allowed");
     return;
   }
 
-  fs.stat(filePath, (err, stats) => {
-    let servePath = filePath;
-    let isFallback = false;
+  let servePath;
+  let isFallback = false;
+  if (isPublicFile(cleanPath)) {
+    servePath = path.join(PUBLIC_DIR, cleanPath);
+  } else if (!path.posix.basename(cleanPath).includes(".") && !cleanPath.split("/").some(seg => seg.startsWith("."))) {
+    // Rota sem extensão (navegação SPA): devolve o index.html
+    servePath = path.join(PUBLIC_DIR, "index.html");
+    isFallback = true;
+  } else {
+    // Qualquer arquivo fora da lista pública (senha, .git, código, estado...)
+    res.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
+    res.end("404 Not Found");
+    return;
+  }
 
-    if (err || !stats.isFile()) {
-      // Fallback para index.html se for navegação SPA
-      servePath = path.join(PUBLIC_DIR, "index.html");
-      isFallback = true;
-    }
+  {
 
     fs.stat(servePath, (statErr, finalStats) => {
       if (statErr || !finalStats.isFile()) {
@@ -684,12 +874,10 @@ const server = http.createServer(async (req, res) => {
 
       const contentType = MIME_TYPES[path.extname(servePath).toLowerCase()] || "application/octet-stream";
       const headers = {
-        "Content-Type": contentType,
-        "Access-Control-Allow-Origin": "*",
-        "X-Content-Type-Options": "nosniff"
+        "Content-Type": contentType
       };
 
-      if (servePath.includes("/assets/") && !isFallback) {
+      if (cleanPath.startsWith("assets/") && !isFallback) {
         headers["Cache-Control"] = "public, max-age=31536000, immutable";
       } else {
         headers["Cache-Control"] = "no-cache, must-revalidate";
@@ -731,12 +919,12 @@ const server = http.createServer(async (req, res) => {
         const duration = Date.now() - startTime;
         const status = res.statusCode;
         if (pathname !== "/api/events") {
-          const logMsg = `[${new Date().toLocaleTimeString()}] ${method} ${pathname} -> ${status} (${duration}ms)\n`;
+          const logMsg = `[${new Date().toLocaleTimeString()}] ${method} ${cleanText(pathname, 200)} -> ${status} (${duration}ms)\n`;
           process.stdout.write(logMsg);
         }
       });
     });
-  });
+  }
 });
 
 process.on("uncaughtException", (err) => {
