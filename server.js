@@ -94,11 +94,17 @@ function validateAuth(req, body) {
 // ==========================================
 // SEGURANÇA: IP DO CLIENTE, RATE LIMIT E SANITIZAÇÃO
 // ==========================================
-// Atrás do Cloudflare Tunnel o IP real vem em CF-Connecting-IP. Sem o túnel
-// (acesso direto pela rede local) usamos o IP do socket.
+// Atrás do Cloudflare Tunnel o IP real vem em CF-Connecting-IP. Só confiamos
+// nesse cabeçalho quando a conexão vem do próprio servidor (o cloudflared):
+// quem acessa direto pela rede local poderia inventá-lo a cada tentativa e
+// escapar do limite de senhas. Sem o túnel usamos o IP do socket.
+const LOOPBACK_ADDRESSES = new Set(["127.0.0.1", "::1", "::ffff:127.0.0.1"]);
+
 function getClientIp(req) {
+  const socketIp = req.socket.remoteAddress || "desconhecido";
   const cfIp = req.headers["cf-connecting-ip"];
-  const ip = (typeof cfIp === "string" && cfIp) || req.socket.remoteAddress || "desconhecido";
+  const fromTunnel = LOOPBACK_ADDRESSES.has(socketIp);
+  const ip = (fromTunnel && typeof cfIp === "string" && cfIp) || socketIp;
   return ip.replace(/^::ffff:/, "");
 }
 
