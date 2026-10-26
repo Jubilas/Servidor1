@@ -459,147 +459,322 @@
       .btn-ghost:hover { border-color: var(--line-strong); }
     }
 
-    /* ---------- HOME: QUADRA + CLIMA ---------- */
-    .home-grid { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); gap: 16px; }
+    /* ---------- HOME: PLACAR DA QUADRA + FAIXA DO CLIMA ---------- */
+    .home-grid { display: flex; flex-direction: column; gap: 16px; }
 
-    .court-card { --st: var(--busy); --st-soft: var(--busy-soft); display: flex; flex-direction: column; gap: 14px; border-top: 6px solid var(--st); }
-    .court-card[data-state="livre"] { --st: var(--ok); --st-soft: var(--ok-soft); }
-    .court-card[data-state="manutencao"] { --st: var(--warn); --st-soft: var(--warn-soft); }
-    .court-status { display: flex; align-items: center; gap: 14px; color: var(--st); }
-    .court-status .status-dot { width: 18px; height: 18px; }
-    .status-word { font-size: clamp(40px, 4.4vw, 60px); font-weight: 900; letter-spacing: -.03em; line-height: .95; }
-    .court-activity { margin: 0; font-size: 17px; color: var(--ink-2); font-weight: 500; }
-    .court-activity strong { color: var(--ink); }
-    .meter { height: 14px; border-radius: 999px; background: var(--st-soft); overflow: hidden; }
-    .meter-fill { height: 100%; width: 0; border-radius: 999px; background: var(--st); transition: width 1s linear, background-color .3s; }
-    .meter-legend { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; font-weight: 600; color: var(--ink-2); }
-    .meter-legend strong { color: var(--st); font-family: "JetBrains Mono", monospace; font-size: 16px; }
-    .next-slots { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
-    .mini-slot {
-      display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 2px;
-      min-height: 64px; padding: 8px 12px; border-radius: 12px;
-      border: 1px solid var(--line); background: var(--card-2);
-      text-align: left;
+    /* Placar: superfície escura com as linhas da quadra; a cor acompanha o estado
+       (lido de longe, como o placar de um ginásio) */
+    .card.court-card {
+      --st: #FB7185; --st-ink: #4C0519;
+      --court-a: #4F1022; --court-b: #22060E;
+      position: relative; overflow: hidden; isolation: isolate;
+      container-type: inline-size;
+      display: flex; flex-direction: column; gap: 22px;
+      padding: 26px 28px 24px;
+      color: #fff;
+      background:
+        radial-gradient(90% 120% at 100% 0%, color-mix(in srgb, var(--st) 26%, transparent), transparent 62%),
+        linear-gradient(155deg, var(--court-a), var(--court-b));
+      border: 1px solid color-mix(in srgb, var(--st) 28%, transparent);
+      box-shadow: 0 28px 60px -30px var(--court-b);
     }
-    .mini-slot b { font-family: "JetBrains Mono", monospace; font-size: 16px; }
-    .mini-slot span { font-size: 12px; font-weight: 700; }
-    .mini-slot.free { background: var(--ok-soft); border-color: color-mix(in srgb, var(--ok) 35%, transparent); color: var(--ok); }
-    .mini-slot.free b { color: var(--ink); }
-    .mini-slot.booked { color: var(--booked); background: var(--booked-soft); border-color: transparent; }
-    .mini-slot.live { color: var(--busy); background: var(--busy-soft); border-color: transparent; }
+    .card.court-card[data-state="livre"] { --st: #4ADE80; --st-ink: #052E16; --court-a: #134A33; --court-b: #07231A; }
+    .card.court-card[data-state="manutencao"] { --st: #FBBF24; --st-ink: #422006; --court-a: #4D3611; --court-b: #221705; }
+    .court-lines {
+      position: absolute; z-index: -1; top: 50%; right: -4%; width: min(62%, 560px); height: auto;
+      transform: translateY(-58%) rotate(-7deg);
+      fill: none; stroke: #fff; stroke-width: 1.4; opacity: .08; pointer-events: none;
+    }
+    .court-lines .fill { fill: #fff; stroke: none; }
+
+    .court-top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .court-top .eyebrow { color: rgba(255, 255, 255, .72); }
+    .court-live {
+      display: inline-flex; align-items: center; gap: 8px; min-height: 30px; padding: 0 12px; border-radius: 999px;
+      background: rgba(255, 255, 255, .1); border: 1px solid rgba(255, 255, 255, .16);
+      font-size: 12px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--st);
+    }
+    .court-live .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; position: relative; }
+    .court-live .dot::after { content: ""; position: absolute; inset: -4px; border-radius: 50%; border: 2px solid currentColor; opacity: .5; animation: pulse-ring 1.8s var(--ease) infinite; }
+    #court-hero-hours { margin-left: auto; font-size: 13px; font-weight: 700; letter-spacing: .06em; color: rgba(255, 255, 255, .6); }
+
+    .court-board { display: flex; align-items: flex-end; justify-content: space-between; gap: 18px 28px; flex-wrap: wrap; }
+    .court-main { flex: 1 1 260px; min-width: 0; }
+    .status-word { font-size: clamp(48px, 10cqi, 92px); font-weight: 900; letter-spacing: -.04em; line-height: .88; color: #fff; }
+    .court-status { display: flex; align-items: center; gap: 18px; }
+    .court-status .status-dot { width: 20px; height: 20px; color: var(--st); box-shadow: 0 0 0 7px color-mix(in srgb, var(--st) 22%, transparent); }
+    .court-activity { margin: 12px 0 0; font-size: 18px; line-height: 1.45; color: rgba(255, 255, 255, .8); font-weight: 500; max-width: 40ch; }
+    .court-activity strong { color: #fff; }
+    .court-clock {
+      flex: 0 0 auto; min-width: 230px;
+      display: flex; flex-direction: column; gap: 6px;
+      padding: 16px 20px 16px; border-radius: 18px;
+      background: rgba(0, 0, 0, .3); border: 1px solid rgba(255, 255, 255, .1);
+    }
+    #court-hero-remaining-label { font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: rgba(255, 255, 255, .62); }
+    #court-hero-remaining {
+      font-family: "JetBrains Mono", monospace; font-variant-numeric: tabular-nums;
+      font-size: clamp(40px, 7cqi, 60px); font-weight: 700; line-height: 1; letter-spacing: -.03em;
+      color: var(--st); text-shadow: 0 0 22px color-mix(in srgb, var(--st) 50%, transparent);
+    }
+    .meter { margin-top: 6px; height: 6px; border-radius: 999px; background: rgba(255, 255, 255, .14); overflow: hidden; }
+    .meter-fill { height: 100%; width: 0; border-radius: 999px; background: var(--st); transition: width 1s linear, background-color .3s; }
+    .court-card:not([data-state="em_uso"]) .meter { display: none; }
+
+    /* Faixa do dia: 07h–22h, uma barra por hora e a linha do "agora" */
+    .day-track { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+    .dt-bars { position: relative; display: grid; grid-template-columns: repeat(15, minmax(0, 1fr)); gap: 4px; height: 38px; }
+    .dt-bars i { border-radius: 7px; background: rgba(255, 255, 255, .1); }
+    .dt-bars i.free { background: rgba(74, 222, 128, .55); }
+    .dt-bars i.booked { background: #38BDF8; }
+    .dt-bars i.live { background: #FB7185; }
+    .dt-bars i.blocked { background: #FBBF24; }
+    .dt-bars i.past { background: repeating-linear-gradient(135deg, rgba(255, 255, 255, .1) 0 4px, rgba(255, 255, 255, .03) 4px 8px); }
+    .dt-now { position: absolute; top: -8px; bottom: -8px; width: 3px; margin-left: -1.5px; border-radius: 3px; background: #fff; box-shadow: 0 0 0 3px rgba(0, 0, 0, .25); pointer-events: none; }
+    .dt-now em {
+      position: absolute; bottom: calc(100% + 4px); left: 50%; transform: translateX(-50%);
+      padding: 2px 8px; border-radius: 999px; background: #fff; color: #1C1917;
+      font-style: normal; font-family: "JetBrains Mono", monospace; font-size: 12px; font-weight: 800; white-space: nowrap;
+    }
+    .dt-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    .dt-labels { position: relative; flex: 1 1 100%; height: 16px; font-family: "JetBrains Mono", monospace; font-size: 12px; font-weight: 600; color: rgba(255, 255, 255, .55); }
+    .dt-labels span { position: absolute; top: 0; transform: translateX(-50%); }
+    .dt-labels span:first-child { transform: none; }
+    .dt-labels span:last-child { transform: translateX(-100%); }
+    .dt-legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; font-weight: 700; color: rgba(255, 255, 255, .7); }
+    .dt-legend span { display: inline-flex; align-items: center; gap: 6px; }
+    .dt-legend i { width: 10px; height: 10px; border-radius: 3px; }
+
+    .court-next { display: flex; flex-direction: column; gap: 10px; }
+    .court-card .eyebrow { color: rgba(255, 255, 255, .62); }
+    .next-slots { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
+    .mini-slot {
+      display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 3px;
+      min-height: 70px; padding: 10px 14px; border-radius: 14px;
+      background: rgba(255, 255, 255, .06); border: 1px solid rgba(255, 255, 255, .12);
+      color: rgba(255, 255, 255, .7); text-align: left;
+    }
+    .mini-slot b { font-family: "JetBrains Mono", monospace; font-size: 19px; color: #fff; }
+    .mini-slot span { font-size: 13px; font-weight: 700; }
+    .mini-slot.free { background: rgba(74, 222, 128, .14); border-color: rgba(74, 222, 128, .5); color: #86EFAC; }
+    .mini-slot.booked { color: #7DD3FC; }
+    .mini-slot.live { color: #FDA4AF; }
+    .mini-slot.blocked { color: #FCD34D; }
     .mini-slot.free:active { transform: scale(.96); }
     .card-actions { display: flex; gap: 10px; flex-wrap: wrap; }
     .card-actions .btn-primary { flex: 1; }
-
-    .weather-card { display: flex; flex-direction: column; gap: 16px; }
-    .wx-main { display: flex; align-items: center; gap: 16px; }
-    .wx-icon { width: 64px; height: 64px; border-radius: 18px; background: var(--warn-soft); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .wx-icon svg { width: 34px !important; height: 34px !important; }
-    .wx-temp { font-size: 44px; font-weight: 800; letter-spacing: -.03em; line-height: 1; font-family: "JetBrains Mono", monospace; }
-    #hero-weather-condition { margin-top: 4px; font-size: 14px; color: var(--ink-2); font-weight: 500; }
-    .wx-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0; }
-    .wx-grid > div { padding: 10px 12px; border-radius: 12px; background: var(--card-2); }
-    .wx-grid dt { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); }
-    .wx-grid dd { margin: 2px 0 0; font-size: 18px; font-weight: 800; }
-    .wx-grid dd small { font-size: 12px; font-weight: 600; color: var(--ink-3); margin-left: 4px; }
-    .wx-advice { display: flex; flex-direction: column; gap: 6px; }
-    .advice {
-      display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px;
-      font-size: 14px; font-weight: 600; color: var(--ink-2); border: 1px solid var(--line);
+    .court-card .card-actions .btn-primary { background: #fff; color: #1C1917; }
+    .court-card .card-actions .btn-primary svg { color: var(--st-ink); }
+    .court-card .card-actions .btn-primary:active { background: #E7E5E4; }
+    .court-card .card-actions .btn-ghost { background: rgba(255, 255, 255, .08); color: #fff; border-color: rgba(255, 255, 255, .2); }
+    @media (hover: hover) {
+      .court-card .card-actions .btn-primary:hover { background: #F5F5F4; }
+      .court-card .card-actions .btn-ghost:hover { border-color: rgba(255, 255, 255, .4); }
     }
-    .advice b { margin-left: auto; font-size: 13px; padding: 3px 10px; border-radius: 999px; }
+
+    /* Clima: faixa larga com o "céu" à esquerda e as leituras do sensor à direita */
+    .card.weather-card {
+      --sky-a: #FFE6C2; --sky-b: #F9C9C0; --sky-glow: rgba(255, 196, 92, .7);
+      --ink: #1C1917; --ink-2: #44403C; --ink-3: #6F6862;
+      display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.55fr);
+      padding: 0; overflow: hidden; color: var(--ink);
+    }
+    .weather-card[data-wx="rain"] { --sky-a: #E2EBF2; --sky-b: #BFD0DE; --sky-glow: rgba(255, 255, 255, .6); }
+    .weather-card[data-wx="wind"] { --sky-a: #E5F3EA; --sky-b: #C5E2D2; --sky-glow: rgba(255, 255, 255, .6); }
+    .weather-card[data-wx="night"] { --sky-a: #232A5C; --sky-b: #3A2350; --sky-glow: rgba(165, 180, 252, .35); --ink: #F1F5F9; --ink-2: #CBD5E1; --ink-3: #A5B4FC; }
+    .wx-sky {
+      position: relative; display: flex; flex-direction: column; justify-content: space-between; gap: 18px; padding: 20px 22px;
+      background: radial-gradient(circle at 88% 8%, var(--sky-glow), transparent 48%), linear-gradient(160deg, var(--sky-a), var(--sky-b));
+    }
+    .wx-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .wx-main { display: flex; align-items: center; gap: 16px; }
+    .wx-icon { width: 64px; height: 64px; border-radius: 50%; background: rgba(255, 255, 255, .55); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .weather-card[data-wx="night"] .wx-icon { background: rgba(255, 255, 255, .1); }
+    .wx-icon svg { width: 34px !important; height: 34px !important; }
+    .wx-temp { font-size: 50px; font-weight: 800; letter-spacing: -.04em; line-height: 1; font-variant-numeric: tabular-nums; }
+    #hero-weather-condition { margin-top: 4px; font-size: 15px; color: var(--ink-2); font-weight: 600; }
+    .wx-side { display: flex; flex-direction: column; justify-content: center; gap: 12px; padding: 18px 20px; background: color-mix(in srgb, var(--sky-b) 22%, var(--card)); }
+    .weather-card[data-wx="night"] .wx-side { background: #1B1F3A; }
+    .wx-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 0; border-radius: 14px; overflow: hidden; background: color-mix(in srgb, var(--ink) 8%, transparent); gap: 1px; }
+    .wx-grid > div { padding: 12px 14px; background: color-mix(in srgb, var(--card) 92%, transparent); }
+    .weather-card[data-wx="night"] .wx-grid > div { background: #20254A; }
+    .wx-grid dt { font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+    .wx-grid dd { margin: 4px 0 0; font-size: 22px; font-weight: 800; letter-spacing: -.02em; color: var(--ink); }
+    .wx-grid dd small { font-size: 12px; font-weight: 600; color: var(--ink-3); margin-left: 4px; letter-spacing: 0; }
+    .wx-advice { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .advice {
+      display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 12px; border-radius: 12px;
+      font-size: 14px; font-weight: 700; color: var(--ink-2); background: color-mix(in srgb, var(--card) 70%, transparent);
+    }
+    .weather-card[data-wx="night"] .advice { background: rgba(255, 255, 255, .06); }
+    .advice b { margin-left: auto; font-size: 13px; padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
     .advice[data-level="good"] b { background: var(--ok-soft); color: var(--ok); }
     .advice[data-level="ok"] b { background: var(--warn-soft); color: var(--warn); }
     .advice[data-level="bad"] b { background: var(--busy-soft); color: var(--busy); }
 
-    /* ---------- GRADE DE HORÁRIOS ---------- */
+    /* ---------- HORÁRIOS: QUADRO DO DIA (ESTILO PAINEL DE EMBARQUE) ---------- */
     .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-    .tabs { display: flex; gap: 6px; padding: 4px; border-radius: 14px; background: var(--card-2); border: 1px solid var(--line); overflow-x: auto; max-width: 100%; }
+    .tabs { display: flex; gap: 6px; padding: 5px; border-radius: 16px; background: var(--card-2); border: 1px solid var(--line); overflow-x: auto; max-width: 100%; }
     .court-period-tab {
-      min-height: 44px; padding: 0 16px; border-radius: 10px; white-space: nowrap;
-      font-size: 14px; font-weight: 700; color: var(--ink-3);
+      display: inline-flex; align-items: center; gap: 8px;
+      min-height: 48px; padding: 0 18px; border-radius: 12px; white-space: nowrap;
+      font-size: 15px; font-weight: 700; color: var(--ink-3);
     }
+    .court-period-tab svg { width: 18px; height: 18px; }
     .court-period-tab.active { background: var(--card); color: var(--ink); box-shadow: var(--shadow); }
-    .legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 13px; font-weight: 600; color: var(--ink-3); }
-    .legend span { display: inline-flex; align-items: center; gap: 6px; }
+    .court-period-tab.active svg { color: var(--accent); }
+    .legend { display: flex; gap: 8px; flex-wrap: wrap; font-size: 13px; font-weight: 600; color: var(--ink-2); }
+    .legend span { display: inline-flex; align-items: center; gap: 7px; min-height: 36px; padding: 0 12px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); }
     .legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+    .legend b { font-family: "JetBrains Mono", monospace; font-size: 15px; color: var(--ink); }
 
-    .slot-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+    .slot-board { display: flex; flex-direction: column; gap: 8px; }
     .court-slot {
-      position: relative;
-      display: flex; flex-direction: column; gap: 6px;
-      min-height: 112px; padding: 14px;
-      border-radius: 14px; border: 1px solid var(--line);
+      --st: var(--ok); --st-soft: var(--ok-soft); --elapsed: 0%;
+      position: relative; overflow: hidden;
+      display: grid; grid-template-columns: 184px 186px minmax(0, 1fr) auto; grid-template-areas: "clock state info cta";
+      align-items: center; column-gap: 18px;
+      width: 100%; min-height: 80px; padding: 12px 14px 12px 22px;
+      border-radius: 16px; border: 1px solid var(--line);
       background: var(--card); text-align: left;
+      box-shadow: inset 5px 0 0 var(--st);
       transition: transform .12s var(--ease), border-color .2s var(--ease);
     }
-    .court-slot .slot-time { font-family: "JetBrains Mono", monospace; font-size: 20px; font-weight: 700; color: var(--ink); }
-    .court-slot .slot-tag { align-self: flex-start; font-size: 11px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; padding: 3px 8px; border-radius: 999px; }
-    .court-slot .slot-meta { font-size: 13px; font-weight: 600; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .court-slot .slot-cta { margin-top: auto; display: flex; gap: 6px; }
-    .court-slot .slot-cta span { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 4px; min-height: 36px; border-radius: 10px; font-size: 12px; font-weight: 800; }
-    .court-slot.free { border-color: color-mix(in srgb, var(--ok) 35%, transparent); }
-    .court-slot.free .slot-tag { background: var(--ok-soft); color: var(--ok); }
-    .court-slot.free .slot-cta span.go { background: var(--ok); color: #fff; }
-    .court-slot.free .slot-cta span.qr { background: var(--card-2); color: var(--ink-2); border: 1px solid var(--line); flex: 0 0 40px; }
-    body.mode-night .court-slot.free .slot-cta span.go { color: #052e16; }
-    .court-slot.free:active { transform: scale(.97); }
-    .court-slot.live { background: var(--busy-soft); border-color: transparent; }
-    .court-slot.live .slot-tag { background: var(--busy); color: #fff; }
-    .court-slot.booked { background: var(--booked-soft); border-color: transparent; }
-    .court-slot.booked .slot-tag { background: color-mix(in srgb, var(--booked) 18%, transparent); color: var(--booked); }
-    .court-slot.blocked { background: var(--warn-soft); border-color: transparent; }
-    .court-slot.blocked .slot-tag { background: var(--warn); color: #fff; }
-    .mini-slot.blocked { color: var(--warn); background: var(--warn-soft); border-color: transparent; }
-    .court-slot.past { opacity: .55; min-height: 0; }
-    .court-slot.past .slot-time { font-size: 15px; }
+    .court-slot.live { --st: var(--busy); --st-soft: var(--busy-soft); }
+    .court-slot.booked { --st: var(--booked); --st-soft: var(--booked-soft); }
+    .court-slot.blocked { --st: var(--warn); --st-soft: var(--warn-soft); }
+    .court-slot.live, .court-slot.booked, .court-slot.blocked { background: var(--st-soft); border-color: transparent; }
+    /* Hora em andamento: barra na base da linha enche conforme a hora passa */
+    .court-slot.is-now { border-color: color-mix(in srgb, var(--st) 45%, transparent); }
+    .court-slot.is-now::before {
+      content: ""; position: absolute; left: 0; bottom: 0; z-index: 0; height: 4px; width: var(--elapsed);
+      background: var(--st); border-radius: 0 4px 0 0; pointer-events: none;
+    }
+    .court-slot > * { position: relative; z-index: 1; min-width: 0; }
+
+    .slot-clock { grid-area: clock; display: flex; align-items: center; gap: 10px; font-family: "JetBrains Mono", monospace; }
+    .slot-clock b { font-size: 24px; font-weight: 700; color: var(--ink); letter-spacing: -.02em; }
+    .slot-clock small { font-size: 15px; font-weight: 600; color: var(--ink-3); }
+    .slot-line { flex: 1; min-width: 18px; height: 2px; border-radius: 2px; background: var(--line-strong); position: relative; }
+    .slot-line::after { content: ""; position: absolute; right: -2px; top: -3px; width: 8px; height: 8px; border-radius: 50%; background: var(--line-strong); }
+    .slot-state { grid-area: state; display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--st); white-space: nowrap; }
+    .slot-state i { width: 10px; height: 10px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+    .court-slot.live .slot-state i { animation: blink 1.4s ease-in-out infinite; }
+    @keyframes blink { 50% { opacity: .25; } }
+    .now-tag { padding: 3px 8px; border-radius: 999px; background: var(--accent); color: var(--accent-ink); font-size: 10px; font-style: normal; letter-spacing: .1em; }
+    .slot-info { grid-area: info; display: flex; flex-direction: column; gap: 2px; }
+    .slot-info strong { font-size: 17px; font-weight: 800; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .slot-info span { font-size: 14px; font-weight: 600; color: var(--ink-2); display: flex; align-items: center; gap: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .slot-info svg { width: 16px; height: 16px; flex-shrink: 0; color: var(--st); }
+    .slot-cta { grid-area: cta; display: flex; align-items: center; gap: 8px; justify-self: end; }
+    .slot-cta .go { display: inline-flex; align-items: center; gap: 8px; min-height: 52px; padding: 0 20px; border-radius: 14px; background: var(--ok); color: #fff; font-size: 15px; font-weight: 800; white-space: nowrap; }
+    body.mode-night .slot-cta .go { color: #052e16; }
+    .slot-cta .qr { width: 52px; height: 52px; display: inline-flex; align-items: center; justify-content: center; border-radius: 14px; background: var(--card-2); color: var(--ink-2); border: 1px solid var(--line); }
+    .slot-count { display: flex; align-items: baseline; gap: 4px; color: var(--st); font-weight: 700; font-size: 13px; white-space: nowrap; }
+    .slot-count b { font-family: "JetBrains Mono", monospace; font-size: 28px; font-weight: 800; letter-spacing: -.02em; }
+    .slot-sport { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border-radius: 999px; background: color-mix(in srgb, var(--st) 14%, var(--card)); color: var(--st); font-size: 14px; font-weight: 800; white-space: nowrap; }
+    .slot-sport svg { width: 18px; height: 18px; }
+    .court-slot.free:active { transform: scale(.985); border-color: var(--ok); }
+    @media (hover: hover) { .court-slot.free:hover { border-color: color-mix(in srgb, var(--ok) 55%, transparent); } }
+    .court-slot.past { min-height: 52px; padding-top: 6px; padding-bottom: 6px; background: transparent; border-style: dashed; box-shadow: none; grid-template-areas: "clock state info info"; }
+    .court-slot.past .slot-clock b { font-size: 17px; color: var(--ink-3); }
+    .court-slot.past .slot-clock small { font-size: 13px; }
+    .court-slot.past .slot-state { color: var(--ink-3); }
     .grid-notice { grid-column: 1 / -1; padding: 18px; border-radius: 14px; border: 1px dashed var(--line-strong); text-align: center; color: var(--ink-2); font-weight: 600; }
-    details.past-group { grid-column: 1 / -1; border-radius: 14px; border: 1px solid var(--line); background: var(--card-2); }
-    details.past-group summary { min-height: 52px; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; font-weight: 700; color: var(--ink-2); cursor: pointer; list-style: none; }
+    details.past-group { border-radius: 16px; border: 1px solid var(--line); background: var(--card-2); }
+    details.past-group summary { min-height: 56px; padding: 0 18px; display: flex; align-items: center; justify-content: space-between; font-weight: 700; color: var(--ink-2); cursor: pointer; list-style: none; }
     details.past-group summary::-webkit-details-marker { display: none; }
     details.past-group[open] summary .when-closed, details.past-group:not([open]) summary .when-open { display: none; }
-    details.past-group .slot-grid { padding: 0 12px 12px; }
+    details.past-group .slot-board { padding: 0 12px 12px; }
 
-    /* ---------- AGENDA: FEED HORIZONTAL ---------- */
+    /* ---------- AGENDA: BLOCOS GRANDES (ESTILO TV / AO VIVO & EM BREVE) ---------- */
     .h-scroll { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(250px, 1fr); gap: 12px; overflow-x: auto; padding-bottom: 6px; scroll-snap-type: x mandatory; }
     .h-scroll > * { scroll-snap-align: start; }
-    .event-card { display: flex; flex-direction: column; gap: 10px; padding: 18px; border-radius: var(--radius); background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow); min-height: 168px; }
-    .event-when { display: flex; align-items: center; gap: 10px; }
-    .event-icon { width: 46px; height: 46px; border-radius: 14px; background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .event-icon svg { width: 24px !important; height: 24px !important; }
-    .event-day { font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
-    .event-card h3 { margin: 0; font-size: 17px; font-weight: 800; line-height: 1.25; }
-    .event-card p { margin: 0; font-size: 14px; color: var(--ink-2); display: flex; align-items: center; gap: 6px; }
+    .event-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
+    .event-card {
+      --tone-a: #292524; --tone-b: #57534E;
+      position: relative; overflow: hidden; isolation: isolate;
+      display: flex; flex-direction: column; justify-content: space-between; gap: 28px;
+      min-height: 210px; padding: 18px 20px 20px; border-radius: 20px;
+      color: #fff; background: linear-gradient(150deg, var(--tone-a), var(--tone-b));
+      box-shadow: 0 18px 40px -26px var(--tone-a);
+    }
+    .event-card[data-kind="zen"] { --tone-a: #4C1D95; --tone-b: #8B5CF6; }
+    .event-card[data-kind="organico"] { --tone-a: #14532D; --tone-b: #22A35A; }
+    .event-card[data-kind="esporte"] { --tone-a: #9A3412; --tone-b: #F97316; }
+    .event-card[data-kind="arte"] { --tone-a: #9D174D; --tone-b: #F43F5E; }
+    .event-card::after {
+      content: ""; position: absolute; z-index: -1; right: -40px; top: -40px; width: 180px; height: 180px; border-radius: 50%;
+      background: rgba(255, 255, 255, .1);
+    }
+    .ev-when {
+      align-self: flex-start; display: inline-flex; align-items: center; gap: 8px;
+      min-height: 32px; padding: 0 12px; border-radius: 999px; background: rgba(0, 0, 0, .28);
+      font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap;
+    }
+    .ev-when b { font-family: "JetBrains Mono", monospace; font-size: 14px; letter-spacing: 0; }
+    .ev-art { position: absolute; z-index: -1; right: 22px; top: 20px; opacity: .45; }
+    .event-card .ev-art svg { width: 64px !important; height: 64px !important; color: #fff; stroke-width: 1.4; }
+    .event-card h3 { margin: 0; font-size: 21px; font-weight: 800; line-height: 1.2; letter-spacing: -.01em; max-width: 16ch; }
+    .event-card p { margin: 6px 0 0; font-size: 14px; font-weight: 600; color: rgba(255, 255, 255, .85); display: flex; align-items: center; gap: 6px; }
 
     .notice-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
-    .notice { display: flex; gap: 14px; align-items: flex-start; padding: 14px 16px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); }
-    .notice .n-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: var(--warn-soft); color: var(--warn); flex-shrink: 0; }
+    .notice { display: flex; gap: 16px; align-items: center; min-height: 76px; padding: 14px 18px 14px 20px; border-radius: 16px; background: var(--card); border: 1px solid var(--line); box-shadow: inset 5px 0 0 var(--warn); }
+    .notice .n-icon { width: 46px; height: 46px; border-radius: 14px; display: flex; align-items: center; justify-content: center; background: var(--warn-soft); color: var(--warn); flex-shrink: 0; }
+    .notice.broadcast { box-shadow: inset 5px 0 0 var(--accent); }
     .notice.broadcast .n-icon { background: var(--accent-soft); color: var(--accent); }
-    .notice strong { display: block; font-size: 15px; }
+    .notice strong { display: block; font-size: 16px; }
     .notice span { display: block; font-size: 14px; color: var(--ink-2); margin-top: 2px; line-height: 1.45; }
-    .notice time { margin-left: auto; font-size: 12px; font-weight: 700; color: var(--ink-3); white-space: nowrap; }
+    .notice time { margin-left: auto; align-self: flex-start; padding: 5px 10px; border-radius: 999px; background: var(--card-2); font-size: 12px; font-weight: 800; color: var(--ink-2); white-space: nowrap; }
 
     /* ---------- ZELADORIA: 4 BOTÕES DE 1 TOQUE ---------- */
     .report-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
     .btn-report-issue {
-      display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; gap: 18px;
-      min-height: 168px; padding: 18px; border-radius: var(--radius);
+      --tone: #B45309; --tone-soft: #FCEFD9;
+      position: relative;
+      display: flex; flex-direction: column; align-items: flex-start; gap: 14px;
+      min-height: 196px; padding: 18px; border-radius: var(--radius);
       background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow);
       text-align: left;
       transition: transform .12s var(--ease), border-color .2s var(--ease), background-color .2s var(--ease);
     }
-    .btn-report-issue .r-icon { width: 60px; height: 60px; border-radius: 18px; display: flex; align-items: center; justify-content: center; background: var(--card-2); color: var(--ink); }
+    .btn-report-issue.tone-blue { --tone: #0E7490; --tone-soft: #E0F1F5; }
+    .btn-report-issue.tone-violet { --tone: #7C3AED; --tone-soft: #EDE9FE; }
+    .btn-report-issue.tone-green { --tone: #15803D; --tone-soft: #E3F3E7; }
+    body.mode-night .btn-report-issue { --tone-soft: color-mix(in srgb, var(--tone) 22%, transparent); }
+    body.mode-night .btn-report-issue.tone-amber { --tone: #FBBF24; }
+    body.mode-night .btn-report-issue.tone-blue { --tone: #38BDF8; }
+    body.mode-night .btn-report-issue.tone-violet { --tone: #A78BFA; }
+    body.mode-night .btn-report-issue.tone-green { --tone: #4ADE80; }
+    .btn-report-issue .r-icon { width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--tone-soft); color: var(--tone); }
     .btn-report-issue .r-icon svg { width: 32px; height: 32px; }
-    .btn-report-issue strong { display: block; font-size: 17px; font-weight: 800; line-height: 1.2; }
+    .btn-report-issue strong { display: block; font-size: 18px; font-weight: 800; line-height: 1.2; }
     .btn-report-issue small { display: block; margin-top: 4px; font-size: 13px; color: var(--ink-3); font-weight: 600; }
-    .btn-report-issue:active { transform: scale(.97); background: var(--accent-soft); border-color: var(--accent); }
-    .btn-report-issue:active .r-icon { background: var(--accent); color: var(--accent-ink); }
-    .emergency { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 16px 18px; border-radius: var(--radius); background: var(--busy-soft); }
-    .emergency p { margin: 0; font-weight: 700; color: var(--busy); }
-    .emergency p span { display: block; font-weight: 500; font-size: 14px; color: var(--ink-2); }
+    .r-go {
+      margin-top: auto; display: inline-flex; align-items: center; gap: 6px;
+      min-height: 38px; padding: 0 14px; border-radius: 999px; background: var(--card-2);
+      font-size: 13px; font-weight: 800; color: var(--tone);
+    }
+    .r-go svg { width: 16px; height: 16px; }
+    .btn-report-issue:active { transform: scale(.97); background: var(--tone-soft); border-color: var(--tone); }
+    .btn-report-issue:active .r-icon, .btn-report-issue:active .r-go { background: var(--tone); color: var(--panel); }
+    @media (hover: hover) { .btn-report-issue:hover { border-color: color-mix(in srgb, var(--tone) 50%, transparent); } }
+    .emergency {
+      display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap;
+      padding: 18px 20px; border-radius: var(--radius); color: #fff;
+      background: linear-gradient(135deg, #4C0519, #1C1917);
+    }
+    .em-text { display: flex; align-items: center; gap: 14px; }
+    .em-icon { width: 48px; height: 48px; border-radius: 14px; background: #E11D48; color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .emergency p { margin: 0; font-size: 17px; font-weight: 800; }
+    .emergency p span { display: block; font-weight: 500; font-size: 14px; color: rgba(255, 255, 255, .72); }
     .emergency-nums { display: flex; gap: 8px; flex-wrap: wrap; }
-    .emergency-nums span { min-height: 44px; display: inline-flex; align-items: center; gap: 8px; padding: 0 14px; border-radius: 12px; background: var(--card); font-weight: 700; font-size: 14px; }
-    .emergency-nums b { font-family: "JetBrains Mono", monospace; font-size: 18px; color: var(--busy); }
+    .emergency-nums span {
+      min-height: 56px; display: inline-flex; flex-direction: column; justify-content: center; gap: 0;
+      padding: 0 16px; border-radius: 14px; background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .14);
+      font-weight: 700; font-size: 12px; color: rgba(255, 255, 255, .75);
+    }
+    .emergency-nums b { font-family: "JetBrains Mono", monospace; font-size: 24px; line-height: 1.05; color: #FDA4AF; }
 
     /* ---------- SIMULADOR 3D ---------- */
     .chips-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
@@ -667,7 +842,7 @@
     .panel-foot { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding-top: 20px; border-top: 1px solid var(--line); font-size: 13px; color: var(--ink-3); font-weight: 600; }
 
     /* Cards levemente translúcidos (sem blur, para não pesar no totem) */
-    .card, .event-card, .notice, .species, .btn-report-issue { background: color-mix(in srgb, var(--card) 88%, transparent); }
+    .card, .notice, .species, .btn-report-issue { background: color-mix(in srgb, var(--card) 88%, transparent); }
 
     /* ---------- FOLHAS / MODAIS ---------- */
     .sheet-backdrop { position: fixed; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(12, 10, 9, .45); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); transition: opacity .3s var(--ease); }
@@ -792,20 +967,32 @@
     /* O painel decide o próprio layout pela largura real dele (container queries) */
     #content-scroller { container-type: inline-size; container-name: panel; }
     @container panel (max-width: 899px) {
-      .home-grid { grid-template-columns: 1fr; }
       .park-layout { grid-template-columns: 1fr; }
-      .weather-card .wx-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-      .weather-card .wx-advice { flex-direction: row; }
-      .weather-card .advice { flex: 1; }
+      /* Quadro de horários: o status sobe para cima do nome */
+      .court-slot { grid-template-columns: 172px minmax(0, 1fr) auto; grid-template-areas: "clock state cta" "clock info cta"; row-gap: 4px; }
+      .court-slot.past { grid-template-areas: "clock state state"; }
     }
     @container panel (max-width: 699px) {
       .report-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .species-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .card.weather-card { grid-template-columns: 1fr; }
+      .wx-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .court-clock { flex: 1 1 100%; }
+      /* Horário empilhado (início em cima, fim embaixo) para sobrar espaço ao nome */
+      .court-slot { grid-template-columns: 88px minmax(0, 1fr) auto; }
+      .slot-clock { flex-direction: column; align-items: flex-start; gap: 2px; }
+      .slot-line { display: none; }
     }
     @container panel (max-width: 520px) {
       #court-hero-hours { display: none; }
-      .weather-card .wx-grid { grid-template-columns: 1fr 1fr; }
-      .weather-card .wx-advice { flex-direction: column; }
+      .card.court-card { padding: 20px 18px; }
+      .wx-advice { grid-template-columns: 1fr; }
+      .court-slot { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "clock cta" "state cta" "info info"; padding-left: 18px; }
+      .slot-clock { flex-direction: row; align-items: center; gap: 10px; }
+      .slot-line { display: block; }
+      .court-slot.past { grid-template-areas: "clock state"; }
+      .slot-cta .go { padding: 0 14px; }
+      .event-grid { grid-template-columns: 1fr; }
     }
     @media (max-width: 1023px) {
       #app, body.reach-mode #app {
@@ -1035,29 +1222,50 @@
           </div>
         </header>
 
-        <!-- ===== INÍCIO: QUADRA AGORA + CLIMA ===== -->
+        <!-- ===== INÍCIO: PLACAR DA QUADRA + CLIMA ===== -->
         <section id="section-hero" class="pblock" aria-label="Situação agora">
           <div class="home-grid">
 
             <article class="card court-card" id="court-hero" data-state="em_uso" aria-live="polite">
-              <div class="card-head" style="margin-bottom:0">
-                <p class="eyebrow">Quadra poliesportiva · agora</p>
-                <span class="eyebrow mono" id="court-hero-hours">07h – 22h</span>
+              <!-- Linhas da quadra (decorativas) -->
+              <svg class="court-lines" viewBox="0 0 280 150" aria-hidden="true">
+                <rect x="6" y="6" width="268" height="138" rx="2"/>
+                <line x1="140" y1="6" x2="140" y2="144"/>
+                <circle cx="140" cy="75" r="16.5"/>
+                <circle class="fill" cx="140" cy="75" r="2.5"/>
+                <rect x="6" y="52.5" width="55" height="45"/>
+                <path d="M61 58.5a16.5 16.5 0 0 1 0 33"/>
+                <path d="M6 14.3h37.1a64.6 64.6 0 0 1 0 121.4H6"/>
+                <rect x="219" y="52.5" width="55" height="45"/>
+                <path d="M219 58.5a16.5 16.5 0 0 0 0 33"/>
+                <path d="M274 14.3h-37.1a64.6 64.6 0 0 0 0 121.4H274"/>
+              </svg>
+
+              <div class="court-top">
+                <span class="court-live"><span class="dot"></span>Ao vivo</span>
+                <p class="eyebrow">Quadra poliesportiva</p>
+                <span class="mono" id="court-hero-hours">Aberta 07h – 22h</span>
               </div>
-              <div class="court-status">
-                <span class="status-dot pulse"></span>
-                <div class="status-word" id="court-hero-status">EM USO</div>
-              </div>
-              <p class="court-activity" id="court-hero-activity">Partida de <strong>Basquete 3x3</strong></p>
-              <div>
-                <div class="meter"><div class="meter-fill" id="court-hero-bar" style="width:60%"></div></div>
-                <div class="meter-legend" style="margin-top:8px">
+
+              <div class="court-board">
+                <div class="court-main">
+                  <div class="court-status">
+                    <span class="status-dot pulse"></span>
+                    <div class="status-word" id="court-hero-status">EM USO</div>
+                  </div>
+                  <p class="court-activity" id="court-hero-activity">Partida de <strong>Basquete 3x3</strong></p>
+                </div>
+                <div class="court-clock">
                   <span id="court-hero-remaining-label">Tempo restante</span>
                   <strong id="court-hero-remaining">22:00</strong>
+                  <div class="meter"><div class="meter-fill" id="court-hero-bar" style="width:60%"></div></div>
                 </div>
               </div>
-              <div>
-                <p class="eyebrow" style="margin-bottom:8px">Próximos horários · toque para reservar</p>
+
+              <div class="day-track" id="court-day-track" aria-hidden="true"></div>
+
+              <div class="court-next">
+                <p class="eyebrow">Próximos horários · toque para reservar</p>
                 <div class="next-slots" id="court-next-slots"></div>
               </div>
               <div class="card-actions">
@@ -1069,32 +1277,36 @@
               </div>
             </article>
 
-            <article class="card weather-card" aria-live="polite">
-              <div class="card-head" style="margin-bottom:0">
-                <p class="eyebrow">Clima na praça</p>
-                <span class="live-pill" style="min-height:28px;font-size:12px"><span class="dot"></span>Sensor</span>
-              </div>
-              <div class="wx-main">
-                <div id="hero-weather-icon-box" class="wx-icon"></div>
-                <div>
-                  <div id="hero-weather-temp" class="wx-temp">24.2°C</div>
-                  <div id="hero-weather-condition">Céu claro com brisa leve</div>
+            <article class="card weather-card" data-wx="sun" aria-live="polite">
+              <div class="wx-sky">
+                <div class="wx-head">
+                  <p class="eyebrow">Clima na praça</p>
+                  <span class="live-pill" style="min-height:28px;font-size:12px"><span class="dot"></span>Sensor</span>
+                </div>
+                <div class="wx-main">
+                  <div id="hero-weather-icon-box" class="wx-icon"></div>
+                  <div>
+                    <div id="hero-weather-temp" class="wx-temp">24.2°C</div>
+                    <div id="hero-weather-condition">Céu claro com brisa leve</div>
+                  </div>
                 </div>
               </div>
-              <dl class="wx-grid">
-                <div><dt>Sensação</dt><dd id="wx-feels">25°</dd></div>
-                <div><dt>Umidade</dt><dd id="sensor-humidity">62%</dd></div>
-                <div><dt>Vento</dt><dd id="wx-wind">8<small>km/h</small></dd></div>
-                <div><dt>Índice UV</dt><dd id="sensor-uv">5<small>moderado</small></dd></div>
-              </dl>
-              <div class="wx-advice">
-                <div class="advice" id="wx-walk" data-level="good">
-                  <svg class="i i-sm" viewBox="0 0 24 24"><circle cx="13" cy="4" r="2"/><path d="m7 21 3-7 3 3v5M10 14l-1-4 4-2 3 4h3M7 11l2-3"/></svg>
-                  Caminhada <b>Ideal</b>
-                </div>
-                <div class="advice" id="wx-sport" data-level="good">
-                  <svg class="i i-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a14 14 0 0 0 0 18M3 12h18"/></svg>
-                  Esportes na quadra <b>Bom</b>
+              <div class="wx-side">
+                <dl class="wx-grid">
+                  <div><dt>Sensação</dt><dd id="wx-feels">25°</dd></div>
+                  <div><dt>Umidade</dt><dd id="sensor-humidity">62%</dd></div>
+                  <div><dt>Vento</dt><dd id="wx-wind">8<small>km/h</small></dd></div>
+                  <div><dt>Índice UV</dt><dd id="sensor-uv">5<small>moderado</small></dd></div>
+                </dl>
+                <div class="wx-advice">
+                  <div class="advice" id="wx-walk" data-level="good">
+                    <svg class="i i-sm" viewBox="0 0 24 24"><circle cx="13" cy="4" r="2"/><path d="m7 21 3-7 3 3v5M10 14l-1-4 4-2 3 4h3M7 11l2-3"/></svg>
+                    Caminhada <b>Ideal</b>
+                  </div>
+                  <div class="advice" id="wx-sport" data-level="good">
+                    <svg class="i i-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a14 14 0 0 0 0 18M3 12h18"/></svg>
+                    Esportes <b>Bom</b>
+                  </div>
                 </div>
               </div>
             </article>
@@ -1110,22 +1322,26 @@
               <h2>Horários da quadra</h2>
               <p>Toque num horário livre e escolha: <strong>confirmar aqui no totem</strong> ou <strong>escanear o QR Code</strong> e terminar no celular.</p>
             </div>
-            <span class="chip" id="hero-court-status-pill">Em uso</span>
+            <span class="chip" id="court-status-chip">Em uso</span>
           </div>
           <div class="toolbar">
             <div class="tabs" role="tablist" aria-label="Período">
-              <button class="court-period-tab active" data-period="all">Dia todo</button>
-              <button class="court-period-tab" data-period="morning">Manhã</button>
-              <button class="court-period-tab" data-period="afternoon">Tarde</button>
-              <button class="court-period-tab" data-period="night">Noite</button>
+              <button class="court-period-tab active" data-period="all">
+                <svg class="i" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Dia todo
+              </button>
+              <button class="court-period-tab" data-period="morning">
+                <svg class="i" viewBox="0 0 24 24"><path d="M12 2v8M4.93 10.93l1.41 1.41M2 18h2M20 18h2M19.07 10.93l-1.41 1.41M22 22H2M8 6l4-4 4 4M16 18a4 4 0 0 0-8 0"/></svg>Manhã
+              </button>
+              <button class="court-period-tab" data-period="afternoon">
+                <svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>Tarde
+              </button>
+              <button class="court-period-tab" data-period="night">
+                <svg class="i" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>Noite
+              </button>
             </div>
-            <div class="legend">
-              <span><i style="background:var(--ok)"></i>Livre</span>
-              <span><i style="background:var(--busy)"></i>Em jogo</span>
-              <span><i style="background:var(--booked)"></i>Reservado</span>
-            </div>
+            <div class="legend" id="court-legend" aria-live="polite"></div>
           </div>
-          <div id="hero-court-schedule-grid" class="slot-grid" aria-live="polite"></div>
+          <div id="hero-court-schedule-grid" class="slot-board" aria-live="polite"></div>
         </section>
 
         <!-- ===== AGENDA & AVISOS ===== -->
@@ -1136,7 +1352,7 @@
               <h2>Agenda &amp; avisos</h2>
             </div>
           </div>
-          <div id="weekly-activities-container" class="h-scroll" aria-label="Próximos eventos"></div>
+          <div id="weekly-activities-container" class="event-grid" aria-label="Próximos eventos"></div>
           <ul class="notice-list" id="notice-list" aria-live="polite">
             <li class="notice">
               <span class="n-icon"><svg class="i i-sm" viewBox="0 0 24 24"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6M10 22h4"/></svg></span>
@@ -1161,29 +1377,36 @@
             </div>
           </div>
           <div class="report-grid">
-            <button class="btn-report-issue" data-issue="Lâmpada queimada">
+            <button class="btn-report-issue tone-amber" data-issue="Lâmpada queimada">
               <span class="r-icon"><svg class="i" viewBox="0 0 24 24"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6M10 22h4"/></svg></span>
               <span><strong>Lâmpada queimada</strong><small>Poste ou refletor</small></span>
+              <span class="r-go">Avisar equipe <svg class="i" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
             </button>
-            <button class="btn-report-issue" data-issue="Vazamento de água">
+            <button class="btn-report-issue tone-blue" data-issue="Vazamento de água">
               <span class="r-icon"><svg class="i" viewBox="0 0 24 24"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg></span>
               <span><strong>Vazamento</strong><small>Bebedouro ou torneira</small></span>
+              <span class="r-go">Avisar equipe <svg class="i" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
             </button>
-            <button class="btn-report-issue" data-issue="Brinquedo quebrado">
+            <button class="btn-report-issue tone-violet" data-issue="Brinquedo quebrado">
               <span class="r-icon"><svg class="i" viewBox="0 0 24 24"><path d="M4 21 8 3h8l4 18"/><path d="M6 13h12"/><path d="M10 13v4h4v-4"/></svg></span>
               <span><strong>Brinquedo quebrado</strong><small>Playground ou banco</small></span>
+              <span class="r-go">Avisar equipe <svg class="i" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
             </button>
-            <button class="btn-report-issue" data-issue="Lixeira cheia">
+            <button class="btn-report-issue tone-green" data-issue="Lixeira cheia">
               <span class="r-icon"><svg class="i" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6"/></svg></span>
               <span><strong>Lixeira cheia</strong><small>Pedir esvaziamento</small></span>
+              <span class="r-go">Avisar equipe <svg class="i" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
             </button>
           </div>
           <div class="emergency">
-            <p>Emergência?<span>Para socorro ou ocorrência urgente, ligue para os canais oficiais.</span></p>
+            <div class="em-text">
+              <span class="em-icon"><svg class="i" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
+              <p>Emergência?<span>Para socorro ou ocorrência urgente, ligue para os canais oficiais.</span></p>
+            </div>
             <div class="emergency-nums">
-              <span>SAMU <b>192</b></span>
-              <span>Guarda Civil <b>153</b></span>
-              <span>Bombeiros <b>193</b></span>
+              <span>SAMU<b>192</b></span>
+              <span>Guarda Civil<b>153</b></span>
+              <span>Bombeiros<b>193</b></span>
             </div>
           </div>
         </section>
@@ -1452,14 +1675,19 @@
     };
     window.TOTEM_ICONS = TOTEM_ICONS;
 
-    function getTotemActivityIcon(iconKey) {
-      if (!iconKey) return TOTEM_ICONS.actGeneral;
+    function getActivityKind(iconKey) {
+      if (!iconKey) return 'geral';
       const k = String(iconKey).toLowerCase();
-      if (k.includes('zen') || k.includes('yoga') || iconKey === '\u{1F9D8}') return TOTEM_ICONS.zen;
-      if (k.includes('organico') || k.includes('feira') || k.includes('agro') || iconKey === '\u{1F955}') return TOTEM_ICONS.organico;
-      if (k.includes('esporte') || k.includes('basquete') || k.includes('volei') || k.includes('futsal') || iconKey === '\u{1F3C0}') return TOTEM_ICONS.esporte;
-      if (k.includes('arte') || k.includes('desenho') || k.includes('kids') || iconKey === '\u{1F3A8}') return TOTEM_ICONS.arte;
-      return TOTEM_ICONS.actGeneral;
+      if (k.includes('zen') || k.includes('yoga') || iconKey === '\u{1F9D8}') return 'zen';
+      if (k.includes('organico') || k.includes('feira') || k.includes('agro') || iconKey === '\u{1F955}') return 'organico';
+      if (k.includes('esporte') || k.includes('basquete') || k.includes('volei') || k.includes('futsal') || iconKey === '\u{1F3C0}') return 'esporte';
+      if (k.includes('arte') || k.includes('desenho') || k.includes('kids') || iconKey === '\u{1F3A8}') return 'arte';
+      return 'geral';
+    }
+
+    function getTotemActivityIcon(iconKey) {
+      const kind = getActivityKind(iconKey);
+      return kind === 'geral' ? TOTEM_ICONS.actGeneral : TOTEM_ICONS[kind];
     }
     window.getTotemActivityIcon = getTotemActivityIcon;
 
@@ -3704,10 +3932,10 @@
       // CLIMA: TELEMETRIA DETALHADA + RECOMENDAÇÃO DE USO
       // ==========================================
       const WEATHER_DETAILS = {
-        sun:   { feels: '26°', hum: '58%', wind: 8,  uv: [7, 'alto'],     walk: ['good', 'Ideal'],       sport: ['ok', 'Use protetor'], tint: 'var(--warn-soft)' },
-        rain:  { feels: '19°', hum: '91%', wind: 14, uv: [1, 'baixo'],    walk: ['bad', 'Evite agora'],   sport: ['bad', 'Piso molhado'], tint: 'var(--booked-soft)' },
-        wind:  { feels: '19°', hum: '52%', wind: 34, uv: [4, 'moderado'], walk: ['ok', 'Com cuidado'],    sport: ['ok', 'Vento forte'],   tint: 'var(--ok-soft)' },
-        night: { feels: '17°', hum: '72%', wind: 6,  uv: [0, 'nulo'],     walk: ['good', 'Iluminado'],    sport: ['good', 'Luz até 22h'], tint: 'var(--booked-soft)' }
+        sun:   { feels: '26°', hum: '58%', wind: 8,  uv: [7, 'alto'],     walk: ['good', 'Ideal'],       sport: ['ok', 'Use protetor'] },
+        rain:  { feels: '19°', hum: '91%', wind: 14, uv: [1, 'baixo'],    walk: ['bad', 'Evite agora'],   sport: ['bad', 'Piso molhado'] },
+        wind:  { feels: '19°', hum: '52%', wind: 34, uv: [4, 'moderado'], walk: ['ok', 'Com cuidado'],    sport: ['ok', 'Vento forte'] },
+        night: { feels: '17°', hum: '72%', wind: 6,  uv: [0, 'nulo'],     walk: ['good', 'Iluminado'],    sport: ['good', 'Luz até 22h'] }
       };
       window.renderWeatherDetails = function(mode) {
         const d = WEATHER_DETAILS[mode] || WEATHER_DETAILS.sun;
@@ -3716,7 +3944,8 @@
         if (byId('sensor-humidity')) byId('sensor-humidity').innerText = d.hum;
         if (byId('wx-wind')) byId('wx-wind').innerHTML = `${d.wind}<small>km/h</small>`;
         if (byId('sensor-uv')) byId('sensor-uv').innerHTML = `${d.uv[0]}<small>${d.uv[1]}</small>`;
-        if (byId('hero-weather-icon-box')) byId('hero-weather-icon-box').style.background = d.tint;
+        const wxCard = document.querySelector('.weather-card');
+        if (wxCard) wxCard.dataset.wx = WEATHER_DETAILS[mode] ? mode : 'sun';
         [['wx-walk', d.walk], ['wx-sport', d.sport]].forEach(([id, [level, text]]) => {
           const el = byId(id);
           if (!el) return;
@@ -3902,7 +4131,6 @@
           const quickCourtTimer = document.getElementById('quick-court-timer');
           const quickSport = document.getElementById('quick-court-sport');
           const quickProgress = document.getElementById('quick-court-progress');
-          const heroCourtStatusPill = document.getElementById('hero-court-status-pill');
           const ssCourtBadge = document.getElementById('screensaver-court-badge');
           const ssCourtDot = document.getElementById('screensaver-court-dot');
           const ssCourtContainer = document.getElementById('screensaver-court-badge-container');
@@ -3935,10 +4163,6 @@
               badgeCourtQuick.className = "px-2.5 py-1 rounded-md text-[10px] font-mono font-bold bg-rose-500/15 text-rose-700 flex items-center gap-1.5 animate-pulse border border-rose-500/30";
               badgeCourtQuick.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-rose-600"></span> EM USO';
             }
-            if (heroCourtStatusPill) {
-              heroCourtStatusPill.className = "text-[9px] font-mono px-2 py-0.5 rounded-md bg-rose-500/15 text-rose-700 font-bold uppercase border border-rose-500/30 flex items-center gap-1";
-              heroCourtStatusPill.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-rose-600 animate-ping"></span> EM USO';
-            }
             if (quickCourtTimer) quickCourtTimer.innerText = `${court.remainingMinutes || 22} min restantes`;
             if (quickProgress) {
               const rem = court.remainingMinutes || 20;
@@ -3967,10 +4191,6 @@
               badgeCourtQuick.className = "px-2.5 py-1 rounded-md text-[10px] font-mono font-bold bg-emerald-500/15 text-emerald-700 flex items-center gap-1.5 border border-emerald-500/30";
               badgeCourtQuick.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> LIVRE AGORA';
             }
-            if (heroCourtStatusPill) {
-              heroCourtStatusPill.className = "text-[9px] font-mono px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-700 font-bold uppercase border border-emerald-500/30 flex items-center gap-1";
-              heroCourtStatusPill.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> LIVRE AGORA';
-            }
             if (courtCountdown) courtCountdown.innerText = "LIBERADA";
             if (quickCourtTimer) quickCourtTimer.innerText = "Livre para jogar";
             if (quickProgress) {
@@ -3997,10 +4217,6 @@
             if (badgeCourtQuick) {
               badgeCourtQuick.className = "px-2.5 py-1 rounded-md text-[10px] font-mono font-bold bg-amber-500/15 text-amber-800 flex items-center gap-1.5 border border-amber-500/30";
               badgeCourtQuick.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span> MANUTENÇÃO';
-            }
-            if (heroCourtStatusPill) {
-              heroCourtStatusPill.className = "text-[9px] font-mono px-2 py-0.5 rounded-md bg-amber-500/15 text-amber-800 font-bold uppercase border border-amber-500/30 flex items-center gap-1";
-              heroCourtStatusPill.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span> MANUTENÇÃO';
             }
             if (courtCountdown) courtCountdown.innerText = "MANUTENÇÃO";
             if (quickCourtTimer) quickCourtTimer.innerText = "Em manutenção";
@@ -4242,6 +4458,19 @@
       const pad2 = (n) => String(n).padStart(2, '0');
       const PIN_ICON = '<svg class="i i-sm" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>';
       const MEGAPHONE_ICON = '<svg class="i i-sm" viewBox="0 0 24 24"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>';
+      const SPORT_ICONS = {
+        basquete: '<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3v18M5.6 5.6a12.7 12.7 0 0 1 0 12.8M18.4 5.6a12.7 12.7 0 0 0 0 12.8"/></svg>',
+        volei: '<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 12a8 8 0 0 0 7.8 4.5M12 12a8 8 0 0 0-8.6 2.8M12 12V3M12 3a12 12 0 0 1 5 8M7 4.5A12 12 0 0 0 12 12"/></svg>',
+        futsal: '<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m12 7.5 4 2.9-1.5 4.6h-5L8 10.4z"/><path d="M12 7.5V3M16 10.4l4.3-1.4M14.5 15l2.6 3.6M9.5 15l-2.6 3.6M8 10.4 3.7 9"/></svg>',
+        tenis: '<svg class="i" viewBox="0 0 24 24"><ellipse cx="10" cy="9.5" rx="6" ry="6.5"/><path d="m14.4 14 6.1 6.1M6 7l8 5M7.5 13.5l5-8"/></svg>'
+      };
+      const sportIcon = (sport) => {
+        const k = String(sport || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        if (k.includes('volei')) return SPORT_ICONS.volei;
+        if (k.includes('futsal') || k.includes('futebol')) return SPORT_ICONS.futsal;
+        if (k.includes('tenis')) return SPORT_ICONS.tenis;
+        return SPORT_ICONS.basquete;
+      };
       const QR_ICON = '<svg class="i i-sm" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 17h4v4h-4z"/></svg>';
 
       function renderWeeklyActivities(activities) {
@@ -4256,18 +4485,16 @@
         activities.forEach(act => {
           const card = document.createElement('article');
           card.className = 'event-card';
+          card.dataset.kind = getActivityKind(act.icon);
           const timeLabel = act.dayTime || (act.day && act.time ? `${act.day} • ${act.time}` : (act.day || act.time || 'Data a definir'));
           const [day, time] = timeLabel.split('•').map(part => part.trim());
           card.innerHTML = `
-            <div class="event-when">
-              <span class="event-icon">${getTotemActivityIcon(act.icon)}</span>
-              <div>
-                <div class="event-day">${escapeHtml(day)}</div>
-                ${time ? `<div class="mono" style="font-size:20px;font-weight:700">${escapeHtml(time)}</div>` : ''}
-              </div>
+            <span class="ev-when">${escapeHtml(day)}${time ? ` · <b>${escapeHtml(time)}</b>` : ''}</span>
+            <span class="ev-art" aria-hidden="true">${getTotemActivityIcon(act.icon)}</span>
+            <div>
+              <h3>${escapeHtml(act.title)}</h3>
+              ${act.desc ? `<p>${PIN_ICON}${escapeHtml(act.desc)}</p>` : ''}
             </div>
-            <h3>${escapeHtml(act.title)}</h3>
-            ${act.desc ? `<p>${PIN_ICON}${escapeHtml(act.desc)}</p>` : ''}
           `;
           container.appendChild(card);
         });
@@ -4329,18 +4556,29 @@
         return 'free';
       }
 
-      function buildSlot(h, state) {
-        const start = `${pad2(h)}:00`;
+      // Quanto da hora atual já passou (enche o fundo da linha "agora")
+      const hourElapsedPct = () => {
+        const now = new Date();
+        return `${Math.round(((now.getMinutes() * 60 + now.getSeconds()) / 3600) * 100)}%`;
+      };
+
+      function buildSlot(h, state, nowH) {
         const el = document.createElement(state === 'free' ? 'button' : 'div');
         el.className = `court-slot ${state}`;
+        if (h === nowH) {
+          el.classList.add('is-now');
+          el.style.setProperty('--elapsed', hourElapsedPct());
+        }
+        const nowTag = h === nowH ? '<em class="now-tag">Agora</em>' : '';
+        const clock = `<span class="slot-clock"><b>${pad2(h)}:00</b><span class="slot-line"></span><small>${pad2(h + 1)}:00</small></span>`;
 
         if (state === 'free') {
           el.type = 'button';
           el.setAttribute('aria-label', `Reservar ${slotLabel(h)}`);
           el.innerHTML = `
-            <span class="slot-tag">Livre</span>
-            <span class="slot-time">${start}</span>
-            <span class="slot-meta">até ${pad2(h + 1)}:00 · qualquer modalidade</span>
+            ${clock}
+            <span class="slot-state"><i></i>Livre${nowTag}</span>
+            <span class="slot-info"><strong>Quadra disponível</strong><span>1 hora · qualquer modalidade</span></span>
             <span class="slot-cta"><span class="go">Reservar</span><span class="qr" title="Também pelo celular">${QR_ICON}</span></span>
           `;
           el.addEventListener('click', () => {
@@ -4350,29 +4588,69 @@
         } else if (state === 'live') {
           const rem = currentCourtData.remainingMinutes || 20;
           el.innerHTML = `
-            <span class="slot-tag">Em jogo</span>
-            <span class="slot-time">${start}</span>
-            <span class="slot-meta">${escapeHtml(currentCourtData.activity || 'Partida em andamento')}</span>
-            <span class="slot-meta">${rem} min restantes</span>
+            ${clock}
+            <span class="slot-state"><i></i>Em jogo${nowTag}</span>
+            <span class="slot-info"><strong>${escapeHtml(currentCourtData.activity || 'Partida em andamento')}</strong><span>Partida em andamento</span></span>
+            <span class="slot-cta"><span class="slot-count"><b>${rem}</b>min restantes</span></span>
           `;
         } else if (state === 'booked') {
           const booking = findBooking(h) || {};
           el.innerHTML = `
-            <span class="slot-tag">Reservado</span>
-            <span class="slot-time">${start}</span>
-            <span class="slot-meta">${escapeHtml(booking.sport || 'Partida')}</span>
-            <span class="slot-meta">${escapeHtml(booking.bookedBy || booking.name || 'Comunidade')}</span>
+            ${clock}
+            <span class="slot-state"><i></i>Reservado${nowTag}</span>
+            <span class="slot-info"><strong>${escapeHtml(booking.bookedBy || booking.name || 'Comunidade')}</strong><span>Reserva confirmada</span></span>
+            <span class="slot-cta"><span class="slot-sport">${sportIcon(booking.sport)}${escapeHtml(booking.sport || 'Partida')}</span></span>
           `;
         } else if (state === 'blocked') {
           el.innerHTML = `
-            <span class="slot-tag">Manutenção</span>
-            <span class="slot-time">${start}</span>
-            <span class="slot-meta">Quadra indisponível agora</span>
+            ${clock}
+            <span class="slot-state"><i></i>Manutenção${nowTag}</span>
+            <span class="slot-info"><strong>Quadra indisponível agora</strong><span>Manutenção técnica pela prefeitura</span></span>
           `;
         } else {
-          el.innerHTML = `<span class="slot-time">${start}</span><span class="slot-meta">Encerrado</span>`;
+          el.innerHTML = `${clock}<span class="slot-state"><i></i>Encerrado</span>`;
         }
         return el;
+      }
+
+      // Faixa do dia no placar: uma barra por hora (07h–21h) e a linha do "agora"
+      function renderDayTrack(nowH) {
+        const track = document.getElementById('court-day-track');
+        if (!track) return;
+        const span = LAST_SLOT_HOUR + 1 - OPEN_HOUR;
+        let bars = '';
+        for (let h = OPEN_HOUR; h <= LAST_SLOT_HOUR; h++) bars += `<i class="${slotState(h, nowH)}"></i>`;
+        const labels = [7, 10, 13, 16, 19, 22]
+          .map(h => `<span style="left:${((h - OPEN_HOUR) / span) * 100}%">${pad2(h)}h</span>`).join('');
+        track.innerHTML = `
+          <div class="dt-bars">${bars}<span class="dt-now" hidden><em></em></span></div>
+          <div class="dt-foot">
+            <div class="dt-labels">${labels}</div>
+            <div class="dt-legend">
+              <span><i style="background:rgba(74,222,128,.55)"></i>Livre</span>
+              <span><i style="background:#38BDF8"></i>Reservado</span>
+              <span><i style="background:#FB7185"></i>Em jogo</span>
+            </div>
+          </div>
+        `;
+        positionNowMarkers();
+      }
+
+      // Move a linha do "agora" e o preenchimento da hora atual (chamado a cada segundo)
+      function positionNowMarkers() {
+        const now = new Date();
+        const hours = now.getHours() + now.getMinutes() / 60;
+        const span = LAST_SLOT_HOUR + 1 - OPEN_HOUR;
+        const marker = document.querySelector('#court-day-track .dt-now');
+        if (marker) {
+          const inside = hours >= OPEN_HOUR && hours <= LAST_SLOT_HOUR + 1;
+          marker.hidden = !inside;
+          if (inside) {
+            marker.style.left = `${((hours - OPEN_HOUR) / span) * 100}%`;
+            marker.querySelector('em').innerText = `${pad2(now.getHours())}:${pad2(now.getMinutes())}`;
+          }
+        }
+        document.querySelectorAll('.court-slot.is-now').forEach(el => el.style.setProperty('--elapsed', hourElapsedPct()));
       }
 
       function renderNextSlots(nowH) {
@@ -4409,7 +4687,7 @@
 
         const nowH = new Date().getHours();
 
-        const pill = document.getElementById('hero-court-status-pill');
+        const pill = document.getElementById('court-status-chip');
         if (pill && currentCourtData) {
           const st = currentCourtData.status;
           const color = st === 'livre' ? 'var(--ok)' : (st === 'em_uso' ? 'var(--busy)' : 'var(--warn)');
@@ -4428,9 +4706,22 @@
           heroCourtGrid.innerHTML = '';
           const upcoming = [];
           const past = [];
+          const counts = { free: 0, booked: 0, live: 0 };
           for (let h = startH; h <= endH; h++) {
             const state = slotState(h, nowH);
-            (state === 'past' ? past : upcoming).push(buildSlot(h, state));
+            if (state in counts) counts[state]++;
+            (state === 'past' ? past : upcoming).push(buildSlot(h, state, nowH));
+          }
+
+          // Legenda com a contagem do período escolhido
+          const legend = document.getElementById('court-legend');
+          if (legend) {
+            const plural = (n, one, many) => `<b>${n}</b>${n === 1 ? one : many}`;
+            legend.innerHTML = `
+              <span><i style="background:var(--ok)"></i>${plural(counts.free, 'livre', 'livres')}</span>
+              <span><i style="background:var(--booked)"></i>${plural(counts.booked, 'reservado', 'reservados')}</span>
+              <span><i style="background:var(--busy)"></i>${plural(counts.live, 'em jogo', 'em jogo')}</span>
+            `;
           }
 
           if (!upcoming.length) {
@@ -4450,7 +4741,7 @@
               <span class="when-closed">Mostrar ▾</span><span class="when-open">Ocultar ▴</span></summary>
             `;
             const pastGrid = document.createElement('div');
-            pastGrid.className = 'slot-grid';
+            pastGrid.className = 'slot-board';
             past.forEach(el => pastGrid.appendChild(el));
             details.appendChild(pastGrid);
             heroCourtGrid.appendChild(details);
@@ -4458,6 +4749,7 @@
         }
 
         renderNextSlots(nowH);
+        renderDayTrack(nowH);
       }
 
       document.querySelectorAll('.court-period-tab').forEach(tabBtn => {
@@ -4493,12 +4785,13 @@
         const bar = document.getElementById('court-hero-bar');
         const remEl = document.getElementById('court-hero-remaining');
         const label = document.getElementById('court-hero-remaining-label');
+        positionNowMarkers();
         if (!bar || !remEl || !label) return;
 
         if (court.status === 'em_uso') {
           const sync = window.totemSync;
           const secs = Math.max(0, sync ? sync.courtSeconds : (court.remainingMinutes || 0) * 60);
-          label.innerText = 'Tempo restante da partida';
+          label.innerText = 'Tempo restante';
           remEl.innerText = `${pad2(Math.floor(secs / 60))}:${pad2(secs % 60)}`;
           bar.style.width = `${Math.max(3, Math.min(100, (secs / 3600) * 100))}%`;
         } else if (court.status === 'livre') {
