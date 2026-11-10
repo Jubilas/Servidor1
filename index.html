@@ -427,6 +427,8 @@
     .mobile-toggles { display: none; gap: 8px; }
 
     .pblock { display: flex; flex-direction: column; gap: 18px; scroll-margin-top: 20px; }
+    /* O atributo hidden precisa vencer o display das classes (usado no Simulador 3D desligado) */
+    .pblock[hidden], .nav-item[hidden] { display: none !important; }
     .block-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
     .block-head h2 { margin: 4px 0 0; font-size: 26px; line-height: 1.15; font-weight: 800; letter-spacing: -.015em; }
     .block-head p { margin: 6px 0 0; color: var(--ink-2); font-size: 15px; line-height: 1.5; max-width: 560px; }
@@ -1278,7 +1280,8 @@
           <span class="nav-label-long">Zeladoria</span><span class="nav-label-short">Zeladoria</span>
         </button>
         <div class="sb-section-label">Explorar</div>
-        <button class="nav-item" data-scroll-to="section-praca3d" data-tab="maquete">
+        <!-- Simulador 3D desligado temporariamente: para voltar, tire o hidden daqui e da seção, e ponha PARK_3D_ENABLED = true -->
+        <button class="nav-item" data-scroll-to="section-praca3d" data-tab="maquete" hidden>
           <svg class="i" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg>
           <span class="nav-label-long">Simulador 3D</span><span class="nav-label-short">3D</span>
         </button>
@@ -1598,7 +1601,8 @@
         </section>
 
         <!-- ===== SIMULADOR 3D DA PRAÇA ===== -->
-        <section id="section-praca3d" class="pblock">
+        <!-- Simulador 3D desligado temporariamente (ver o comentário no menu) -->
+        <section id="section-praca3d" class="pblock" hidden>
           <div class="block-head">
             <div>
               <p class="eyebrow">Explorar</p>
@@ -3951,9 +3955,12 @@
       window.engine = engine;
 
       // Initialize 3D Interactive Park Model (Maquete 3D)
+      // Desligado temporariamente enquanto o modelo novo da praça não fica pronto:
+      // com false a maquete nem é montada (não gasta processamento no totem).
+      const PARK_3D_ENABLED = false;
       const parkCanvas = document.getElementById('park-3d-canvas');
       let parkStudio = null;
-      if (parkCanvas) {
+      if (parkCanvas && PARK_3D_ENABLED) {
         parkStudio = new Park3DStudio(parkCanvas);
 
         // POI Buttons Binding
