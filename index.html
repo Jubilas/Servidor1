@@ -859,7 +859,7 @@
     }
     .story-ch.is-past { transform: translateX(-32px); }
     .story-ch.is-active { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
-    .story-ch.wide { grid-template-columns: minmax(0, 1fr); align-content: center; }
+    .story-ch.wide { grid-template-columns: minmax(0, 1fr); align-content: safe center; }
 
     .story-media { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
     .story-media.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
@@ -887,12 +887,6 @@
     .story-facts li { position: relative; padding: 9px 0 9px 24px; font-size: clamp(16px, 1.1vw, 19px); line-height: 1.4; color: var(--ink-2); }
     .story-facts li::before { content: ""; position: absolute; left: -8px; top: 15px; width: 14px; height: 14px; border-radius: 50%; background: var(--paper); border: 3px solid var(--accent); }
     .story-facts b { display: block; font-family: "JetBrains Mono", monospace; font-size: .85em; color: var(--accent); }
-    .story-quote {
-      margin: 24px 0 0; padding: 18px 22px; border-radius: 16px;
-      background: var(--card); border: 1px solid var(--line); box-shadow: inset 5px 0 0 var(--accent);
-      font-size: clamp(17px, 1.25vw, 22px); line-height: 1.5; font-style: italic; color: var(--ink);
-    }
-    .story-quote cite { display: block; margin-top: 8px; font-style: normal; font-size: 14px; font-weight: 700; color: var(--ink-3); }
 
     /* Capa */
     .story-ch.cover { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
@@ -903,15 +897,16 @@
     .story-collage.big { height: min(62vh, 600px); }
     .story-collage.big img { width: 70%; border-width: 12px; }
 
-    /* Vozes dos moradores */
-    .story-voices { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-top: 30px; }
-    .voice { padding: 22px; border-radius: 18px; background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow); }
-    .voice header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-    .voice .avatar { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: var(--accent-soft); color: var(--accent); font-size: 21px; font-weight: 800; }
-    .voice strong { display: block; font-size: 19px; }
-    .voice small { display: block; font-size: 13px; font-weight: 700; color: var(--ink-3); }
-    .voice p { margin: 0; font-size: 17px; line-height: 1.55; color: var(--ink-2); }
-    .voice blockquote { margin: 0 0 10px; font-size: 18px; line-height: 1.5; font-style: italic; color: var(--ink); }
+    /* Equipe (último capítulo) */
+    .story-team { display: flex; flex-direction: column; gap: 26px; margin-top: 28px; }
+    .story-team h3 { margin: 0 0 8px; font-size: 14px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+    .team-list { list-style: none; margin: 0; padding: 0; columns: 3; column-gap: 36px; }
+    .team-list li { break-inside: avoid; padding: 6px 0; border-bottom: 1px solid var(--line); }
+    @media (min-width: 1400px) { .team-list { columns: 4; } }
+    .story-ch.team-ch { gap: 20px; }
+    .team-list strong { display: block; font-size: 16px; color: var(--ink); }
+    .team-list span { display: block; margin-top: 1px; font-size: 13px; font-weight: 600; color: var(--ink-3); }
+    .team-list b { font-family: "JetBrains Mono", monospace; color: var(--ink-2); }
 
     /* Então e agora */
     .story-compare { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
@@ -1148,6 +1143,7 @@
       .story-bar { justify-content: space-between; gap: 8px; padding-left: 12px; padding-right: 12px; }
       /* No celular o título vem antes das fotos */
       .story-text { order: -1; }
+      .team-list { columns: 2; }
     }
     @media (max-width: 640px) {
       .next-slots { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -1161,7 +1157,7 @@
       .sheet-backdrop { align-items: flex-end; padding: 0; }
       .sheet { border-radius: 24px 24px 0 0; max-height: 92vh; padding: 20px 16px; }
       .story-media.pair, .story-media.grid4, .compare-row { grid-template-columns: 1fr; }
-      .story-sources { columns: 1; }
+      .story-sources, .team-list { columns: 1; }
       #story-count, .story-prev-label { display: none; }
       .story-close, .story-steps button { padding: 0 16px; }
       .story-steps { gap: 8px; }
@@ -1599,9 +1595,9 @@
             <div>
               <p class="eyebrow">Praça Américo Ferreira de Abreu</p>
               <h3>Do campo de terra ao ponto de encontro do Santa Mônica</h3>
-              <p>Documentos, fotos de 1994 a 2026 e a memória de quem vive aqui, contados em capítulos curtos.</p>
+              <p>Documentos oficiais e fotos de 1994 a 2026, contados em capítulos curtos.</p>
               <div class="story-eras" aria-hidden="true">
-                <span>1933</span><span>Anos 70</span><span>Anos 80</span><span>1994</span><span>2007</span><span>Memórias</span><span>Hoje</span>
+                <span>1933</span><span>Anos 70</span><span>Anos 80</span><span>1994</span><span>2007</span><span>Hoje</span>
               </div>
               <button class="btn btn-primary btn-lg" data-action="story">
                 <svg class="i" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/><path d="M9 7h7M9 11h5"/></svg>
@@ -5097,7 +5093,7 @@
       // ==========================================
       // HISTÓRIA DA PRAÇA: TELA CHEIA EM CAPÍTULOS
       // Texto e fotos da pesquisa histórica do grupo (2026): documentos
-      // oficiais, acervos públicos e entrevistas com moradores.
+      // oficiais e acervos públicos.
       // ==========================================
       const STORY_IMG = {
         americo1939: './assets/historia-americo-1939-102fe44d.jpg',
@@ -5127,7 +5123,7 @@
           kind: 'cover', chip: 'Início', era: '',
           kicker: 'Memorial · Bairro Santa Mônica · Uberlândia–MG',
           title: 'Praça Américo Ferreira de Abreu',
-          paras: ['Do campo de futebol de terra ao ponto de encontro do bairro: a história da praça contada por documentos, fotografias e pela memória de quem vive aqui.']
+          paras: ['Do campo de futebol de terra ao ponto de encontro do bairro: a história da praça contada por documentos oficiais e fotografias, de 1933 até hoje.']
         },
         {
           chip: 'Quem foi Américo', era: '1933 – 1954',
@@ -5155,10 +5151,9 @@
           chip: 'Campo e fé', era: 'Anos 80',
           title: 'Campo de terra, bola e fé',
           paras: [
-            'Os primeiros usos eram simples: um campo de futebol de terra e um ponto de encontro dos moradores. O grande espaço aberto também recebia celebrações religiosas.',
+            'Os primeiros usos eram simples: um campo de futebol de terra e um ponto de encontro da comunidade. O grande espaço aberto também recebia celebrações religiosas.',
             'Delas nasceu a <strong>Paróquia Santa Mônica e Santa Elena Guerra</strong>, fundada em 18 de maio de 1980 e localizada na praça até hoje.'
           ],
-          quote: { text: 'Era praticamente só a praça mesmo. Não tinha asfalto e também não existiam os aparelhos de exercícios que tem hoje.', cite: 'Osvaldo, 55 anos, morador' },
           media: { figs: [{ src: STORY_IMG.quadrasArquivo, alt: 'Foto antiga e desbotada das quadras esportivas da praça, com piso de terra', cap: 'Quadras esportivas da praça. Ano desconhecido.', credit: 'Arquivo Público de Uberlândia' }] }
         },
         {
@@ -5177,8 +5172,7 @@
           chip: 'A mais estruturada', era: '2007',
           title: 'A praça mais bem estruturada do bairro',
           paras: [
-            'Em 2007, a pesquisadora Camila Guedes Ariza fotografou a praça para um estudo sobre qualidade ambiental, publicado em 2008. Entre as praças observadas no Santa Mônica, esta foi descrita como a mais bem estruturada.',
-            'Os moradores também lembram dessa fase: Luiz cita a reforma dos aparelhos de exercício, em 2007, e André, os projetos inaugurados por Oldemo Leão há cerca de 20 anos.'
+            'Em 2007, a pesquisadora Camila Guedes Ariza fotografou a praça para um estudo sobre qualidade ambiental, publicado em 2008. Entre as praças observadas no Santa Mônica, esta foi descrita como a mais bem estruturada.'
           ],
           media: { layout: 'pair', figs: [
             { src: STORY_IMG.quadra2007, alt: 'Quadra cercada por alambrado, em 2007', cap: 'A quadra em 2007', credit: CREDIT.ariza },
@@ -5198,18 +5192,6 @@
           media: { figs: [{ src: STORY_IMG.praca2016, alt: 'Praça sombreada por árvores, com bancos e brinquedos ao fundo, em 2016', cap: 'A praça em 2016.', credit: 'Rossana · UFU, 2016' }] }
         },
         {
-          kind: 'voices', chip: 'Memórias', era: 'Memórias',
-          title: 'Vozes do bairro',
-          paras: ['Cinco moradores de diferentes idades contaram ao grupo de pesquisa o que a praça significa para eles.'],
-          voices: [
-            { name: 'Luiz', meta: '74 anos · mora no bairro desde 1988', text: 'Chegou quando a praça ainda era um campo de futebol de terra. A lembrança mais forte é o tempo passado com os amigos antigos.' },
-            { name: 'Osvaldo', meta: '55 anos', quote: 'Era praticamente só a praça mesmo.', text: 'Lembra dos encontros e eventos da Igreja Católica, que reuniam a comunidade.' },
-            { name: 'Eduardo Túlio', meta: '51 anos', text: 'Lembra dos eventos da igreja e das entrevistas do MGTV na praça. Na pandemia, preparava comida para quem estava em situação de rua ali.' },
-            { name: 'André', meta: '44 anos · há cerca de 30 no bairro', text: 'Amigos da escola, namoros, caminhadas e as barracas que movimentavam a praça.' },
-            { name: 'Matheus', meta: '22 anos', text: 'Há cerca de cinco anos, pediu a namorada em namoro num dos bancos. No fim da pandemia, viu a praça voltar a ser ponto de encontro: bicicleta, conversa e cangas na grama.' }
-          ]
-        },
-        {
           kind: 'compare', chip: 'Então e agora', era: 'Então e agora',
           title: 'O que mudou, o que ficou',
           paras: ['A vegetação cresceu e amadureceu, equipamentos de lazer e esporte foram trocados e os caminhos foram reorganizados. A quadra, os bancos e a convivência continuam lá.'],
@@ -5223,7 +5205,7 @@
           title: 'A praça hoje',
           paras: [
             'Nos últimos anos vieram a iluminação LED (a partir de julho de 2021), as manutenções da Prefeitura em 2023 e 2024 e, em 2025, playgrounds acessíveis.',
-            'Os moradores pedem mais: manutenção constante, cuidado com as árvores, um zelador e segurança. A pesquisa conclui que a revitalização deve preservar o que sempre marcou o lugar, a convivência, para que <strong>novas memórias</strong> continuem nascendo aqui.'
+            'A pesquisa aponta o que ainda falta: manutenção constante, cuidado com as árvores e segurança. E conclui que a revitalização deve preservar o que sempre marcou o lugar, a convivência, para que <strong>novas memórias</strong> continuem nascendo aqui.'
           ],
           media: { layout: 'grid4', figs: [
             { src: STORY_IMG.porDoSol2026, alt: 'Pôr do sol na praça', cap: '', credit: '' },
@@ -5235,7 +5217,7 @@
         {
           kind: 'sources', chip: 'Fontes', era: 'Fontes',
           title: 'De onde vem esta história',
-          paras: ['Pesquisa histórica e entrevistas realizadas por estudantes de Arquitetura e Urbanismo, Sistemas de Informação, Engenharia Mecânica e Engenharia de Computação, em 2026.'],
+          paras: ['Pesquisa histórica feita por estudantes de Arquitetura, Sistemas de Informação, Engenharia Mecânica e Engenharia de Computação, em 2026. A equipe está no último capítulo.'],
           sources: [
             ['Ariza; Santos (2008)', 'Qualidade ambiental e planejamento urbano. Caminhos de Geografia. Fotos de 2007.'],
             ['Silva (2006)', 'Mapeamento de vazios urbanos em Uberlândia: o caso do bairro Santa Mônica. Dissertação, UFU.'],
@@ -5245,10 +5227,55 @@
             ['Câmara Municipal', 'Jornal Legislativo, 2013: pedido de revitalização da praça.'],
             ['Diocese de Uberlândia', 'Fundação da Paróquia Santa Mônica e Santa Elena Guerra (1980).'],
             ['Turismo Minas Gerais e UFU', 'Palco e atividades culturais; teatro de rua em 2025.'],
-            ['Outras imagens', 'Rossana (UFU), 2016; Foursquare, 2017; acervo do grupo, 2026.'],
-            ['Entrevistas', 'Luiz, Osvaldo, Eduardo Túlio, André e Matheus, moradores do bairro.']
+            ['Outras imagens', 'Rossana (UFU), 2016; Foursquare, 2017; acervo do grupo, 2026.']
           ],
           note: 'Lacunas: a planta original do loteamento, o ato de criação da praça e o projeto original com seu responsável técnico não foram localizados nas fontes consultadas.'
+        },
+        {
+          kind: 'team', chip: 'Equipe', era: 'Créditos',
+          title: 'Quem fez esta pesquisa',
+          paras: ['Levantamento histórico, fotografias e textos feitos pelos grupos abaixo, em 2026.'],
+          groups: [
+            { name: 'Grupo 06', people: [
+              ['Marcela Vieira Araújo', 'Arquitetura', '126217'],
+              ['Julia De Macedo Freitas', 'Arquitetura', '226041'],
+              ['Eduardo Rodrigues Oliveira Saraiva', 'Arquitetura', '226305'],
+              ['Dimas Batista dos Anjos', 'Arquitetura', '226227'],
+              ['João Pedro Alves da Silva', 'Arquitetura', '226134'],
+              ['Franco Petraglia Ribeiro', 'Sistemas de Informação', '126505'],
+              ['Victor Hugo Franco de Melo', 'Sistemas de Informação', '126593'],
+              ['Arthur Pires Satel Araújo', 'Sistemas de Informação', '126702'],
+              ['Davi Marques Miranda', 'Sistemas de Informação', '126341'],
+              ['Cauã de Araújo Ferreira', 'Sistemas de Informação', '126461'],
+              ['Caio Franco Petraglia Ribeiro', 'Sistemas de Informação', '126505'],
+              ['Eduardo Alves Santos', 'Eng. Mecânica', '126811'],
+              ['Reginaldo Alves Dias Júnior', 'Eng. Mecânica', '126687'],
+              ['Khayo Silva Faria', 'Eng. Mecânica', '126712'],
+              ['Heitor Rabelo Vilas Boas Botelho', 'Eng. Mecânica', '126365'],
+              ['Luis Felipe de Oliveira Santos', 'Eng. de Computação', '126218'],
+              ['Lucas Garcia Fernandes', 'Eng. de Computação', '126462'],
+              ['Kennedy Agapto de Souza', 'Eng. de Computação', '126393']
+            ] },
+            { name: 'Grupo 3', people: [
+              ['Rafael Alves Borges', 'Arquitetura'],
+              ['Gabriela Braga Tavares', 'Arquitetura'],
+              ['Joao Pedro Miranda Ribeiro', 'Arquitetura'],
+              ['Matheus Silva Marques', 'Arquitetura'],
+              ['Clara Da Cunha Tozzi', 'Arquitetura'],
+              ['Gilson Machado Silva', 'Eng. Mecânica'],
+              ['Murilo De Lima V. Moreira', 'Eng. Mecânica'],
+              ['Guilherme Gomes Silva', 'Eng. Mecânica'],
+              ['Vitor De Sousa Camargo Marsal', 'Eng. Mecânica'],
+              ['Marco Tulio Medeiros Gouveia', 'Eng. de Computação'],
+              ['Otavio Cartolano Bitencourt', 'Eng. de Computação'],
+              ['Matheus Ferreira B. De Brito', 'Eng. de Computação'],
+              ['Ana Carolina Soares Rocha', 'Sistemas de Informação'],
+              ['Felipe Pereira Martins', 'Sistemas de Informação'],
+              ['Pietro Rodrigues Gomes', 'Sistemas de Informação'],
+              ['Murilo Alves Garcia', 'Sistemas de Informação'],
+              ['Kaique Silva', 'Sistemas de Informação']
+            ] }
+          ]
         }
       ];
 
@@ -5276,9 +5303,6 @@
         const facts = ch.facts
           ? `<ul class="story-facts">${ch.facts.map(([b, t]) => `<li><b>${escapeHtml(b)}</b>${escapeHtml(t)}</li>`).join('')}</ul>`
           : '';
-        const quote = ch.quote
-          ? `<blockquote class="story-quote">“${escapeHtml(ch.quote.text)}”<cite>${escapeHtml(ch.quote.cite)}</cite></blockquote>`
-          : '';
 
         if (ch.kind === 'cover') {
           return `
@@ -5297,14 +5321,12 @@
               <img src="${STORY_IMG.porDoSol2026}" alt="" />
             </div>`;
         }
-        if (ch.kind === 'voices') {
-          const voices = ch.voices.map(v => `
-            <article class="voice">
-              <header><span class="avatar" aria-hidden="true">${escapeHtml(v.name.charAt(0))}</span><div><strong>${escapeHtml(v.name)}</strong><small>${escapeHtml(v.meta)}</small></div></header>
-              ${v.quote ? `<blockquote>“${escapeHtml(v.quote)}”</blockquote>` : ''}
-              <p>${escapeHtml(v.text)}</p>
-            </article>`).join('');
-          return `<div class="story-text">${era}<h2>${escapeHtml(ch.title)}</h2>${paras}</div><div class="story-voices">${voices}</div>`;
+        if (ch.kind === 'team') {
+          const groups = ch.groups.map(g => `
+            <section><h3>${escapeHtml(g.name)}</h3><ul class="team-list">${g.people.map(([name, course, id]) =>
+              `<li><strong>${escapeHtml(name)}</strong><span>${escapeHtml(course)}${id ? ` · matrícula <b>${escapeHtml(id)}</b>` : ''}</span></li>`
+            ).join('')}</ul></section>`).join('');
+          return `<div class="story-text">${era}<h2>${escapeHtml(ch.title)}</h2>${paras}</div><div class="story-team">${groups}</div>`;
         }
         if (ch.kind === 'compare') {
           const rows = ch.pairs.map(pair => `
@@ -5320,14 +5342,15 @@
         const note = m.note ? `<p class="story-media-note">${escapeHtml(m.note)}</p>` : '';
         return `
           <div class="story-media ${m.layout || ''}">${m.figs.map(storyFigure).join('')}${note}</div>
-          <div class="story-text">${era}<h2>${escapeHtml(ch.title)}</h2>${paras}${facts}${quote}</div>`;
+          <div class="story-text">${era}<h2>${escapeHtml(ch.title)}</h2>${paras}${facts}</div>`;
       }
 
       function buildStory() {
         if (storyBuilt || !storyStage) return;
         storyStage.innerHTML = STORY_CHAPTERS.map((ch, i) => {
-          const kind = ch.kind === 'cover' ? 'cover' : (ch.kind === 'voices' || ch.kind === 'sources' ? 'wide' : '');
-          return `<section class="story-ch ${kind}" data-index="${i}" aria-label="${escapeHtml(ch.title)}">${storyChapterHtml(ch)}</section>`;
+          const kind = ch.kind === 'cover' ? 'cover' : (ch.kind === 'team' || ch.kind === 'sources' ? 'wide' : '');
+          const extra = ch.kind === 'team' ? ' team-ch' : '';
+          return `<section class="story-ch ${kind}${extra}" data-index="${i}" aria-label="${escapeHtml(ch.title)}">${storyChapterHtml(ch)}</section>`;
         }).join('');
         storyChipsEl.innerHTML = STORY_CHAPTERS.map((ch, i) =>
           `<button class="story-chip" data-story-go="${i}"><b>${escapeHtml(ch.era && ch.era !== ch.chip ? ch.era : '•')}</b><span>${escapeHtml(ch.chip)}</span></button>`
