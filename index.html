@@ -840,6 +840,59 @@
     .card, .notice, .btn-report-issue { background: color-mix(in srgb, var(--card) 88%, transparent); }
 
     /* ---------- HISTÓRIA DA PRAÇA: TELA CHEIA EM CAPÍTULOS ---------- */
+    /* A nova praça: antes/depois e galeria de renders do projeto */
+    .ba-slider {
+      position: relative; width: 100%; aspect-ratio: 16 / 9; max-height: 520px; overflow: hidden;
+      border-radius: var(--radius); border: 1px solid var(--line); box-shadow: var(--shadow); background: var(--line);
+      touch-action: pan-y; cursor: ew-resize; user-select: none; -webkit-user-select: none;
+    }
+    .ba-slider:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+    .ba-slider img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; -webkit-user-drag: none; }
+    .ba-after { position: absolute; inset: 0; clip-path: inset(0 0 0 50%); }
+    .ba-label { position: absolute; top: 14px; padding: 6px 12px; border-radius: 999px; background: rgba(12, 10, 9, .74); color: #fff; font-size: 13px; font-weight: 700; letter-spacing: .02em; pointer-events: none; }
+    .ba-label.left { left: 14px; }
+    .ba-label.right { right: 14px; }
+    .ba-divider { position: absolute; top: 0; bottom: 0; left: 50%; width: 4px; margin-left: -2px; background: #fff; box-shadow: 0 0 0 1px rgba(0, 0, 0, .15); pointer-events: none; }
+    .ba-handle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 56px; height: 56px; border-radius: 50%; background: #fff; color: var(--accent); display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-lg); }
+    .ba-hint { margin: -6px 0 0; font-size: 14px; color: var(--ink-3); font-weight: 600; display: flex; align-items: center; gap: 8px; }
+
+    .render-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .render-card {
+      position: relative; display: block; padding: 0; border: 0; border-radius: 14px; overflow: hidden;
+      aspect-ratio: 4 / 3; background: var(--line); box-shadow: var(--shadow); cursor: zoom-in;
+      font: inherit; color: inherit; text-align: left;
+    }
+    .render-card img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .5s var(--ease); }
+    .render-card .render-cap {
+      position: absolute; left: 0; right: 0; bottom: 0; padding: 28px 12px 10px;
+      background: linear-gradient(transparent, rgba(12, 10, 9, .8)); color: #fff;
+      font-size: 13px; font-weight: 700; line-height: 1.3;
+    }
+    .render-card:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+    @media (hover: hover) { .render-card:hover img { transform: scale(1.04); } }
+    .render-note { margin: -6px 0 0; font-size: 13px; line-height: 1.5; color: var(--ink-3); }
+
+    /* Visualizador em tela cheia dos renders */
+    #render-viewer {
+      position: fixed; inset: 0; z-index: 66;
+      display: flex; align-items: center; justify-content: center; gap: 16px; padding: 24px 20px;
+      background: rgba(8, 6, 5, .94); touch-action: pan-y;
+    }
+    #render-viewer[hidden] { display: none; }
+    .rv-figure { flex: 1 1 auto; min-width: 0; margin: 0; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+    .rv-figure img { max-width: 100%; max-height: calc(100vh - 150px); object-fit: contain; border-radius: 12px; box-shadow: 0 24px 60px -20px rgba(0, 0, 0, .8); }
+    .rv-figure figcaption { color: #fff; font-size: 17px; font-weight: 700; text-align: center; line-height: 1.35; }
+    .rv-figure figcaption small { display: block; margin-top: 4px; color: rgba(255, 255, 255, .65); font-size: 13px; font-weight: 600; }
+    .rv-btn {
+      flex: 0 0 auto; width: 56px; height: 56px; border: 0; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(255, 255, 255, .14); color: #fff; cursor: pointer;
+    }
+    .rv-btn:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+    @media (hover: hover) { .rv-btn:hover { background: rgba(255, 255, 255, .26); } }
+    .rv-close { position: absolute; top: 16px; right: 16px; }
+    body.screensaver-active #render-viewer { display: none; }
+
     #story {
       position: fixed; inset: 0; z-index: 65;
       display: grid; grid-template-rows: minmax(0, 1fr) auto; grid-template-columns: minmax(0, 1fr);
@@ -1157,6 +1210,18 @@
       .sheet-backdrop { align-items: flex-end; padding: 0; }
       .sheet { border-radius: 24px 24px 0 0; max-height: 92vh; padding: 20px 16px; }
       .story-media.pair, .story-media.grid4, .compare-row { grid-template-columns: 1fr; }
+      /* Sete atalhos no menu de baixo: encolhe um pouco para todos caberem */
+      .sb-nav { gap: 0; }
+      .nav-item, body.sidebar-collapsed .nav-item { min-width: 0; padding: 6px 1px; font-size: 10px; letter-spacing: -.01em; }
+      .ba-slider { aspect-ratio: 4 / 3; }
+      .ba-handle { width: 48px; height: 48px; }
+      .render-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+      .render-card .render-cap { font-size: 12px; padding: 22px 8px 8px; }
+      #render-viewer { padding: 64px 10px 96px; }
+      .rv-figure img { max-height: calc(100vh - 220px); }
+      .rv-prev, .rv-next { position: absolute; bottom: 20px; }
+      .rv-prev { left: 20px; }
+      .rv-next { right: 20px; }
       .story-sources, .team-list { columns: 1; }
       #story-count, .story-prev-label { display: none; }
       .story-close, .story-steps button { padding: 0 16px; }
@@ -1216,6 +1281,10 @@
         <button class="nav-item" data-scroll-to="section-praca3d" data-tab="maquete">
           <svg class="i" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg>
           <span class="nav-label-long">Simulador 3D</span><span class="nav-label-short">3D</span>
+        </button>
+        <button class="nav-item" data-scroll-to="section-projeto" data-tab="projeto">
+          <svg class="i" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.09-3.09a2 2 0 0 0-2.82 0L6 21"/></svg>
+          <span class="nav-label-long">A nova praça</span><span class="nav-label-short">Projeto</span>
         </button>
         <button class="nav-item" data-action="story" data-tab="memorial">
           <svg class="i" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/><path d="M9 7h7M9 11h5"/></svg>
@@ -1577,6 +1646,64 @@
           </div>
         </section>
 
+        <!-- ===== A NOVA PRAÇA (RENDERS DO PROJETO) ===== -->
+        <section id="section-projeto" class="pblock">
+          <div class="block-head">
+            <div>
+              <p class="eyebrow">Projeto de revitalização</p>
+              <h2>A nova praça</h2>
+              <p>Arraste o divisor para comparar a praça de 2017 com o projeto. Toque numa imagem para ver em tela cheia.</p>
+            </div>
+          </div>
+
+          <div class="ba-slider" id="ba-slider" role="slider" tabindex="0"
+               aria-label="Comparar a praça em 2017 com o projeto" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" aria-valuetext="Metade de cada imagem">
+            <img src="./assets/historia-praca-2017-4cb655c6.jpg" alt="A praça em 2017, com o canteiro circular e árvores altas" loading="lazy" decoding="async" />
+            <span class="ba-label left">2017 · antes</span>
+            <div class="ba-after" id="ba-after">
+              <img src="./assets/render-canteiro-sakura-627cd260.jpg" alt="Render do projeto: canteiro redondo com a cerejeira florida, mesas e caminhos" loading="lazy" decoding="async" />
+              <span class="ba-label right">Projeto · render</span>
+            </div>
+            <div class="ba-divider" id="ba-divider">
+              <span class="ba-handle" aria-hidden="true">
+                <svg class="i" viewBox="0 0 24 24"><path d="m9 18-6-6 6-6"/><path d="m15 6 6 6-6 6"/></svg>
+              </span>
+            </div>
+          </div>
+          <p class="ba-hint">
+            <svg class="i i-sm" viewBox="0 0 24 24"><path d="m9 18-6-6 6-6"/><path d="m15 6 6 6-6 6"/></svg>
+            Deslize o divisor para comparar
+          </p>
+
+          <div class="render-grid" id="render-grid">
+            <button class="render-card" type="button" data-caption="Playground, mesas e caminhos vistos do alto">
+              <img src="./assets/render-playground-aereo-1a52ced0.jpg" alt="Vista aérea do projeto com playground de madeira, mesas, caminhos de bloquete e o quiosque com pergolado" loading="lazy" decoding="async" />
+              <span class="render-cap">Playground, mesas e caminhos vistos do alto</span>
+            </button>
+            <button class="render-card" type="button" data-caption="Quadra de futsal e quadra de vôlei">
+              <img src="./assets/render-quadras-ddabd92e.jpg" alt="Quadra de futsal azul cercada de gramado, com palmeira, bancos e a quadra de vôlei ao lado" loading="lazy" decoding="async" />
+              <span class="render-cap">Quadra de futsal e quadra de vôlei</span>
+            </button>
+            <button class="render-card" type="button" data-caption="Espaço pet cercado, mesas e bebedouro">
+              <img src="./assets/render-espaco-pet-c689d0cb.jpg" alt="Espaço pet cercado com brinquedos para cães, mesas, bebedouro e bancos com floreiras" loading="lazy" decoding="async" />
+              <span class="render-cap">Espaço pet cercado, mesas e bebedouro</span>
+            </button>
+            <button class="render-card" type="button" data-caption="Quiosque com pergolado, mesa e bancos">
+              <img src="./assets/render-quiosque-pergolado-5d07db98.jpg" alt="Quiosque de concreto com pergolado de madeira, mesa, bancos e canteiro de flores" loading="lazy" decoding="async" />
+              <span class="render-cap">Quiosque com pergolado, mesa e bancos</span>
+            </button>
+            <button class="render-card" type="button" data-caption="Anfiteatro, mesa de piquenique e lixeiras de reciclagem">
+              <img src="./assets/render-anfiteatro-aereo-496bee12.jpg" alt="Anfiteatro de madeira em meia-lua, mesa de piquenique, árvore e lixeiras de coleta seletiva" loading="lazy" decoding="async" />
+              <span class="render-cap">Anfiteatro, mesa de piquenique e lixeiras de reciclagem</span>
+            </button>
+            <button class="render-card" type="button" data-caption="Canteiro da cerejeira e mesas de jogos">
+              <img src="./assets/render-canteiro-sakura-627cd260.jpg" alt="Canteiro redondo com a cerejeira florida, palmeira e mesas de jogos" loading="lazy" decoding="async" />
+              <span class="render-cap">Canteiro da cerejeira e mesas de jogos</span>
+            </button>
+          </div>
+          <p class="render-note">Imagens ilustrativas do projeto. O resultado final pode ter mudanças.</p>
+        </section>
+
         <!-- ===== MEMORIAL ===== -->
         <section id="section-historia" class="pblock">
           <div class="block-head">
@@ -1750,6 +1877,23 @@
   </div>
 
   <!-- HISTÓRIA DA PRAÇA: TELA CHEIA EM CAPÍTULOS -->
+  <!-- Visualizador em tela cheia dos renders do projeto -->
+  <div id="render-viewer" role="dialog" aria-modal="true" aria-label="Imagem do projeto" hidden data-prevent-tree-drag="true">
+    <button class="rv-btn rv-close" id="rv-close" type="button" aria-label="Fechar">
+      <svg class="i" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <button class="rv-btn rv-prev" id="rv-prev" type="button" aria-label="Imagem anterior">
+      <svg class="i" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
+    </button>
+    <figure class="rv-figure">
+      <img id="rv-img" alt="" />
+      <figcaption><span id="rv-cap"></span><small id="rv-count"></small></figcaption>
+    </figure>
+    <button class="rv-btn rv-next" id="rv-next" type="button" aria-label="Próxima imagem">
+      <svg class="i" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+    </button>
+  </div>
+
   <div id="story" role="dialog" aria-modal="true" aria-label="História da praça" aria-hidden="true" tabindex="-1" inert data-prevent-tree-drag="true">
     <div class="story-stage" id="story-stage"></div>
     <nav class="story-bar" aria-label="Capítulos da história">
@@ -3939,7 +4083,7 @@
         });
       });
 
-      const watchedSections = ['section-hero', 'section-quadra', 'section-agenda', 'section-zeladoria', 'section-praca3d', 'section-historia'];
+      const watchedSections = ['section-hero', 'section-quadra', 'section-agenda', 'section-zeladoria', 'section-praca3d', 'section-projeto', 'section-historia'];
       if (scrollerEl && 'IntersectionObserver' in window) {
         const spyObserver = new IntersectionObserver((entries) => {
           if (Date.now() < navLockUntil) return;
@@ -5446,6 +5590,116 @@
         else if (e.key === 'ArrowLeft') goToChapter(storyIndex - 1);
       });
 
+      // ==========================================
+      // A NOVA PRAÇA: ANTES/DEPOIS E GALERIA DE RENDERS
+      // ==========================================
+      const baSlider = document.getElementById('ba-slider');
+      const baAfter = document.getElementById('ba-after');
+      const baDivider = document.getElementById('ba-divider');
+      let baPct = 50;
+
+      function setBaPosition(pct) {
+        if (!baSlider || !baAfter || !baDivider) return;
+        baPct = Math.max(0, Math.min(100, pct));
+        baAfter.style.clipPath = `inset(0 0 0 ${baPct}%)`;
+        baDivider.style.left = `${baPct}%`;
+        baSlider.setAttribute('aria-valuenow', String(Math.round(baPct)));
+        baSlider.setAttribute('aria-valuetext', `${Math.round(100 - baPct)}% do projeto visível`);
+      }
+
+      function setBaFromPointer(clientX) {
+        const rect = baSlider.getBoundingClientRect();
+        if (rect.width > 0) setBaPosition(((clientX - rect.left) / rect.width) * 100);
+      }
+
+      if (baSlider) {
+        // touch-action: pan-y deixa rolar a página na vertical; o arraste lateral move o divisor
+        baSlider.addEventListener('pointerdown', (e) => {
+          baSlider.setPointerCapture(e.pointerId);
+          setBaFromPointer(e.clientX);
+        });
+        baSlider.addEventListener('pointermove', (e) => {
+          if (baSlider.hasPointerCapture(e.pointerId)) setBaFromPointer(e.clientX);
+        });
+        baSlider.addEventListener('keydown', (e) => {
+          const step = e.shiftKey ? 20 : 5;
+          if (e.key === 'ArrowLeft') setBaPosition(baPct - step);
+          else if (e.key === 'ArrowRight') setBaPosition(baPct + step);
+          else if (e.key === 'Home') setBaPosition(0);
+          else if (e.key === 'End') setBaPosition(100);
+          else return;
+          e.preventDefault();
+        });
+      }
+
+      const renderCards = Array.from(document.querySelectorAll('#render-grid .render-card'));
+      const renderViewer = document.getElementById('render-viewer');
+      const rvImg = document.getElementById('rv-img');
+      const rvCap = document.getElementById('rv-cap');
+      const rvCount = document.getElementById('rv-count');
+      let rvIndex = 0;
+      let rvReturnFocus = null;
+
+      function showRender(i) {
+        if (!renderCards.length) return;
+        rvIndex = (i + renderCards.length) % renderCards.length;
+        const card = renderCards[rvIndex];
+        const img = card.querySelector('img');
+        rvImg.src = img.getAttribute('src');
+        rvImg.alt = img.alt;
+        rvCap.textContent = card.dataset.caption || '';
+        rvCount.textContent = `Render do projeto · ${rvIndex + 1} de ${renderCards.length}`;
+      }
+
+      function openRenderViewer(i) {
+        if (!renderViewer) return;
+        rvReturnFocus = document.activeElement;
+        showRender(i);
+        renderViewer.hidden = false;
+        document.getElementById('rv-close')?.focus({ preventScroll: true });
+        if (typeof resetIdleTimer === 'function') resetIdleTimer(); // tempo maior de leitura
+      }
+
+      function closeRenderViewer() {
+        if (!renderViewer || renderViewer.hidden) return;
+        renderViewer.hidden = true;
+        rvImg.removeAttribute('src');
+        if (rvReturnFocus && document.contains(rvReturnFocus)) rvReturnFocus.focus({ preventScroll: true });
+        rvReturnFocus = null;
+      }
+      window.closeRenderViewer = closeRenderViewer;
+
+      renderCards.forEach((card, i) => {
+        card.addEventListener('click', () => {
+          sound.playClick();
+          openRenderViewer(i);
+        });
+      });
+      document.getElementById('rv-close')?.addEventListener('click', () => { sound.playClick(); closeRenderViewer(); });
+      document.getElementById('rv-prev')?.addEventListener('click', () => { sound.playClick(); showRender(rvIndex - 1); });
+      document.getElementById('rv-next')?.addEventListener('click', () => { sound.playClick(); showRender(rvIndex + 1); });
+
+      // Tocar no fundo escuro fecha; deslizar para os lados troca de imagem
+      let rvSwipe = null;
+      renderViewer?.addEventListener('pointerdown', (e) => { rvSwipe = { x: e.clientX, y: e.clientY, onBackdrop: e.target === renderViewer }; });
+      renderViewer?.addEventListener('pointerup', (e) => {
+        if (!rvSwipe) return;
+        const dx = e.clientX - rvSwipe.x;
+        const dy = e.clientY - rvSwipe.y;
+        const onBackdrop = rvSwipe.onBackdrop && e.target === renderViewer;
+        rvSwipe = null;
+        if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) * 1.5) showRender(rvIndex + (dx < 0 ? 1 : -1));
+        else if (onBackdrop && Math.abs(dx) < 10 && Math.abs(dy) < 10) closeRenderViewer();
+      });
+      renderViewer?.addEventListener('pointercancel', () => { rvSwipe = null; });
+
+      window.addEventListener('keydown', (e) => {
+        if (!renderViewer || renderViewer.hidden) return;
+        if (e.key === 'Escape') closeRenderViewer();
+        else if (e.key === 'ArrowRight') showRender(rvIndex + 1);
+        else if (e.key === 'ArrowLeft') showRender(rvIndex - 1);
+      });
+
       // ZELADORIA 1-TOUCH REPORTING BUTTONS
       const modalZeladoria = document.getElementById('modal-zeladoria');
       const zeladoriaProtocolo = document.getElementById('zeladoria-protocolo');
@@ -5479,8 +5733,9 @@
         if (totemScreensaver && totemScreensaver.classList.contains('active')) {
           return;
         }
-        // Lendo a história a pessoa fica mais tempo sem tocar: espera 2 min em vez de 45 s
-        const reading = document.getElementById('story')?.classList.contains('is-open');
+        // Lendo a história (ou vendo um render) a pessoa fica mais tempo sem tocar: espera 2 min em vez de 45 s
+        const reading = document.getElementById('story')?.classList.contains('is-open')
+          || document.getElementById('render-viewer')?.hidden === false;
         idleTimer = setTimeout(() => {
           activateScreensaver();
         }, reading ? 120000 : 45000);
@@ -5498,6 +5753,7 @@
         if (typeof setZen === 'function') setZen(false);
         if (typeof setReach === 'function') setReach(false);
         window.closeStory?.();
+        window.closeRenderViewer?.();
         document.getElementById('content-scroller')?.scrollTo({ top: 0 });
         // Toca o som Furin estritamente uma única vez na transição de entrada
         sound.playFurin();
@@ -5720,7 +5976,7 @@
           '#floating-nav-dock, .nav-pill-dock, .nav-tab, ' +
           '#custom-scroll-container, #custom-scroll-track, #custom-scroll-thumb, ' +
           'header, footer, #floating-dock, #totem-screensaver, #global-broadcast-modal, ' +
-          '#modal-booking, #modal-zeladoria, #story, canvas#park-3d-canvas, ' +
+          '#modal-booking, #modal-zeladoria, #story, #render-viewer, #ba-slider, canvas#park-3d-canvas, ' +
           '#weekly-activities-container, #inspector-panel, #toast, ' +
           'p, h1, h2, h3, h4, h5, h6, span, strong, b, em, i, li, ul, ol, table, ' +
           '[data-prevent-tree-drag], .prevent-tree-drag'
