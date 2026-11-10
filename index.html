@@ -844,10 +844,10 @@
       position: fixed; inset: 0; z-index: 65;
       display: grid; grid-template-rows: minmax(0, 1fr) auto; grid-template-columns: minmax(0, 1fr);
       background: var(--paper); color: var(--ink);
-      opacity: 0; visibility: hidden; transform: scale(1.015);
+      opacity: 0; visibility: hidden; transform: scale(1.015); pointer-events: none;
       transition: opacity .35s var(--ease), transform .35s var(--ease), visibility 0s linear .35s;
     }
-    #story.is-open { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+    #story.is-open { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; pointer-events: auto; }
     #story:focus { outline: none; }
     .story-stage { position: relative; overflow: hidden; touch-action: pan-y; }
     .story-ch {
@@ -858,7 +858,7 @@
       transition: opacity .45s var(--ease), transform .45s var(--ease), visibility 0s linear .45s;
     }
     .story-ch.is-past { transform: translateX(-32px); }
-    .story-ch.is-active { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+    #story.is-open .story-ch.is-active { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
     .story-ch.wide { grid-template-columns: minmax(0, 1fr); align-content: safe center; }
 
     .story-media { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
@@ -1750,7 +1750,7 @@
   </div>
 
   <!-- HISTÓRIA DA PRAÇA: TELA CHEIA EM CAPÍTULOS -->
-  <div id="story" role="dialog" aria-modal="true" aria-label="História da praça" aria-hidden="true" tabindex="-1" data-prevent-tree-drag="true">
+  <div id="story" role="dialog" aria-modal="true" aria-label="História da praça" aria-hidden="true" tabindex="-1" inert data-prevent-tree-drag="true">
     <div class="story-stage" id="story-stage"></div>
     <nav class="story-bar" aria-label="Capítulos da história">
       <button class="story-close" id="story-close">
@@ -5393,6 +5393,7 @@
         if (!storyEl) return;
         buildStory();
         goToChapter(i);
+        storyEl.inert = false;
         storyEl.classList.add('is-open');
         storyEl.setAttribute('aria-hidden', 'false');
         storyEl.focus({ preventScroll: true });
@@ -5403,6 +5404,7 @@
       function closeStory() {
         if (!storyEl || !storyEl.classList.contains('is-open')) return;
         storyEl.classList.remove('is-open');
+        storyEl.inert = true;
         storyEl.setAttribute('aria-hidden', 'true');
         setTimeout(() => { if (!storyEl.classList.contains('is-open')) goToChapter(0); }, 400);
       }
