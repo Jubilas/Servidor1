@@ -688,8 +688,6 @@
     details.past-group .slot-board { padding: 0 12px 12px; }
 
     /* ---------- AGENDA: BLOCOS GRANDES (ESTILO TV / AO VIVO & EM BREVE) ---------- */
-    .h-scroll { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(250px, 1fr); gap: 12px; overflow-x: auto; padding-bottom: 6px; scroll-snap-type: x mandatory; }
-    .h-scroll > * { scroll-snap-align: start; }
     .event-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
     .event-card {
       --tone-a: #292524; --tone-b: #57534E;
@@ -797,15 +795,21 @@
     .poi-meta dd { margin: 0; font-weight: 700; text-align: right; }
     #poi-card-status { font-size: 12px; font-weight: 800; padding: 3px 10px; border-radius: 999px; background: var(--ok-soft); color: var(--ok); }
 
-    /* ---------- MEMORIAL ---------- */
-    .ba-slider-container { position: relative; overflow: hidden; border-radius: var(--radius); height: 380px; border: 1px solid var(--line); touch-action: pan-y; }
-    .ba-slider-container img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
-    .ba-before, .ba-after-layer { position: absolute; inset: 0; overflow: hidden; }
-    .ba-after-layer { clip-path: inset(0 50% 0 0); }
-    .ba-label { position: absolute; top: 14px; padding: 6px 12px; border-radius: 999px; background: rgba(12, 10, 9, .72); color: #fff; font-size: 12px; font-weight: 700; letter-spacing: .04em; }
-    .ba-slider-divider { position: absolute; top: 0; bottom: 0; left: 50%; width: 4px; margin-left: -2px; background: #fff; cursor: ew-resize; box-shadow: 0 0 0 1px rgba(0, 0, 0, .15); }
-    .ba-handle-btn { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 56px; height: 56px; border-radius: 50%; background: #fff; color: var(--accent); display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-lg); font-weight: 800; }
-    .ba-hint { font-size: 14px; color: var(--ink-3); font-weight: 600; display: flex; align-items: center; gap: 8px; }
+    /* ---------- MEMORIAL: CAPA QUE ABRE A HISTÓRIA EM TELA CHEIA ---------- */
+    .story-teaser { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 32px; align-items: center; padding: 28px; overflow: hidden; }
+    .story-collage { position: relative; height: 300px; }
+    .story-collage img {
+      position: absolute; width: 64%; aspect-ratio: 4 / 3; object-fit: cover;
+      border: 8px solid #fff; border-radius: 6px; background: #fff;
+      box-shadow: 0 18px 40px -16px rgba(40, 30, 20, .5);
+    }
+    .story-collage img:nth-child(1) { left: 0; top: 4%; transform: rotate(-6deg); }
+    .story-collage img:nth-child(2) { left: 18%; top: 30%; transform: rotate(3deg); }
+    .story-collage img:nth-child(3) { right: 0; top: 0; transform: rotate(7deg); }
+    .story-teaser h3 { margin: 6px 0 0; font-size: 32px; font-weight: 800; line-height: 1.08; letter-spacing: -.02em; }
+    .story-teaser p { margin: 12px 0 0; font-size: 16px; line-height: 1.55; color: var(--ink-2); }
+    .story-eras { display: flex; flex-wrap: wrap; gap: 6px; margin: 16px 0 20px; }
+    .story-eras span { padding: 5px 10px; border-radius: 999px; background: var(--card-2); border: 1px solid var(--line); font-family: "JetBrains Mono", monospace; font-size: 12px; font-weight: 700; color: var(--ink-2); }
 
     .bloom-card { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 22px; align-items: center; }
     .bloom-ring { position: relative; width: 112px; height: 112px; }
@@ -830,19 +834,119 @@
     .phase-card.is-active { background: var(--accent-soft); border-color: var(--accent); }
     .phase-card.is-active b { color: var(--accent); }
 
-    .species-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
-    .species { padding: 14px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); }
-    .species b { display: block; font-size: 15px; }
-    .species i { display: block; font-size: 12px; color: var(--ink-3); }
-    .species span { display: block; margin-top: 8px; font-size: 13px; font-weight: 700; color: var(--accent); }
-    .photo-card { position: relative; border-radius: var(--radius); overflow: hidden; aspect-ratio: 4 / 3; border: 1px solid var(--line); }
-    .photo-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .photo-card figcaption { position: absolute; inset: auto 0 0 0; padding: 28px 14px 12px; background: linear-gradient(transparent, rgba(0, 0, 0, .78)); color: #fff; font-size: 14px; font-weight: 700; }
-    .photo-card figcaption span { display: block; font-size: 12px; font-weight: 600; opacity: .8; }
     .panel-foot { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding-top: 20px; border-top: 1px solid var(--line); font-size: 13px; color: var(--ink-3); font-weight: 600; }
 
     /* Cards levemente translúcidos (sem blur, para não pesar no totem) */
-    .card, .notice, .species, .btn-report-issue { background: color-mix(in srgb, var(--card) 88%, transparent); }
+    .card, .notice, .btn-report-issue { background: color-mix(in srgb, var(--card) 88%, transparent); }
+
+    /* ---------- HISTÓRIA DA PRAÇA: TELA CHEIA EM CAPÍTULOS ---------- */
+    #story {
+      position: fixed; inset: 0; z-index: 65;
+      display: grid; grid-template-rows: minmax(0, 1fr) auto; grid-template-columns: minmax(0, 1fr);
+      background: var(--paper); color: var(--ink);
+      opacity: 0; visibility: hidden; transform: scale(1.015);
+      transition: opacity .35s var(--ease), transform .35s var(--ease), visibility 0s linear .35s;
+    }
+    #story.is-open { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+    #story:focus { outline: none; }
+    .story-stage { position: relative; overflow: hidden; touch-action: pan-y; }
+    .story-ch {
+      position: absolute; inset: 0; overflow-y: auto; overscroll-behavior: contain;
+      display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: clamp(28px, 4vw, 72px); align-items: center;
+      padding: clamp(28px, 5vh, 64px) clamp(24px, 5vw, 96px);
+      opacity: 0; visibility: hidden; transform: translateX(32px);
+      transition: opacity .45s var(--ease), transform .45s var(--ease), visibility 0s linear .45s;
+    }
+    .story-ch.is-past { transform: translateX(-32px); }
+    .story-ch.is-active { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+    .story-ch.wide { grid-template-columns: minmax(0, 1fr); align-content: safe center; }
+
+    .story-media { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+    .story-media.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+    .story-media.grid4 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .story-fig { margin: 0; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+    .story-fig img { display: block; width: 100%; max-height: 64vh; object-fit: cover; border-radius: 18px; background: var(--card-2); box-shadow: var(--shadow-lg); }
+    .story-media.pair img { aspect-ratio: 4 / 3; }
+    .story-media.grid4 img { aspect-ratio: 16 / 9; }
+    .story-media.doc img { object-fit: contain; background: #fff; padding: 18px; }
+    .story-fig figcaption { font-size: 15px; line-height: 1.45; font-weight: 600; color: var(--ink-2); }
+    .story-media-note { grid-column: 1 / -1; margin: 0; font-size: 12px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-3); }
+    .story-fig figcaption small { display: block; margin-top: 3px; font-size: 12px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-3); }
+
+    .story-text { min-width: 0; max-width: 660px; }
+    .story-ch.wide .story-text { max-width: 980px; }
+    .story-era {
+      display: inline-flex; align-items: center; min-height: 36px; padding: 0 16px; border-radius: 999px;
+      background: var(--accent); color: var(--accent-ink);
+      font-family: "JetBrains Mono", monospace; font-size: 15px; font-weight: 800; letter-spacing: .02em;
+    }
+    .story-text h2 { margin: 18px 0 0; font-size: clamp(34px, 3.4vw, 60px); font-weight: 800; line-height: 1.04; letter-spacing: -.03em; }
+    .story-text p { margin: 18px 0 0; font-size: clamp(17px, 1.2vw, 22px); line-height: 1.6; color: var(--ink-2); }
+    .story-text p strong { color: var(--ink); }
+    .story-facts { list-style: none; margin: 24px 0 0; padding: 0 0 0 2px; border-left: 2px solid var(--line-strong); }
+    .story-facts li { position: relative; padding: 9px 0 9px 24px; font-size: clamp(16px, 1.1vw, 19px); line-height: 1.4; color: var(--ink-2); }
+    .story-facts li::before { content: ""; position: absolute; left: -8px; top: 15px; width: 14px; height: 14px; border-radius: 50%; background: var(--paper); border: 3px solid var(--accent); }
+    .story-facts b { display: block; font-family: "JetBrains Mono", monospace; font-size: .85em; color: var(--accent); }
+
+    /* Capa */
+    .story-ch.cover { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+    .story-ch.cover .story-text { max-width: 760px; }
+    .story-kicker { font-size: 14px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+    .story-ch.cover h2 { font-size: clamp(44px, 5.2vw, 96px); line-height: .98; }
+    .story-start { margin-top: 30px; min-height: 68px; padding: 0 30px; font-size: 18px; }
+    .story-collage.big { height: min(62vh, 600px); }
+    .story-collage.big img { width: 70%; border-width: 12px; }
+
+    /* Equipe (último capítulo) */
+    .story-team { display: flex; flex-direction: column; gap: 26px; margin-top: 28px; }
+    .story-team h3 { margin: 0 0 8px; font-size: 14px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+    .team-list { list-style: none; margin: 0; padding: 0; columns: 3; column-gap: 36px; }
+    .team-list li { break-inside: avoid; padding: 6px 0; border-bottom: 1px solid var(--line); }
+    @media (min-width: 1400px) { .team-list { columns: 4; } }
+    .story-ch.team-ch { gap: 20px; }
+    .team-list strong { display: block; font-size: 16px; color: var(--ink); }
+    .team-list span { display: block; margin-top: 1px; font-size: 13px; font-weight: 600; color: var(--ink-3); }
+    .team-list b { font-family: "JetBrains Mono", monospace; color: var(--ink-2); }
+
+    /* Então e agora */
+    .story-compare { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+    .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .compare-row figure { position: relative; margin: 0; }
+    .compare-row img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; border-radius: 16px; box-shadow: var(--shadow); }
+    .compare-row figcaption { position: absolute; left: 12px; top: 12px; padding: 6px 12px; border-radius: 999px; background: rgba(12, 10, 9, .74); color: #fff; font-size: 13px; font-weight: 800; letter-spacing: .04em; }
+
+    /* Fontes */
+    .story-sources { list-style: none; margin: 26px 0 0; padding: 0; columns: 2; column-gap: 48px; }
+    .story-sources li { break-inside: avoid; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 15px; line-height: 1.45; color: var(--ink-2); }
+    .story-sources b { color: var(--ink); }
+    .story-note { margin-top: 22px !important; padding: 16px 18px; border-radius: 14px; background: var(--card-2); font-size: 15px !important; }
+
+    /* Barra de navegação (sempre embaixo: alcançável por todos) */
+    .story-bar {
+      position: relative; display: flex; align-items: center; gap: 16px;
+      padding: 14px clamp(16px, 3vw, 40px) calc(14px + env(safe-area-inset-bottom));
+      background: var(--panel); border-top: 1px solid var(--line);
+    }
+    .story-bar::before { content: ""; position: absolute; left: 0; top: -1px; height: 3px; width: var(--progress, 0%); background: var(--accent); transition: width .45s var(--ease); }
+    .story-close { flex-shrink: 0; display: inline-flex; align-items: center; gap: 10px; min-height: 60px; padding: 0 22px; border-radius: 16px; background: var(--ink); color: var(--panel); font-size: 16px; font-weight: 800; }
+    .story-chapters { flex: 1; min-width: 0; display: flex; gap: 6px; padding: 2px; overflow-x: auto; scrollbar-width: none; }
+    .story-chapters::-webkit-scrollbar { display: none; }
+    .story-chip {
+      flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 1px;
+      min-height: 60px; padding: 0 14px; border-radius: 14px; border: 1px solid var(--line); background: var(--card); text-align: left;
+    }
+    .story-chip b { font-family: "JetBrains Mono", monospace; font-size: 12px; color: var(--accent); }
+    .story-chip span { font-size: 13px; font-weight: 700; color: var(--ink-2); white-space: nowrap; }
+    .story-chip.is-active { background: var(--ink); border-color: var(--ink); }
+    .story-chip.is-active span { color: var(--panel); }
+    .story-chip.is-active b { color: color-mix(in srgb, var(--accent) 55%, var(--panel)); }
+    .story-steps { flex-shrink: 0; display: flex; align-items: center; gap: 10px; }
+    .story-steps button { display: inline-flex; align-items: center; gap: 8px; min-height: 60px; padding: 0 22px; border-radius: 16px; font-size: 16px; font-weight: 800; }
+    #story-prev { background: var(--card-2); border: 1px solid var(--line); color: var(--ink); }
+    #story-prev:disabled { opacity: .4; }
+    #story-next { background: var(--accent); color: var(--accent-ink); }
+    #story-count { min-width: 64px; text-align: center; font-family: "JetBrains Mono", monospace; font-size: 15px; font-weight: 700; color: var(--ink-3); }
+    .story-close:active, .story-chip:active, .story-steps button:active { transform: scale(.96); }
 
     /* ---------- FOLHAS / MODAIS ---------- */
     .sheet-backdrop { position: fixed; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(12, 10, 9, .45); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); transition: opacity .3s var(--ease); }
@@ -935,7 +1039,7 @@
     body.screensaver-active #app-sidebar, body.screensaver-active #content-scroller { opacity: 0; pointer-events: none; overflow: hidden; border: 0; padding-left: 0; padding-right: 0; }
     body.screensaver-active .stage-top, body.screensaver-active .stage-bottom, body.screensaver-active .stage-hint,
     body.screensaver-active #zen-overlay, body.screensaver-active #toast,
-    body.screensaver-active #modal-booking, body.screensaver-active #modal-zeladoria { opacity: 0 !important; pointer-events: none !important; visibility: hidden !important; }
+    body.screensaver-active #modal-booking, body.screensaver-active #modal-zeladoria, body.screensaver-active #story { opacity: 0 !important; pointer-events: none !important; visibility: hidden !important; }
 
     /* ---------- MODO ALCANCE (CADEIRANTES / CRIANÇAS: 80–120 CM) ---------- */
     #reach-banner { display: none; }
@@ -974,7 +1078,7 @@
     }
     @container panel (max-width: 699px) {
       .report-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .species-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .story-teaser { grid-template-columns: 1fr; }
       .card.weather-card { grid-template-columns: 1fr; }
       .wx-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .court-clock { flex: 1 1 100%; }
@@ -1031,19 +1135,32 @@
       #ascii-boot-hud { bottom: 80px; }
       body.reach-mode #reach-banner { display: none; }
     }
+    @media (max-width: 1023px) {
+      .story-ch, .story-ch.cover { grid-template-columns: minmax(0, 1fr); align-content: start; padding: 22px 18px 32px; }
+      .story-fig img { max-height: 44vh; }
+      .story-collage.big { height: 300px; }
+      .story-chapters { display: none; }
+      .story-bar { justify-content: space-between; gap: 8px; padding-left: 12px; padding-right: 12px; }
+      /* No celular o título vem antes das fotos */
+      .story-text { order: -1; }
+      .team-list { columns: 2; }
+    }
     @media (max-width: 640px) {
       .next-slots { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .book-options { grid-template-columns: 1fr; }
       .sport-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .report-grid { gap: 8px; }
       .btn-report-issue { min-height: 148px; padding: 14px; }
-      .species-grid { grid-template-columns: 1fr 1fr; }
       .phase-steps { grid-template-columns: 1fr 1fr; }
       .bloom-card { grid-template-columns: 1fr; justify-items: start; }
-      .ba-slider-container { height: 260px; }
       .park-wrap { height: 300px; }
       .sheet-backdrop { align-items: flex-end; padding: 0; }
       .sheet { border-radius: 24px 24px 0 0; max-height: 92vh; padding: 20px 16px; }
+      .story-media.pair, .story-media.grid4, .compare-row { grid-template-columns: 1fr; }
+      .story-sources, .team-list { columns: 1; }
+      #story-count, .story-prev-label { display: none; }
+      .story-close, .story-steps button { padding: 0 16px; }
+      .story-steps { gap: 8px; }
       .stage-top { top: 12px; left: 12px; right: 12px; }
       .stage-side .seg { display: none; }
       #dock-tool-reset .stage-btn-text { display: none; }
@@ -1100,9 +1217,9 @@
           <svg class="i" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg>
           <span class="nav-label-long">Simulador 3D</span><span class="nav-label-short">3D</span>
         </button>
-        <button class="nav-item" data-scroll-to="section-historia" data-tab="memorial">
+        <button class="nav-item" data-action="story" data-tab="memorial">
           <svg class="i" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/><path d="M9 7h7M9 11h5"/></svg>
-          <span class="nav-label-long">Memorial</span><span class="nav-label-short">Memorial</span>
+          <span class="nav-label-long">História da praça</span><span class="nav-label-short">História</span>
         </button>
       </nav>
 
@@ -1464,27 +1581,30 @@
         <section id="section-historia" class="pblock">
           <div class="block-head">
             <div>
-              <p class="eyebrow">Memorial da Sakura</p>
-              <h2>A história viva da praça</h2>
-              <p>Do ponto de encontro do bairro ao jardim das cerejeiras: compare a praça de antes com a de hoje.</p>
+              <p class="eyebrow">Memorial</p>
+              <h2>A história da praça</h2>
             </div>
           </div>
 
-          <div class="ba-slider-container" id="ba-slider">
-            <div class="ba-before">
-              <img src="./assets/praca_antiga-w7oZNVHw.jpg" alt="Foto histórica da praça" />
-              <span class="ba-label" style="right:14px">Antes · registro histórico</span>
+          <article class="card story-teaser">
+            <div class="story-collage" aria-hidden="true">
+              <img src="./assets/historia-praca-1994-a7c7b628.jpg" alt="" />
+              <img src="./assets/historia-praca-2007-bancos-a172fae3.jpg" alt="" />
+              <img src="./assets/historia-praca-2026-por-do-sol-36969215.jpg" alt="" />
             </div>
-            <div class="ba-after-layer" id="ba-after-layer">
-              <img src="./assets/logo-BSOEStq9.jpg" alt="Projeto revitalizado" id="ba-after-img" />
-              <span class="ba-label" style="left:14px">Hoje · projeto Conecta</span>
+            <div>
+              <p class="eyebrow">Praça Américo Ferreira de Abreu</p>
+              <h3>Do campo de terra ao ponto de encontro do Santa Mônica</h3>
+              <p>Documentos oficiais e fotos de 1994 a 2026, contados em capítulos curtos.</p>
+              <div class="story-eras" aria-hidden="true">
+                <span>1933</span><span>Anos 70</span><span>Anos 80</span><span>1994</span><span>2007</span><span>Hoje</span>
+              </div>
+              <button class="btn btn-primary btn-lg" data-action="story">
+                <svg class="i" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/><path d="M9 7h7M9 11h5"/></svg>
+                Conhecer a história
+              </button>
             </div>
-            <div class="ba-slider-divider" id="ba-divider"><div class="ba-handle-btn">◂ ▸</div></div>
-          </div>
-          <p class="ba-hint">
-            <svg class="i i-sm" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/><path d="m9 18 6-6-6-6" transform="translate(6 0)"/></svg>
-            Deslize o divisor para comparar
-          </p>
+          </article>
 
           <article class="card bloom-card" id="section-sakura-radar">
             <div class="bloom-ring">
@@ -1507,18 +1627,6 @@
             </div>
           </article>
 
-          <div class="species-grid">
-            <div class="species"><b>Sakura japonesa</b><i>Prunus serrulata</i><span>Floração: outubro</span></div>
-            <div class="species"><b>Ipê amarelo</b><i>Handroanthus albus</i><span>Floração: agosto</span></div>
-            <div class="species"><b>Jacarandá mimoso</b><i>Jacaranda mimosifolia</i><span>Floração: primavera</span></div>
-            <div class="species"><b>Bambu-mossô</b><i>Phyllostachys edulis</i><span>Bosque meditativo</span></div>
-          </div>
-
-          <div id="section-comunidade" class="h-scroll" aria-label="Fotos da comunidade">
-            <figure class="photo-card" style="margin:0"><img src="./assets/praca_antiga-w7oZNVHw.jpg" alt="Traçado original da praça" /><figcaption>O traçado original<span>@memoria.uberlandia</span></figcaption></figure>
-            <figure class="photo-card" style="margin:0"><img src="./assets/logo-BSOEStq9.jpg" alt="Torneio 3x3" /><figcaption>Final do torneio 3x3<span>@basquete.uberlandia</span></figcaption></figure>
-            <figure class="photo-card" style="margin:0"><img src="./assets/logo-BSOEStq9.jpg" alt="Cerejeiras floridas" /><figcaption>Cerejeiras floridas<span>@mariana.fotos</span></figcaption></figure>
-          </div>
         </section>
 
         <footer class="panel-foot">
@@ -1639,6 +1747,29 @@
         <button id="btn-cancel-booking" class="btn btn-ghost">Cancelar</button>
       </div>
     </div>
+  </div>
+
+  <!-- HISTÓRIA DA PRAÇA: TELA CHEIA EM CAPÍTULOS -->
+  <div id="story" role="dialog" aria-modal="true" aria-label="História da praça" aria-hidden="true" tabindex="-1" data-prevent-tree-drag="true">
+    <div class="story-stage" id="story-stage"></div>
+    <nav class="story-bar" aria-label="Capítulos da história">
+      <button class="story-close" id="story-close">
+        <svg class="i" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        Fechar
+      </button>
+      <div class="story-chapters" id="story-chapters"></div>
+      <div class="story-steps">
+        <button id="story-prev" aria-label="Capítulo anterior">
+          <svg class="i" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
+          <span class="story-prev-label">Anterior</span>
+        </button>
+        <span id="story-count" aria-live="polite">1 / 1</span>
+        <button id="story-next">
+          <span id="story-next-label">Próximo</span>
+          <svg class="i" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+      </div>
+    </nav>
   </div>
 
   <!-- FOLHA: CHAMADO DE ZELADORIA REGISTRADO -->
@@ -3897,6 +4028,9 @@
             setCollapsed(!document.body.classList.contains('sidebar-collapsed'));
           } else if (action === 'sound' && btn.id !== 'btn-audio') {
             document.getElementById('btn-audio')?.click();
+          } else if (action === 'story') {
+            sound.playClick();
+            window.openStory?.(0);
           }
         });
       });
@@ -4956,44 +5090,359 @@
         }
       });
 
-      // BEFORE / AFTER SLIDER INTERACTION
-      const baSlider = document.getElementById('ba-slider');
-      const baAfterLayer = document.getElementById('ba-after-layer');
-      const baDivider = document.getElementById('ba-divider');
-      let baDragging = false;
+      // ==========================================
+      // HISTÓRIA DA PRAÇA: TELA CHEIA EM CAPÍTULOS
+      // Texto e fotos da pesquisa histórica do grupo (2026): documentos
+      // oficiais e acervos públicos.
+      // ==========================================
+      const STORY_IMG = {
+        americo1939: './assets/historia-americo-1939-102fe44d.jpg',
+        aereo70: './assets/historia-aereo-anos-70-6a2895e6.jpg',
+        quadrasArquivo: './assets/historia-quadras-arquivo-1cfcbb4c.jpg',
+        praca1994: './assets/historia-praca-1994-a7c7b628.jpg',
+        praca1996: './assets/historia-praca-1996-84327c0a.jpg',
+        quadra2007: './assets/historia-praca-2007-quadra-944f426d.jpg',
+        bancos2007: './assets/historia-praca-2007-bancos-a172fae3.jpg',
+        praca2016: './assets/historia-praca-2016-0e6d9c7f.jpg',
+        praca2017: './assets/historia-praca-2017-4cb655c6.jpg',
+        canteiro2026: './assets/historia-praca-2026-canteiro-2b507a34.jpg',
+        quadra2026: './assets/historia-praca-2026-quadra-fbf5ea03.jpg',
+        porDoSol2026: './assets/historia-praca-2026-por-do-sol-36969215.jpg',
+        pista2026: './assets/historia-praca-2026-quadra-pista-1c10c348.jpg',
+        bancos2026: './assets/historia-praca-2026-bancos-8b951ba0.jpg',
+        ponto2026: './assets/historia-praca-2026-ponto-65f8b3a8.jpg'
+      };
+      const CREDIT = {
+        correio: 'Acervo Jornal Correio · Arquivo Público de Uberlândia',
+        ariza: 'Ariza, C., 2007 · publicado em Ariza; Santos (2008)',
+        grupo: 'Acervo do grupo de pesquisa, 2026'
+      };
 
-      function updateBaSlider(clientX) {
-        if (!baSlider || !baAfterLayer || !baDivider) return;
-        const rect = baSlider.getBoundingClientRect();
-        let posX = clientX - rect.left;
-        posX = Math.max(0, Math.min(rect.width, posX));
-        const pct = (posX / rect.width) * 100;
-        baAfterLayer.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
-        baDivider.style.left = `${pct}%`;
+      const STORY_CHAPTERS = [
+        {
+          kind: 'cover', chip: 'Início', era: '',
+          kicker: 'Memorial · Bairro Santa Mônica · Uberlândia–MG',
+          title: 'Praça Américo Ferreira de Abreu',
+          paras: ['Do campo de futebol de terra ao ponto de encontro do bairro: a história da praça contada por documentos oficiais e fotografias, de 1933 até hoje.']
+        },
+        {
+          chip: 'Quem foi Américo', era: '1933 – 1954',
+          title: 'Quem foi Américo Ferreira de Abreu',
+          paras: ['A praça homenageia um pioneiro do serviço público de Uberlândia, lembrado como braço direito do prefeito Tubal Vilela. Os registros da Prefeitura contam a carreira dele:'],
+          facts: [
+            ['1933', 'Designado para exercer, em comissão, a função de Secretário da Prefeitura (Decreto nº 165)'],
+            ['1934', 'Nomeado datilógrafo e protocolista (Decreto nº 219)'],
+            ['1939', 'Aparece como Diretor da Secretaria'],
+            ['1949 – 1950', 'Chefe do Serviço do Patrimônio da Prefeitura'],
+            ['1954', 'Último registro da sua função pública no Correio de Uberlândia']
+          ],
+          media: { layout: 'doc', figs: [{ src: STORY_IMG.americo1939, alt: 'Recorte de jornal de 1939 com o nome de Américo Ferreira de Abreu destacado', cap: 'O nome de Américo Ferreira de Abreu como Diretor da Secretaria, em 1939.', credit: 'Correio de Uberlândia, ed. 309 · Hemeroteca Digital (Biblioteca Nacional)' }] }
+        },
+        {
+          chip: 'Um bairro nasce', era: 'Anos 70',
+          title: 'Um bairro nasce no Setor Leste',
+          paras: [
+            'Nos anos 1970, o Santa Mônica vivia uma grande expansão residencial, e a lei exigia áreas verdes nos novos loteamentos. A praça surgiu nesse contexto, quando o Setor Leste ainda tinha poucos equipamentos públicos.',
+            'A data exata de criação não foi encontrada. O nome veio com a <strong>Lei nº 2.278, de 7 de novembro de 1973</strong>, na gestão do prefeito Renato de Freitas (1973–1977).'
+          ],
+          media: { figs: [{ src: STORY_IMG.aereo70, alt: 'Fotografia aérea em preto e branco do bairro Santa Mônica nos anos 1970', cap: 'Fotografia aérea da área de estudo, década de 1970. Mostra o território do entorno, não a praça isolada.', credit: 'Instituto de Geografia/UFU · org. Silva (2006)' }] }
+        },
+        {
+          chip: 'Campo e fé', era: 'Anos 80',
+          title: 'Campo de terra, bola e fé',
+          paras: [
+            'Os primeiros usos eram simples: um campo de futebol de terra e um ponto de encontro da comunidade. O grande espaço aberto também recebia celebrações religiosas.',
+            'Delas nasceu a <strong>Paróquia Santa Mônica e Santa Elena Guerra</strong>, fundada em 18 de maio de 1980 e localizada na praça até hoje.'
+          ],
+          media: { figs: [{ src: STORY_IMG.quadrasArquivo, alt: 'Foto antiga e desbotada das quadras esportivas da praça, com piso de terra', cap: 'Quadras esportivas da praça. Ano desconhecido.', credit: 'Arquivo Público de Uberlândia' }] }
+        },
+        {
+          chip: 'Nas lentes do jornal', era: '1994 – 1996',
+          title: 'Os anos 90 nas lentes do jornal',
+          paras: [
+            'Fotografias do Jornal Correio, guardadas no Arquivo Público, mostram a praça em 1994 e 1996: piso de bloquetes, bancos de concreto e uma grande estrutura de concreto em arcos.',
+            'Comparadas às fotos de hoje, revelam áreas mais abertas e equipamentos que não existem mais.'
+          ],
+          media: { layout: 'pair', figs: [
+            { src: STORY_IMG.praca1994, alt: 'Estrutura de concreto em arcos com pichações, em 1994', cap: '6 de outubro de 1994', credit: CREDIT.correio },
+            { src: STORY_IMG.praca1996, alt: 'Vista da praça com bancos de concreto e piso de bloquetes, em 1996', cap: '15 de dezembro de 1996', credit: CREDIT.correio }
+          ] }
+        },
+        {
+          chip: 'A mais estruturada', era: '2007',
+          title: 'A praça mais bem estruturada do bairro',
+          paras: [
+            'Em 2007, a pesquisadora Camila Guedes Ariza fotografou a praça para um estudo sobre qualidade ambiental, publicado em 2008. Entre as praças observadas no Santa Mônica, esta foi descrita como a mais bem estruturada.'
+          ],
+          media: { layout: 'pair', figs: [
+            { src: STORY_IMG.quadra2007, alt: 'Quadra cercada por alambrado, em 2007', cap: 'A quadra em 2007', credit: CREDIT.ariza },
+            { src: STORY_IMG.bancos2007, alt: 'Bancos de concreto sob as árvores, em 2007', cap: 'Bancos e árvores em 2007', credit: CREDIT.ariza }
+          ] }
+        },
+        {
+          chip: 'Festa, fé e palco', era: 'Tradição',
+          title: 'Festa, fé e palco',
+          paras: ['A praça é o quintal da comunidade. O <strong>Julinhão do Santa Mônica</strong>, quermesse organizada todo ano pela paróquia, acontece ali. Em 2026, foi de 3 a 13 de julho.'],
+          facts: [
+            ['Corpus Christi', 'Tapetes e caminhadas da fé'],
+            ['Teatro', 'Nas peças da igreja, o palco da praça vira cenário da crucificação de Jesus; em 2025, recebeu teatro de rua da UFU'],
+            ['Feiras', 'Exposições gastronômicas e artesanais e campanhas de adoção do Centro de Zoonoses'],
+            ['Serviços', 'Busão Social, Procon Móvel e o ponto de táxi T-027, oficial desde 2011']
+          ],
+          media: { figs: [{ src: STORY_IMG.praca2016, alt: 'Praça sombreada por árvores, com bancos e brinquedos ao fundo, em 2016', cap: 'A praça em 2016.', credit: 'Rossana · UFU, 2016' }] }
+        },
+        {
+          kind: 'compare', chip: 'Então e agora', era: 'Então e agora',
+          title: 'O que mudou, o que ficou',
+          paras: ['A vegetação cresceu e amadureceu, equipamentos de lazer e esporte foram trocados e os caminhos foram reorganizados. A quadra, os bancos e a convivência continuam lá.'],
+          pairs: [
+            [{ src: STORY_IMG.quadra2007, label: '2007', alt: 'Quadra em 2007' }, { src: STORY_IMG.quadra2026, label: '2026', alt: 'Quadra em 2026' }],
+            [{ src: STORY_IMG.praca2017, label: '2017', alt: 'Canteiro circular em 2017' }, { src: STORY_IMG.canteiro2026, label: '2026', alt: 'Canteiro circular em 2026' }]
+          ]
+        },
+        {
+          chip: 'A praça hoje', era: '2021 – 2026',
+          title: 'A praça hoje',
+          paras: [
+            'Nos últimos anos vieram a iluminação LED (a partir de julho de 2021), as manutenções da Prefeitura em 2023 e 2024 e, em 2025, playgrounds acessíveis.',
+            'A pesquisa aponta o que ainda falta: manutenção constante, cuidado com as árvores e segurança. E conclui que a revitalização deve preservar o que sempre marcou o lugar, a convivência, para que <strong>novas memórias</strong> continuem nascendo aqui.'
+          ],
+          media: { layout: 'grid4', figs: [
+            { src: STORY_IMG.porDoSol2026, alt: 'Pôr do sol na praça', cap: '', credit: '' },
+            { src: STORY_IMG.pista2026, alt: 'Pista e área de exercícios', cap: '', credit: '' },
+            { src: STORY_IMG.bancos2026, alt: 'Bancos no fim da tarde', cap: '', credit: '' },
+            { src: STORY_IMG.ponto2026, alt: 'Calçada e ponto de ônibus ao lado da praça', cap: '', credit: '' }
+          ], note: 'Fotos de 2026 · ' + CREDIT.grupo }
+        },
+        {
+          kind: 'sources', chip: 'Fontes', era: 'Fontes',
+          title: 'De onde vem esta história',
+          paras: ['Pesquisa histórica feita por estudantes de Arquitetura, Sistemas de Informação, Engenharia Mecânica e Engenharia de Computação, em 2026. A equipe está no último capítulo.'],
+          sources: [
+            ['Ariza; Santos (2008)', 'Qualidade ambiental e planejamento urbano. Caminhos de Geografia. Fotos de 2007.'],
+            ['Silva (2006)', 'Mapeamento de vazios urbanos em Uberlândia: o caso do bairro Santa Mônica. Dissertação, UFU.'],
+            ['Arquivo Público de Uberlândia', 'Acervo do Jornal Correio (1994 e 1996) e fotos das quadras.'],
+            ['Hemeroteca Digital (BN)', 'Correio de Uberlândia, 1939 a 1954.'],
+            ['Prefeitura de Uberlândia', 'Decretos nº 165/1933 e nº 219/1934; Lei nº 2.278/1973; Diário Oficial (2011); manutenções de 2023 e 2024.'],
+            ['Câmara Municipal', 'Jornal Legislativo, 2013: pedido de revitalização da praça.'],
+            ['Diocese de Uberlândia', 'Fundação da Paróquia Santa Mônica e Santa Elena Guerra (1980).'],
+            ['Turismo Minas Gerais e UFU', 'Palco e atividades culturais; teatro de rua em 2025.'],
+            ['Outras imagens', 'Rossana (UFU), 2016; Foursquare, 2017; acervo do grupo, 2026.']
+          ],
+          note: 'Lacunas: a planta original do loteamento, o ato de criação da praça e o projeto original com seu responsável técnico não foram localizados nas fontes consultadas.'
+        },
+        {
+          kind: 'team', chip: 'Equipe', era: 'Créditos',
+          title: 'Quem fez esta pesquisa',
+          paras: ['Levantamento histórico, fotografias e textos feitos pelos grupos abaixo, em 2026.'],
+          groups: [
+            { name: 'Grupo 06', people: [
+              ['Marcela Vieira Araújo', 'Arquitetura', '126217'],
+              ['Julia De Macedo Freitas', 'Arquitetura', '226041'],
+              ['Eduardo Rodrigues Oliveira Saraiva', 'Arquitetura', '226305'],
+              ['Dimas Batista dos Anjos', 'Arquitetura', '226227'],
+              ['João Pedro Alves da Silva', 'Arquitetura', '226134'],
+              ['Franco Petraglia Ribeiro', 'Sistemas de Informação', '126505'],
+              ['Victor Hugo Franco de Melo', 'Sistemas de Informação', '126593'],
+              ['Arthur Pires Satel Araújo', 'Sistemas de Informação', '126702'],
+              ['Davi Marques Miranda', 'Sistemas de Informação', '126341'],
+              ['Cauã de Araújo Ferreira', 'Sistemas de Informação', '126461'],
+              ['Caio Franco Petraglia Ribeiro', 'Sistemas de Informação', '126505'],
+              ['Eduardo Alves Santos', 'Eng. Mecânica', '126811'],
+              ['Reginaldo Alves Dias Júnior', 'Eng. Mecânica', '126687'],
+              ['Khayo Silva Faria', 'Eng. Mecânica', '126712'],
+              ['Heitor Rabelo Vilas Boas Botelho', 'Eng. Mecânica', '126365'],
+              ['Luis Felipe de Oliveira Santos', 'Eng. de Computação', '126218'],
+              ['Lucas Garcia Fernandes', 'Eng. de Computação', '126462'],
+              ['Kennedy Agapto de Souza', 'Eng. de Computação', '126393']
+            ] },
+            { name: 'Grupo 3', people: [
+              ['Rafael Alves Borges', 'Arquitetura'],
+              ['Gabriela Braga Tavares', 'Arquitetura'],
+              ['Joao Pedro Miranda Ribeiro', 'Arquitetura'],
+              ['Matheus Silva Marques', 'Arquitetura'],
+              ['Clara Da Cunha Tozzi', 'Arquitetura'],
+              ['Gilson Machado Silva', 'Eng. Mecânica'],
+              ['Murilo De Lima V. Moreira', 'Eng. Mecânica'],
+              ['Guilherme Gomes Silva', 'Eng. Mecânica'],
+              ['Vitor De Sousa Camargo Marsal', 'Eng. Mecânica'],
+              ['Marco Tulio Medeiros Gouveia', 'Eng. de Computação'],
+              ['Otavio Cartolano Bitencourt', 'Eng. de Computação'],
+              ['Matheus Ferreira B. De Brito', 'Eng. de Computação'],
+              ['Ana Carolina Soares Rocha', 'Sistemas de Informação'],
+              ['Felipe Pereira Martins', 'Sistemas de Informação'],
+              ['Pietro Rodrigues Gomes', 'Sistemas de Informação'],
+              ['Murilo Alves Garcia', 'Sistemas de Informação'],
+              ['Kaique Silva', 'Sistemas de Informação']
+            ] }
+          ]
+        }
+      ];
+
+      const storyEl = document.getElementById('story');
+      const storyStage = document.getElementById('story-stage');
+      const storyChipsEl = document.getElementById('story-chapters');
+      const storyPrevBtn = document.getElementById('story-prev');
+      const storyNextBtn = document.getElementById('story-next');
+      const storyNextLabel = document.getElementById('story-next-label');
+      const storyCount = document.getElementById('story-count');
+      let storyIndex = 0;
+      let storyBuilt = false;
+
+      function storyFigure(f) {
+        const cap = f.cap || f.credit
+          ? `<figcaption>${escapeHtml(f.cap)}${f.credit ? `<small>${escapeHtml(f.credit)}</small>` : ''}</figcaption>`
+          : '';
+        return `<figure class="story-fig"><img src="${f.src}" alt="${escapeHtml(f.alt)}" decoding="async" />${cap}</figure>`;
       }
 
-      if (baSlider) {
-        baSlider.addEventListener('mousedown', (e) => {
-          baDragging = true;
-          updateBaSlider(e.clientX);
-        });
-        window.addEventListener('mousemove', (e) => {
-          if (baDragging) updateBaSlider(e.clientX);
-        });
-        window.addEventListener('mouseup', () => {
-          baDragging = false;
-        });
-        baSlider.addEventListener('touchstart', (e) => {
-          baDragging = true;
-          if (e.touches.length > 0) updateBaSlider(e.touches[0].clientX);
-        }, { passive: true });
-        window.addEventListener('touchmove', (e) => {
-          if (baDragging && e.touches.length > 0) updateBaSlider(e.touches[0].clientX);
-        }, { passive: true });
-        window.addEventListener('touchend', () => {
-          baDragging = false;
-        });
+      // Os textos são fixos e escritos aqui; só <strong> é usado como marcação
+      function storyChapterHtml(ch) {
+        const paras = (ch.paras || []).map(p => `<p>${p}</p>`).join('');
+        const era = ch.era ? `<span class="story-era">${escapeHtml(ch.era)}</span>` : '';
+        const facts = ch.facts
+          ? `<ul class="story-facts">${ch.facts.map(([b, t]) => `<li><b>${escapeHtml(b)}</b>${escapeHtml(t)}</li>`).join('')}</ul>`
+          : '';
+
+        if (ch.kind === 'cover') {
+          return `
+            <div class="story-text">
+              <p class="story-kicker">${escapeHtml(ch.kicker)}</p>
+              <h2>${escapeHtml(ch.title)}</h2>
+              ${paras}
+              <button class="btn btn-primary story-start" data-story-go="1">
+                Começar a história
+                <svg class="i" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </button>
+            </div>
+            <div class="story-collage big" aria-hidden="true">
+              <img src="${STORY_IMG.praca1996}" alt="" />
+              <img src="${STORY_IMG.quadra2007}" alt="" />
+              <img src="${STORY_IMG.porDoSol2026}" alt="" />
+            </div>`;
+        }
+        if (ch.kind === 'team') {
+          const groups = ch.groups.map(g => `
+            <section><h3>${escapeHtml(g.name)}</h3><ul class="team-list">${g.people.map(([name, course, id]) =>
+              `<li><strong>${escapeHtml(name)}</strong><span>${escapeHtml(course)}${id ? ` · matrícula <b>${escapeHtml(id)}</b>` : ''}</span></li>`
+            ).join('')}</ul></section>`).join('');
+          return `<div class="story-text">${era}<h2>${escapeHtml(ch.title)}</h2>${paras}</div><div class="story-team">${groups}</div>`;
+        }
+        if (ch.kind === 'compare') {
+          const rows = ch.pairs.map(pair => `
+            <div class="compare-row">${pair.map(f => `<figure><img src="${f.src}" alt="${escapeHtml(f.alt)}" decoding="async" /><figcaption>${escapeHtml(f.label)}</figcaption></figure>`).join('')}</div>`).join('');
+          return `<div class="story-compare">${rows}</div><div class="story-text">${era}<h2>${escapeHtml(ch.title)}</h2>${paras}</div>`;
+        }
+        if (ch.kind === 'sources') {
+          const list = ch.sources.map(([b, t]) => `<li><b>${escapeHtml(b)}</b> · ${escapeHtml(t)}</li>`).join('');
+          return `<div class="story-text">${era}<h2>${escapeHtml(ch.title)}</h2>${paras}<ul class="story-sources">${list}</ul><p class="story-note">${escapeHtml(ch.note)}</p></div>`;
+        }
+
+        const m = ch.media || { figs: [] };
+        const note = m.note ? `<p class="story-media-note">${escapeHtml(m.note)}</p>` : '';
+        return `
+          <div class="story-media ${m.layout || ''}">${m.figs.map(storyFigure).join('')}${note}</div>
+          <div class="story-text">${era}<h2>${escapeHtml(ch.title)}</h2>${paras}${facts}</div>`;
       }
+
+      function buildStory() {
+        if (storyBuilt || !storyStage) return;
+        storyStage.innerHTML = STORY_CHAPTERS.map((ch, i) => {
+          const kind = ch.kind === 'cover' ? 'cover' : (ch.kind === 'team' || ch.kind === 'sources' ? 'wide' : '');
+          const extra = ch.kind === 'team' ? ' team-ch' : '';
+          return `<section class="story-ch ${kind}${extra}" data-index="${i}" aria-label="${escapeHtml(ch.title)}">${storyChapterHtml(ch)}</section>`;
+        }).join('');
+        storyChipsEl.innerHTML = STORY_CHAPTERS.map((ch, i) =>
+          `<button class="story-chip" data-story-go="${i}"><b>${escapeHtml(ch.era && ch.era !== ch.chip ? ch.era : '•')}</b><span>${escapeHtml(ch.chip)}</span></button>`
+        ).join('');
+        storyEl.querySelectorAll('[data-story-go]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            sound.playClick();
+            goToChapter(Number(btn.getAttribute('data-story-go')));
+          });
+        });
+        storyBuilt = true;
+      }
+
+      function goToChapter(i) {
+        const total = STORY_CHAPTERS.length;
+        storyIndex = Math.max(0, Math.min(total - 1, i));
+        storyStage.querySelectorAll('.story-ch').forEach((sec, idx) => {
+          sec.classList.toggle('is-active', idx === storyIndex);
+          sec.classList.toggle('is-past', idx < storyIndex);
+          sec.setAttribute('aria-hidden', idx === storyIndex ? 'false' : 'true');
+          if (idx === storyIndex) sec.scrollTop = 0;
+        });
+        storyChipsEl.querySelectorAll('.story-chip').forEach((chip, idx) => {
+          const on = idx === storyIndex;
+          chip.classList.toggle('is-active', on);
+          if (on) {
+            chip.setAttribute('aria-current', 'step');
+            chip.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+          } else {
+            chip.removeAttribute('aria-current');
+          }
+        });
+        storyPrevBtn.disabled = storyIndex === 0;
+        storyNextLabel.innerText = storyIndex === total - 1 ? 'Concluir' : 'Próximo';
+        storyCount.innerText = `${storyIndex + 1} / ${total}`;
+        storyEl.querySelector('.story-bar').style.setProperty('--progress', `${((storyIndex + 1) / total) * 100}%`);
+      }
+
+      function openStory(i = 0) {
+        if (!storyEl) return;
+        buildStory();
+        goToChapter(i);
+        storyEl.classList.add('is-open');
+        storyEl.setAttribute('aria-hidden', 'false');
+        storyEl.focus({ preventScroll: true });
+        if (typeof resetIdleTimer === 'function') resetIdleTimer(); // já conta o tempo maior de leitura
+      }
+
+      // Fecha e volta ao começo: o próximo visitante sempre abre pela capa
+      function closeStory() {
+        if (!storyEl || !storyEl.classList.contains('is-open')) return;
+        storyEl.classList.remove('is-open');
+        storyEl.setAttribute('aria-hidden', 'true');
+        setTimeout(() => { if (!storyEl.classList.contains('is-open')) goToChapter(0); }, 400);
+      }
+      window.openStory = openStory;
+      window.closeStory = closeStory;
+
+      document.getElementById('story-close')?.addEventListener('click', () => {
+        sound.playClick();
+        closeStory();
+      });
+      storyPrevBtn?.addEventListener('click', () => {
+        sound.playClick();
+        goToChapter(storyIndex - 1);
+      });
+      storyNextBtn?.addEventListener('click', () => {
+        sound.playClick();
+        if (storyIndex === STORY_CHAPTERS.length - 1) closeStory();
+        else goToChapter(storyIndex + 1);
+      });
+
+      // Deslizar o dedo para os lados troca de capítulo
+      let storySwipe = null;
+      storyStage?.addEventListener('pointerdown', (e) => { storySwipe = { x: e.clientX, y: e.clientY }; });
+      storyStage?.addEventListener('pointerup', (e) => {
+        if (!storySwipe) return;
+        const dx = e.clientX - storySwipe.x;
+        const dy = e.clientY - storySwipe.y;
+        storySwipe = null;
+        if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+          goToChapter(storyIndex + (dx < 0 ? 1 : -1));
+        }
+      });
+      storyStage?.addEventListener('pointercancel', () => { storySwipe = null; });
+
+      window.addEventListener('keydown', (e) => {
+        if (!storyEl?.classList.contains('is-open')) return;
+        if (e.key === 'Escape') closeStory();
+        else if (e.key === 'ArrowRight') goToChapter(storyIndex + 1);
+        else if (e.key === 'ArrowLeft') goToChapter(storyIndex - 1);
+      });
 
       // ZELADORIA 1-TOUCH REPORTING BUTTONS
       const modalZeladoria = document.getElementById('modal-zeladoria');
@@ -5028,9 +5477,11 @@
         if (totemScreensaver && totemScreensaver.classList.contains('active')) {
           return;
         }
+        // Lendo a história a pessoa fica mais tempo sem tocar: espera 2 min em vez de 45 s
+        const reading = document.getElementById('story')?.classList.contains('is-open');
         idleTimer = setTimeout(() => {
           activateScreensaver();
-        }, 45000); // 45 seconds of idle
+        }, reading ? 120000 : 45000);
       }
 
       function activateScreensaver() {
@@ -5044,6 +5495,7 @@
         // Próximo visitante começa do zero: sai do Zen/Alcance e volta ao topo
         if (typeof setZen === 'function') setZen(false);
         if (typeof setReach === 'function') setReach(false);
+        window.closeStory?.();
         document.getElementById('content-scroller')?.scrollTo({ top: 0 });
         // Toca o som Furin estritamente uma única vez na transição de entrada
         sound.playFurin();
@@ -5266,7 +5718,7 @@
           '#floating-nav-dock, .nav-pill-dock, .nav-tab, ' +
           '#custom-scroll-container, #custom-scroll-track, #custom-scroll-thumb, ' +
           'header, footer, #floating-dock, #totem-screensaver, #global-broadcast-modal, ' +
-          '#modal-booking, #modal-zeladoria, #ba-slider, canvas#park-3d-canvas, ' +
+          '#modal-booking, #modal-zeladoria, #story, canvas#park-3d-canvas, ' +
           '#weekly-activities-container, #inspector-panel, #toast, ' +
           'p, h1, h2, h3, h4, h5, h6, span, strong, b, em, i, li, ul, ol, table, ' +
           '[data-prevent-tree-drag], .prevent-tree-drag'
