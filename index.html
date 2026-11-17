@@ -864,6 +864,7 @@
       aspect-ratio: 4 / 3; background: var(--line); box-shadow: var(--shadow); cursor: zoom-in;
       font: inherit; color: inherit; text-align: left;
     }
+    .render-card.wide { grid-column: 1 / -1; aspect-ratio: 16 / 7; }
     .render-card img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .5s var(--ease); }
     .render-card .render-cap {
       position: absolute; left: 0; right: 0; bottom: 0; padding: 28px 12px 10px;
@@ -1665,7 +1666,7 @@
             <img src="./assets/historia-praca-2017-4cb655c6.jpg" alt="A praça em 2017, com o canteiro circular e árvores altas" loading="lazy" decoding="async" />
             <span class="ba-label left">2017 · antes</span>
             <div class="ba-after" id="ba-after">
-              <img src="./assets/render-canteiro-sakura-627cd260.jpg" alt="Render do projeto: canteiro redondo com a cerejeira florida, mesas e caminhos" loading="lazy" decoding="async" />
+              <img src="./assets/render-perspectiva-geral-c5979ee3.jpg" alt="Render do projeto: quadras, academia ao ar livre, mesas, bancos e caminhos de bloquete" loading="lazy" decoding="async" />
               <span class="ba-label right">Projeto · render</span>
             </div>
             <div class="ba-divider" id="ba-divider">
@@ -1680,6 +1681,18 @@
           </p>
 
           <div class="render-grid" id="render-grid">
+            <button class="render-card wide" type="button" data-caption="Quadras, academia ao ar livre, mesas e caminhos">
+              <img src="./assets/render-perspectiva-geral-c5979ee3.jpg" alt="Vista do projeto com quadra de tênis, quadra de futsal, academia ao ar livre, mesas, bancos com floreiras e caminhos de bloquete" loading="lazy" decoding="async" />
+              <span class="render-cap">Quadras, academia ao ar livre, mesas e caminhos</span>
+            </button>
+            <button class="render-card" type="button" data-caption="A praça inteira vista de cima">
+              <img src="./assets/render-planta-geral-295a5352.jpg" alt="Planta do projeto vista de cima, com a cerejeira no centro, anfiteatro, pavilhões de madeira, quadras, playground e academia" loading="lazy" decoding="async" />
+              <span class="render-cap">A praça inteira vista de cima</span>
+            </button>
+            <button class="render-card" type="button" data-caption="Pavilhões de madeira com teto de vidro e a cerejeira">
+              <img src="./assets/render-pavilhoes-cerejeira-cfa29352.jpg" alt="Pavilhões de madeira com cobertura de vidro e treliças, caminhos de pedra e uma cerejeira florida" loading="lazy" decoding="async" />
+              <span class="render-cap">Pavilhões de madeira com teto de vidro e a cerejeira</span>
+            </button>
             <button class="render-card" type="button" data-caption="Playground, mesas e caminhos vistos do alto">
               <img src="./assets/render-playground-aereo-1a52ced0.jpg" alt="Vista aérea do projeto com playground de madeira, mesas, caminhos de bloquete e o quiosque com pergolado" loading="lazy" decoding="async" />
               <span class="render-cap">Playground, mesas e caminhos vistos do alto</span>
@@ -1688,10 +1701,6 @@
               <img src="./assets/render-quadras-ddabd92e.jpg" alt="Quadra de futsal azul cercada de gramado, com palmeira, bancos e a quadra de vôlei ao lado" loading="lazy" decoding="async" />
               <span class="render-cap">Quadra de futsal e quadra de vôlei</span>
             </button>
-            <button class="render-card" type="button" data-caption="Espaço pet cercado, mesas e bebedouro">
-              <img src="./assets/render-espaco-pet-c689d0cb.jpg" alt="Espaço pet cercado com brinquedos para cães, mesas, bebedouro e bancos com floreiras" loading="lazy" decoding="async" />
-              <span class="render-cap">Espaço pet cercado, mesas e bebedouro</span>
-            </button>
             <button class="render-card" type="button" data-caption="Quiosque com pergolado, mesa e bancos">
               <img src="./assets/render-quiosque-pergolado-5d07db98.jpg" alt="Quiosque de concreto com pergolado de madeira, mesa, bancos e canteiro de flores" loading="lazy" decoding="async" />
               <span class="render-cap">Quiosque com pergolado, mesa e bancos</span>
@@ -1699,10 +1708,6 @@
             <button class="render-card" type="button" data-caption="Anfiteatro, mesa de piquenique e lixeiras de reciclagem">
               <img src="./assets/render-anfiteatro-aereo-496bee12.jpg" alt="Anfiteatro de madeira em meia-lua, mesa de piquenique, árvore e lixeiras de coleta seletiva" loading="lazy" decoding="async" />
               <span class="render-cap">Anfiteatro, mesa de piquenique e lixeiras de reciclagem</span>
-            </button>
-            <button class="render-card" type="button" data-caption="Canteiro da cerejeira e mesas de jogos">
-              <img src="./assets/render-canteiro-sakura-627cd260.jpg" alt="Canteiro redondo com a cerejeira florida, palmeira e mesas de jogos" loading="lazy" decoding="async" />
-              <span class="render-cap">Canteiro da cerejeira e mesas de jogos</span>
             </button>
           </div>
           <p class="render-note">Imagens ilustrativas do projeto. O resultado final pode ter mudanças.</p>
@@ -5740,12 +5745,12 @@
         if (totemScreensaver && totemScreensaver.classList.contains('active')) {
           return;
         }
-        // Lendo a história (ou vendo um render) a pessoa fica mais tempo sem tocar: espera 2 min em vez de 45 s
+        // Lendo a história (ou vendo um render) a pessoa fica mais tempo sem tocar: espera 3 min em vez de 90 s
         const reading = document.getElementById('story')?.classList.contains('is-open')
           || document.getElementById('render-viewer')?.hidden === false;
         idleTimer = setTimeout(() => {
           activateScreensaver();
-        }, reading ? 120000 : 45000);
+        }, reading ? 180000 : 90000);
       }
 
       function activateScreensaver() {
