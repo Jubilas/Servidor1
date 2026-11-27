@@ -9,7 +9,7 @@ import crypto from "node:crypto";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PORT = Number(process.env.PORT) || Number(process.argv[2]) || 8080;
-const HOST = process.env.HOST || "0.0.0.0";
+const HOST = process.env.HOST || "127.0.0.1"; // padrão seguro: o público chega pelo Cloudflare Tunnel
 const PUBLIC_DIR = __dirname;
 const STATE_FILE = path.join(PUBLIC_DIR, "state.json");
 // Senha do painel dev: fica no arquivo senha_dev.txt, ao lado do server.js
@@ -145,9 +145,18 @@ setInterval(() => {
 // Senha errada: 5 tentativas a cada 15 minutos por IP
 const AUTH_MAX_FAILURES = 5;
 const AUTH_WINDOW_MS = 15 * 60 * 1000;
-// Agendamento público: 5 reservas a cada 10 minutos por IP
+// Agendamento público: 5 tentativas a cada 10 minutos por IP (contém erros e conflitos)
 const BOOK_MAX_PER_WINDOW = 5;
 const BOOK_WINDOW_MS = 10 * 60 * 1000;
+// Anti-abuso das reservas (vale para o dia, no fuso da praça):
+// - cada IP pode ter no máximo 2 reservas no dia
+// - cada rede (/24 no IPv4, /48 no IPv6) no máximo 4 no dia
+// - no total, no máximo 4 reservas novas a cada 30 minutos (freia botnets)
+// O painel /dev continua podendo cancelar reservas falsas.
+const BOOK_MAX_PER_IP_DAY = 2;
+const BOOK_MAX_PER_NET_DAY = 4;
+const BOOK_GLOBAL_MAX = 4;
+const BOOK_GLOBAL_WINDOW_MS = 30 * 60 * 1000;
 // Conexões SSE simultâneas
 const SSE_MAX_PER_IP = 20;
 const SSE_MAX_TOTAL = 300;
@@ -208,6 +217,44 @@ function sendJson(res, status, data, extraHeaders = {}) {
     ...extraHeaders
   });
   res.end(payload);
+}
+
+// Quem fez cada reserva do dia (só em memória, nunca vai para /api/state)
+const bookingOwners = new Map(); // bookingId -> { ip, net }
+let globalBookingTimes = []; // horários (ms) das últimas reservas públicas
+
+function networkKey(ip) {
+  if (ip.includes(":")) {
+    return ip.split(":").slice(0, 3).join(":") + "::/48";
+  }
+  const parts = ip.split(".");
+  return parts.length === 4 ? `${parts[0]}.${parts[1]}.${parts[2]}.0/24` : ip;
+}
+
+function countActiveBookings(field, value) {
+  let total = 0;
+  for (const booking of globalState.courtBookings) {
+    const owner = bookingOwners.get(booking.id);
+    if (owner && owner[field] === value) total++;
+  }
+  return total;
+}
+
+// Devolve uma mensagem de erro se a reserva ultrapassa algum limite, ou null
+function bookingQuotaError(ip) {
+  if (countActiveBookings("ip", ip) >= BOOK_MAX_PER_IP_DAY) {
+    return `Limite de ${BOOK_MAX_PER_IP_DAY} reservas por dispositivo hoje. Cancele uma pela administração ou tente amanhã.`;
+  }
+  if (countActiveBookings("net", networkKey(ip)) >= BOOK_MAX_PER_NET_DAY) {
+    return "Muitas reservas feitas a partir da mesma rede hoje. Tente amanhã.";
+  }
+  const now = Date.now();
+  globalBookingTimes = globalBookingTimes.filter(t => now - t < BOOK_GLOBAL_WINDOW_MS);
+  if (globalBookingTimes.length >= BOOK_GLOBAL_MAX) {
+    const wait = Math.ceil((BOOK_GLOBAL_WINDOW_MS - (now - globalBookingTimes[0])) / 60000);
+    return `Muitas reservas em pouco tempo. Tente novamente em ${wait} minuto(s).`;
+  }
+  return null;
 }
 
 // Bloqueia o IP depois de várias senhas erradas (força bruta)
@@ -382,6 +429,7 @@ function resetBookingsIfNewDay() {
   if (globalState.bookingsDate === date) return;
   const hadBookings = globalState.courtBookings.length > 0;
   globalState.courtBookings = [];
+  bookingOwners.clear();
   globalState.bookingsDate = date;
   saveState();
   console.log(`[STATE] Novo dia (${date}): reservas da quadra zeradas`);
@@ -395,10 +443,12 @@ function resetBookingsIfNewDay() {
 // ==========================================
 const sseClients = new Map(); // res -> { id, name, type, ip, connectedAt }
 
-// O IP fica só no servidor (limite de conexões); a lista pública não o expõe
-function getActiveScreensList() {
+// O IP fica só no servidor (limite de conexões); a lista pública não o expõe.
+// Telas do painel dev também ficam fora da lista pública (não revela quando o admin está online);
+// só a resposta autenticada de /api/control inclui todas.
+function getActiveScreensList({ includeDev = false } = {}) {
   const now = Date.now();
-  return Array.from(sseClients.values()).map(c => ({
+  return Array.from(sseClients.values()).filter(c => includeDev || c.type !== "dev").map(c => ({
     id: c.id,
     name: c.name,
     type: c.type,
@@ -419,12 +469,20 @@ function broadcastEvent(eventType, data) {
   }
 }
 
+// Agrupa rajadas de conexões/desconexões: no máximo 1 envio da lista por segundo para todas as telas
+// (antes, cada conexão disparava um envio para todos os clientes).
+let screenCountTimer = null;
 function broadcastScreenCount() {
-  const screens = getActiveScreensList();
-  broadcastEvent("screens_count", {
-    activeScreens: screens.length,
-    screens: screens
-  });
+  if (screenCountTimer) return;
+  screenCountTimer = setTimeout(() => {
+    screenCountTimer = null;
+    const screens = getActiveScreensList();
+    broadcastEvent("screens_count", {
+      activeScreens: screens.length,
+      screens: screens
+    });
+  }, 1000);
+  screenCountTimer.unref?.();
 }
 
 // Heartbeat a cada 25 segundos para manter proxies/túneis ativos
@@ -552,7 +610,7 @@ const server = http.createServer(async (req, res) => {
       status: "ok",
       service: "praca-conecta-realtime-server",
       uptimeSeconds: Math.floor(process.uptime()),
-      activeScreens: sseClients.size,
+      activeScreens: getActiveScreensList().length,
       timestamp: new Date().toISOString()
     });
     res.writeHead(200, {
@@ -568,7 +626,7 @@ const server = http.createServer(async (req, res) => {
   if (pathname === "/api/state") {
     const payload = JSON.stringify({
       ...globalState,
-      activeScreens: sseClients.size,
+      activeScreens: getActiveScreensList().length,
       screens: getActiveScreensList()
     });
     res.writeHead(200, {
@@ -625,7 +683,8 @@ const server = http.createServer(async (req, res) => {
     broadcastScreenCount();
 
     // Envia estado inicial imediatamente no aperto de mão
-    res.write(`event: init\ndata: ${JSON.stringify({ ...globalState, activeScreens: sseClients.size, screens: getActiveScreensList() })}\n\n`);
+    const publicScreens = getActiveScreensList();
+    res.write(`event: init\ndata: ${JSON.stringify({ ...globalState, activeScreens: publicScreens.length, screens: publicScreens })}\n\n`);
 
     req.on("close", () => {
       sseClients.delete(res);
@@ -736,6 +795,13 @@ const server = http.createServer(async (req, res) => {
 
       hitRateLimit(bookKey, BOOK_MAX_PER_WINDOW, BOOK_WINDOW_MS);
 
+      const quotaError = bookingQuotaError(clientIp);
+      if (quotaError) {
+        console.warn(`[BOOK] Reserva recusada (${quotaError}) para ${clientIp}`);
+        sendJson(res, 429, { success: false, error: quotaError }, { "Retry-After": "600" });
+        return;
+      }
+
       const newBooking = {
         id: "book-" + Date.now(),
         slot: cleanSlot,
@@ -748,6 +814,8 @@ const server = http.createServer(async (req, res) => {
       };
 
       globalState.courtBookings.push(newBooking);
+      bookingOwners.set(newBooking.id, { ip: clientIp, net: networkKey(clientIp) });
+      globalBookingTimes.push(Date.now());
       globalState.courtBookings.sort((a, b) => a.slot.localeCompare(b.slot));
       saveState();
 
@@ -931,7 +999,7 @@ const server = http.createServer(async (req, res) => {
       res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
       res.end(JSON.stringify({
         success: true,
-        state: { ...globalState, activeScreens: sseClients.size, screens: getActiveScreensList() }
+        state: { ...globalState, activeScreens: sseClients.size, screens: getActiveScreensList({ includeDev: true }) }
       }));
     } catch (err) {
       res.writeHead(400, { "Content-Type": "application/json; charset=utf-8" });
