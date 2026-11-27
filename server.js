@@ -9,7 +9,7 @@ import crypto from "node:crypto";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PORT = Number(process.env.PORT) || Number(process.argv[2]) || 8080;
-const HOST = process.env.HOST || "0.0.0.0";
+const HOST = process.env.HOST || "127.0.0.1"; // padrão seguro: o público chega pelo Cloudflare Tunnel
 const PUBLIC_DIR = __dirname;
 const STATE_FILE = path.join(PUBLIC_DIR, "state.json");
 // Senha do painel dev: fica no arquivo senha_dev.txt, ao lado do server.js
@@ -443,10 +443,12 @@ function resetBookingsIfNewDay() {
 // ==========================================
 const sseClients = new Map(); // res -> { id, name, type, ip, connectedAt }
 
-// O IP fica só no servidor (limite de conexões); a lista pública não o expõe
-function getActiveScreensList() {
+// O IP fica só no servidor (limite de conexões); a lista pública não o expõe.
+// Telas do painel dev também ficam fora da lista pública (não revela quando o admin está online);
+// só a resposta autenticada de /api/control inclui todas.
+function getActiveScreensList({ includeDev = false } = {}) {
   const now = Date.now();
-  return Array.from(sseClients.values()).map(c => ({
+  return Array.from(sseClients.values()).filter(c => includeDev || c.type !== "dev").map(c => ({
     id: c.id,
     name: c.name,
     type: c.type,
@@ -467,12 +469,20 @@ function broadcastEvent(eventType, data) {
   }
 }
 
+// Agrupa rajadas de conexões/desconexões: no máximo 1 envio da lista por segundo para todas as telas
+// (antes, cada conexão disparava um envio para todos os clientes).
+let screenCountTimer = null;
 function broadcastScreenCount() {
-  const screens = getActiveScreensList();
-  broadcastEvent("screens_count", {
-    activeScreens: screens.length,
-    screens: screens
-  });
+  if (screenCountTimer) return;
+  screenCountTimer = setTimeout(() => {
+    screenCountTimer = null;
+    const screens = getActiveScreensList();
+    broadcastEvent("screens_count", {
+      activeScreens: screens.length,
+      screens: screens
+    });
+  }, 1000);
+  screenCountTimer.unref?.();
 }
 
 // Heartbeat a cada 25 segundos para manter proxies/túneis ativos
@@ -600,7 +610,7 @@ const server = http.createServer(async (req, res) => {
       status: "ok",
       service: "praca-conecta-realtime-server",
       uptimeSeconds: Math.floor(process.uptime()),
-      activeScreens: sseClients.size,
+      activeScreens: getActiveScreensList().length,
       timestamp: new Date().toISOString()
     });
     res.writeHead(200, {
@@ -616,7 +626,7 @@ const server = http.createServer(async (req, res) => {
   if (pathname === "/api/state") {
     const payload = JSON.stringify({
       ...globalState,
-      activeScreens: sseClients.size,
+      activeScreens: getActiveScreensList().length,
       screens: getActiveScreensList()
     });
     res.writeHead(200, {
@@ -673,7 +683,8 @@ const server = http.createServer(async (req, res) => {
     broadcastScreenCount();
 
     // Envia estado inicial imediatamente no aperto de mão
-    res.write(`event: init\ndata: ${JSON.stringify({ ...globalState, activeScreens: sseClients.size, screens: getActiveScreensList() })}\n\n`);
+    const publicScreens = getActiveScreensList();
+    res.write(`event: init\ndata: ${JSON.stringify({ ...globalState, activeScreens: publicScreens.length, screens: publicScreens })}\n\n`);
 
     req.on("close", () => {
       sseClients.delete(res);
@@ -988,7 +999,7 @@ const server = http.createServer(async (req, res) => {
       res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
       res.end(JSON.stringify({
         success: true,
-        state: { ...globalState, activeScreens: sseClients.size, screens: getActiveScreensList() }
+        state: { ...globalState, activeScreens: sseClients.size, screens: getActiveScreensList({ includeDev: true }) }
       }));
     } catch (err) {
       res.writeHead(400, { "Content-Type": "application/json; charset=utf-8" });
