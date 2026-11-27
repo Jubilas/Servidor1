@@ -145,9 +145,18 @@ setInterval(() => {
 // Senha errada: 5 tentativas a cada 15 minutos por IP
 const AUTH_MAX_FAILURES = 5;
 const AUTH_WINDOW_MS = 15 * 60 * 1000;
-// Agendamento público: 5 reservas a cada 10 minutos por IP
+// Agendamento público: 5 tentativas a cada 10 minutos por IP (contém erros e conflitos)
 const BOOK_MAX_PER_WINDOW = 5;
 const BOOK_WINDOW_MS = 10 * 60 * 1000;
+// Anti-abuso das reservas (vale para o dia, no fuso da praça):
+// - cada IP pode ter no máximo 2 reservas no dia
+// - cada rede (/24 no IPv4, /48 no IPv6) no máximo 4 no dia
+// - no total, no máximo 4 reservas novas a cada 30 minutos (freia botnets)
+// O painel /dev continua podendo cancelar reservas falsas.
+const BOOK_MAX_PER_IP_DAY = 2;
+const BOOK_MAX_PER_NET_DAY = 4;
+const BOOK_GLOBAL_MAX = 4;
+const BOOK_GLOBAL_WINDOW_MS = 30 * 60 * 1000;
 // Conexões SSE simultâneas
 const SSE_MAX_PER_IP = 20;
 const SSE_MAX_TOTAL = 300;
@@ -208,6 +217,44 @@ function sendJson(res, status, data, extraHeaders = {}) {
     ...extraHeaders
   });
   res.end(payload);
+}
+
+// Quem fez cada reserva do dia (só em memória, nunca vai para /api/state)
+const bookingOwners = new Map(); // bookingId -> { ip, net }
+let globalBookingTimes = []; // horários (ms) das últimas reservas públicas
+
+function networkKey(ip) {
+  if (ip.includes(":")) {
+    return ip.split(":").slice(0, 3).join(":") + "::/48";
+  }
+  const parts = ip.split(".");
+  return parts.length === 4 ? `${parts[0]}.${parts[1]}.${parts[2]}.0/24` : ip;
+}
+
+function countActiveBookings(field, value) {
+  let total = 0;
+  for (const booking of globalState.courtBookings) {
+    const owner = bookingOwners.get(booking.id);
+    if (owner && owner[field] === value) total++;
+  }
+  return total;
+}
+
+// Devolve uma mensagem de erro se a reserva ultrapassa algum limite, ou null
+function bookingQuotaError(ip) {
+  if (countActiveBookings("ip", ip) >= BOOK_MAX_PER_IP_DAY) {
+    return `Limite de ${BOOK_MAX_PER_IP_DAY} reservas por dispositivo hoje. Cancele uma pela administração ou tente amanhã.`;
+  }
+  if (countActiveBookings("net", networkKey(ip)) >= BOOK_MAX_PER_NET_DAY) {
+    return "Muitas reservas feitas a partir da mesma rede hoje. Tente amanhã.";
+  }
+  const now = Date.now();
+  globalBookingTimes = globalBookingTimes.filter(t => now - t < BOOK_GLOBAL_WINDOW_MS);
+  if (globalBookingTimes.length >= BOOK_GLOBAL_MAX) {
+    const wait = Math.ceil((BOOK_GLOBAL_WINDOW_MS - (now - globalBookingTimes[0])) / 60000);
+    return `Muitas reservas em pouco tempo. Tente novamente em ${wait} minuto(s).`;
+  }
+  return null;
 }
 
 // Bloqueia o IP depois de várias senhas erradas (força bruta)
@@ -382,6 +429,7 @@ function resetBookingsIfNewDay() {
   if (globalState.bookingsDate === date) return;
   const hadBookings = globalState.courtBookings.length > 0;
   globalState.courtBookings = [];
+  bookingOwners.clear();
   globalState.bookingsDate = date;
   saveState();
   console.log(`[STATE] Novo dia (${date}): reservas da quadra zeradas`);
@@ -736,6 +784,13 @@ const server = http.createServer(async (req, res) => {
 
       hitRateLimit(bookKey, BOOK_MAX_PER_WINDOW, BOOK_WINDOW_MS);
 
+      const quotaError = bookingQuotaError(clientIp);
+      if (quotaError) {
+        console.warn(`[BOOK] Reserva recusada (${quotaError}) para ${clientIp}`);
+        sendJson(res, 429, { success: false, error: quotaError }, { "Retry-After": "600" });
+        return;
+      }
+
       const newBooking = {
         id: "book-" + Date.now(),
         slot: cleanSlot,
@@ -748,6 +803,8 @@ const server = http.createServer(async (req, res) => {
       };
 
       globalState.courtBookings.push(newBooking);
+      bookingOwners.set(newBooking.id, { ip: clientIp, net: networkKey(clientIp) });
+      globalBookingTimes.push(Date.now());
       globalState.courtBookings.sort((a, b) => a.slot.localeCompare(b.slot));
       saveState();
 
