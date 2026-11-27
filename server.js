@@ -11,11 +11,15 @@ const __dirname = path.dirname(__filename);
 const PORT = Number(process.env.PORT) || Number(process.argv[2]) || 8080;
 const HOST = process.env.HOST || "127.0.0.1"; // padrão seguro: o público chega pelo Cloudflare Tunnel
 const PUBLIC_DIR = __dirname;
-const STATE_FILE = path.join(PUBLIC_DIR, "state.json");
-// Senha do painel dev: fica no arquivo senha_dev.txt, ao lado do server.js
-// (ignorado pelo git). Para trocar a senha: edite o arquivo e reinicie o
-// servidor (ex.: pm2 restart). Sem o arquivo, o painel /dev fica bloqueado.
-const DEV_PASSWORD_FILE = path.join(PUBLIC_DIR, "senha_dev.txt");
+// Dados de execução (estado da praça e senha do painel) ficam em PRACA_DATA_DIR quando definido
+// (no servidor: /var/lib/praca, gravável só pelo serviço). Sem a variável, ficam ao lado do
+// server.js, como antes (desenvolvimento local).
+const DATA_DIR = process.env.PRACA_DATA_DIR ? path.resolve(process.env.PRACA_DATA_DIR) : PUBLIC_DIR;
+const STATE_FILE = path.join(DATA_DIR, "state.json");
+// Senha do painel dev: arquivo senha_dev.txt em DATA_DIR (ignorado pelo git). Para trocar a
+// senha: edite o arquivo e reinicie o app (no servidor: apps restart praca). Sem o arquivo,
+// o painel /dev fica bloqueado.
+const DEV_PASSWORD_FILE = path.join(DATA_DIR, "senha_dev.txt");
 
 // ==========================================
 // AUTENTICAÇÃO DO PAINEL DEV (/dev)
