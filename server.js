@@ -88,6 +88,28 @@ function isValidDevSession(token) {
   return true;
 }
 
+// Cookie do painel dev: só libera VER a página /dev (o HTML do painel).
+// Quem ainda não entrou com a senha recebe só a tela de senha (dev-login.html).
+// Os comandos continuam exigindo o token no cabeçalho Authorization, então o
+// cookie sozinho não executa nada. HttpOnly (o JavaScript não lê), Secure e
+// SameSite=Strict (outro site não consegue usá-lo).
+const DEV_COOKIE = "praca_dev";
+
+function getCookie(req, name) {
+  const header = req.headers["cookie"] || "";
+  for (const part of header.split(";")) {
+    const i = part.indexOf("=");
+    if (i > 0 && part.slice(0, i).trim() === name) return part.slice(i + 1).trim();
+  }
+  return "";
+}
+
+// Com token: grava o cookie (vale o mesmo tempo da sessão). Sem token: apaga.
+function devCookieHeader(token) {
+  const maxAge = token ? Math.floor(DEV_SESSION_TTL_MS / 1000) : 0;
+  return `${DEV_COOKIE}=${token || ""}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${maxAge}`;
+}
+
 // Aceita um token de sessão ou a própria senha (scripts e testes)
 function validateAuth(req, body) {
   const bearer = getBearerToken(req);
@@ -280,11 +302,13 @@ function registerAuthFailure(ip) {
 
 // Arquivos que o site pode servir. Todo o resto (senha_dev.txt, .git/,
 // server.js, state.json, testes...) responde 404.
+// O dev.html só chega a quem tem o cookie de sessão: /dev, /admin e /dev.html
+// passam antes pelo portão do painel (ver o roteamento de arquivos estáticos).
 const PUBLIC_FILES = new Set([
   "index.html",
   "agendar.html",
   "dev.html",
-  "studio.html",
+  "dev-login.html",
   "favicon.svg",
   "icons.svg",
   "logo.jpg",
@@ -710,22 +734,25 @@ const server = http.createServer(async (req, res) => {
           sendJson(res, 401, { success: false, error: "Senha incorreta do Painel Dev." });
           return;
         }
+        const token = createDevSession();
         sendJson(res, 200, {
           success: true,
           message: "Autenticação realizada com sucesso.",
-          token: createDevSession(),
+          token,
           expiresInSeconds: DEV_SESSION_TTL_MS / 1000
-        });
+        }, { "Set-Cookie": devCookieHeader(token) });
         return;
       }
 
       // Sem senha: só confere se o token de sessão ainda vale
-      if (!isValidDevSession(getBearerToken(req))) {
+      const bearer = getBearerToken(req);
+      if (!isValidDevSession(bearer)) {
         registerAuthFailure(clientIp);
         sendJson(res, 401, { success: false, error: "Sessão expirada. Digite a senha novamente." });
         return;
       }
-      sendJson(res, 200, { success: true, message: "Sessão válida." });
+      // Renova o cookie do painel com o mesmo token
+      sendJson(res, 200, { success: true, message: "Sessão válida." }, { "Set-Cookie": devCookieHeader(bearer) });
     } catch (err) {
       sendJson(res, 400, { error: err.message });
     }
@@ -735,7 +762,8 @@ const server = http.createServer(async (req, res) => {
   // Encerra a sessão do painel dev (botão de bloquear)
   if (pathname === "/api/auth/logout" && method === "POST") {
     devSessions.delete(getBearerToken(req));
-    sendJson(res, 200, { success: true });
+    devSessions.delete(getCookie(req, DEV_COOKIE));
+    sendJson(res, 200, { success: true }, { "Set-Cookie": devCookieHeader("") });
     return;
   }
 
@@ -1016,10 +1044,14 @@ const server = http.createServer(async (req, res) => {
   let cleanPath = pathname.replace(/^\/+/, "").replace(/\\/g, "/");
 
   // Mapeia rotas especiais
+  let devGate = false;
   if (cleanPath === "agendar" || cleanPath === "agendar/" || cleanPath === "agendar.html") {
     cleanPath = "agendar.html";
-  } else if (cleanPath === "dev" || cleanPath === "dev/" || cleanPath === "admin" || cleanPath === "admin/") {
-    cleanPath = "dev.html";
+  } else if (cleanPath === "dev" || cleanPath === "dev/" || cleanPath === "admin" || cleanPath === "admin/" || cleanPath === "dev.html") {
+    // Portão do painel: o HTML completo só vai para quem já entrou com a senha
+    // (cookie de sessão válido). Os outros recebem só a tela de senha.
+    devGate = true;
+    cleanPath = isValidDevSession(getCookie(req, DEV_COOKIE)) ? "dev.html" : "dev-login.html";
   } else if (!cleanPath || cleanPath === "" || cleanPath === "/") {
     cleanPath = "index.html";
   }
@@ -1059,7 +1091,11 @@ const server = http.createServer(async (req, res) => {
         "Content-Type": contentType
       };
 
-      if (cleanPath.startsWith("assets/") && !isFallback) {
+      if (devGate) {
+        // A mesma URL muda conforme o cookie: nunca guardar em cache (navegador ou Cloudflare)
+        headers["Cache-Control"] = "no-store, private";
+        headers["Vary"] = "Cookie";
+      } else if (cleanPath.startsWith("assets/") && !isFallback) {
         headers["Cache-Control"] = "public, max-age=31536000, immutable";
       } else {
         headers["Cache-Control"] = "no-cache, must-revalidate";
